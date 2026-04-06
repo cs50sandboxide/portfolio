@@ -402,7 +402,10 @@ ul {
     color: var(--black);
     background: var(--off-white);
     padding: 16px 40px;
-    transition: background 0.3s, transform 0.3s var(--ease-out-expo);
+    transition: background 0.3s, border-color 0.3s, transform 0.3s var(--ease-out-expo);
+}
+
+.hero .hero-cta {
     opacity: 0;
     animation: fadeUp 1s var(--ease-out-expo) 1.3s forwards;
 }

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About | Advaith Krishnan Vinod</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/about.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -44,253 +45,385 @@
         </div>
     </section>
 
-    <!-- About Content -->
-    <section class="section about">
+    <!-- Intro: Photo + Key Summary -->
+    <section class="section about-intro-section">
         <div class="container">
-            <div class="about-grid">
-                <div class="about-image">
-                    <img src="../assets/images/portrait.png" alt="Advaith Krishnan Vinod">
+            <div class="about-intro-grid">
+                <div class="about-photo-col">
+                    <img src="../assets/images/portrait.png" alt="Advaith Krishnan Vinod" class="about-photo">
+                    <a href="../assets/resume/Resume-AVK.pdf" class="cv-download-btn" target="_blank">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>Download CV</span>
+                    </a>
                 </div>
-                <div class="about-content">
-                    <h2 class="about-name">Advaith Krishnan Vinod</h2>
-                    <p class="about-role">Quant Analyst &middot; Individual Investor &middot; Physics Undergraduate</p>
-                    <div class="about-bio">
-                        <p>An investment professional and physics undergraduate at Imperial College London, combining rigorous quantitative training with deep fundamental equity analysis. As Quant Trader and Head of Strategic Operations at Queen's Tower Capital — Imperial's student-run fund — I allocate asset classes and capital to developers based on portfolio management strategies.</p>
-                        <p>Since 2021, I have independently managed a US stock portfolio worth $250,000, generating a net gain of $80,000 through investment theses built on DCF valuations, relative valuation frameworks, technical analysis, and macroeconomic insight.</p>
-                        <p>As Vice President of the Modern Cash Flow Society in Dubai, I conducted personal finance workshops for over 3,000 participants across the UAE and India, and published more than 20 macroeconomic research articles. I am passionate about staying at the intersection of quantitative finance, AI-driven analysis, and fundamental research.</p>
-                    </div>
+                <div class="about-intro-content">
+                    <h2 class="about-intro-name">Advaith Krishnan Vinod</h2>
+                    <p class="about-intro-role">Quant Analyst &middot; Equity Investor &middot; Physics @ Imperial College London</p>
+                    <p class="about-intro-bio">An investment professional and physics undergraduate combining rigorous quantitative training with deep fundamental equity analysis. As Quant Trader and Head of Strategic Operations at Queen's Tower Capital — Imperial's student-run fund — I allocate asset classes and capital based on systematic portfolio management strategies.</p>
+                    <p class="about-intro-bio">Since 2021, I have independently managed a US stock portfolio worth <strong>$250,000</strong>, generating a net gain of <strong>$80,000</strong> through investment theses built on DCF valuations, relative valuation frameworks, technical analysis, and macroeconomic insight.</p>
 
-                    <div class="about-details">
-                        <div class="detail-group">
-                            <h4>Education</h4>
-                            <div class="education-item">
-                                <p class="ed-school">Imperial College London</p>
-                                <p class="ed-degree">BSc Physics with Theoretical Physics — On Track for First-Class</p>
-                                <p class="ed-date">Expected May 2028</p>
-                            </div>
-                            <div class="education-item">
-                                <p class="ed-school">Gems Modern Academy, Dubai</p>
-                                <p class="ed-degree">IB Diploma — 42/45 (Math AA, Physics, Economics HL)</p>
-                                <p class="ed-date">July 2025</p>
-                            </div>
-                            <div class="education-item">
-                                <p class="ed-degree">AP Psychology (5/5) &middot; AP Computer Science A (5/5)</p>
-                            </div>
+                    <!-- Key Metrics — what employers see first -->
+                    <div class="key-metrics">
+                        <div class="key-metric">
+                            <span class="key-metric-value">$250K+</span>
+                            <span class="key-metric-label">Portfolio Under Management</span>
                         </div>
-
-                        <div class="detail-group">
-                            <h4>Experience</h4>
-                            <div class="experience-item">
-                                <div class="exp-header">
-                                    <p class="exp-title">QTC Quant Analyst</p>
-                                    <p class="exp-date">Sep 2025 — Present</p>
-                                </div>
-                                <p class="exp-org">Queen's Tower Capital, Imperial College London</p>
-                                <p class="exp-desc">Quant Trader and Head of Strategic Operations. Allocating asset classes and capital to developers based on portfolio management strategies.</p>
-                            </div>
-                            <div class="experience-item">
-                                <div class="exp-header">
-                                    <p class="exp-title">Individual Stock Trader</p>
-                                    <p class="exp-date">Sep 2021 — Present</p>
-                                </div>
-                                <p class="exp-desc">Managing a US stock portfolio worth $250,000 with a net gain of $80,000. Investment theses performed using DCF, relative valuations, technical analysis and macroeconomic insights.</p>
-                            </div>
-                            <div class="experience-item">
-                                <div class="exp-header">
-                                    <p class="exp-title">Vice President, Modern Cash Flow Society</p>
-                                    <p class="exp-date">Sep 2023 — Jun 2025</p>
-                                </div>
-                                <p class="exp-org">Dubai, UAE</p>
-                                <p class="exp-desc">Conducted workshops on personal finance management for over 3,000 staff and students across UAE and India. Published over 20 research articles on macroeconomics.</p>
-                            </div>
+                        <div class="key-metric">
+                            <span class="key-metric-value">$80K</span>
+                            <span class="key-metric-label">Net Gain Since 2021</span>
                         </div>
-
-                        <div class="detail-group">
-                            <h4>Competitions & Projects</h4>
-                            <div class="experience-item">
-                                <div class="exp-header">
-                                    <p class="exp-title">AI-Driven Equity Valuation Model</p>
-                                    <p class="exp-date">Dec 2025 — Present</p>
-                                </div>
-                                <p class="exp-desc">Employing AI in 3-Statement, DCF and LBO modelling (Claude for Excel), equity research report optimization via SEC filing sentiment analysis, and portfolio management for clients using agentic AI.</p>
-                            </div>
-                            <div class="experience-item">
-                                <div class="exp-header">
-                                    <p class="exp-title">'Algothon' Algorithmic Trading Hackathon</p>
-                                    <p class="exp-date">March 2026</p>
-                                </div>
-                                <p class="exp-org">Imperial College London</p>
-                                <p class="exp-desc">Competed at Imperial's all-university hackathon employing ETF arbitrage and EMA momentum trading strategies. Placed 7th overall and 2nd in the novice category for IMC's trading challenge.</p>
-                            </div>
+                        <div class="key-metric">
+                            <span class="key-metric-value">42/45</span>
+                            <span class="key-metric-label">IB Diploma</span>
                         </div>
-
-                        <div class="detail-group">
-                            <h4>Coding & Technical</h4>
-                            <div class="skills-grid">
-                                <div class="skill-item">
-                                    <span class="skill-name">Python</span>
-                                    <span class="skill-level">Advanced</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">C</span>
-                                    <span class="skill-level">Advanced</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">Java</span>
-                                    <span class="skill-level">Proficient</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">JavaScript</span>
-                                    <span class="skill-level">Proficient</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">SQL</span>
-                                    <span class="skill-level">Proficient</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">Machine Learning</span>
-                                    <span class="skill-level">Well-versed</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">Excel / VBA</span>
-                                    <span class="skill-level">Advanced</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">Financial Modelling</span>
-                                    <span class="skill-level">Advanced</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="detail-group">
-                            <h4>Languages</h4>
-                            <div class="skills-grid">
-                                <div class="skill-item">
-                                    <span class="skill-name">English</span>
-                                    <span class="skill-level">Fluent</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">Hindi</span>
-                                    <span class="skill-level">Fluent</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">German</span>
-                                    <span class="skill-level">Fluent</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">Arabic</span>
-                                    <span class="skill-level">Fluent</span>
-                                </div>
-                                <div class="skill-item">
-                                    <span class="skill-name">Tamil</span>
-                                    <span class="skill-level">Fluent</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="detail-group">
-                            <h4>Courses & Certifications</h4>
-                            <ul class="expertise-list">
-                                <li>HarvardX CS50 — Introduction to Computer Science</li>
-                                <li>Yale University — Financial Markets (Prof. Robert Shiller)</li>
-                                <li>Harvard SSP — Deductive Logic</li>
-                                <li>Wall Street Prep — Financial Modeling and Valuation</li>
-                            </ul>
-                        </div>
-
-                        <div class="detail-group">
-                            <h4>Awards & Honours</h4>
-                            <div class="awards-grid">
-                                <div class="award-item">
-                                    <div class="award-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
-                                            <circle cx="12" cy="8" r="7"/>
-                                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <span class="award-title">Algothon — 2nd Place Across UK (First-Years)</span>
-                                        <span class="award-desc">Imperial College algorithmic trading hackathon, IMC Trading Challenge. 7th overall.</span>
-                                    </div>
-                                </div>
-                                <div class="award-item">
-                                    <div class="award-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
-                                            <circle cx="12" cy="8" r="7"/>
-                                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <span class="award-title">ASSET UAE — National Math Topper</span>
-                                        <span class="award-desc">Ranked 1st nationally in the ASSET Mathematics examination across the UAE.</span>
-                                    </div>
-                                </div>
-                                <div class="award-item">
-                                    <div class="award-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
-                                            <circle cx="12" cy="8" r="7"/>
-                                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <span class="award-title">AUS Math Competition — Bronze Medalist</span>
-                                        <span class="award-desc">American University of Sharjah national mathematics competition.</span>
-                                    </div>
-                                </div>
-                                <div class="award-item">
-                                    <div class="award-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
-                                            <circle cx="12" cy="8" r="7"/>
-                                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <span class="award-title">K.S. Varkey Merit Scholarship</span>
-                                        <span class="award-desc">Awarded for academic excellence at Gems Modern Academy.</span>
-                                    </div>
-                                </div>
-                                <div class="award-item">
-                                    <div class="award-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
-                                            <circle cx="12" cy="8" r="7"/>
-                                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <span class="award-title">Duke of Edinburgh — Silver Award</span>
-                                        <span class="award-desc">Completed the Silver level of the International Award programme.</span>
-                                    </div>
-                                </div>
-                                <div class="award-item">
-                                    <div class="award-icon">
-                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
-                                            <circle cx="12" cy="8" r="7"/>
-                                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
-                                        </svg>
-                                    </div>
-                                    <div>
-                                        <span class="award-title">Duke of Edinburgh — Bronze Award</span>
-                                        <span class="award-desc">Completed the Bronze level of the International Award programme.</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="detail-group">
-                            <h4>Leadership & Activities</h4>
-                            <div class="experience-item">
-                                <div class="exp-header">
-                                    <p class="exp-title">Freestyle Divers' Eco-Team</p>
-                                    <p class="exp-date">Aug 2023 — Present</p>
-                                </div>
-                                <p class="exp-org">Fujairah, UAE</p>
-                                <p class="exp-desc">Propagated coral fragments on coral nurseries across the UAE's coast and collected marine data for Project REEFrame for government analysis.</p>
-                            </div>
+                        <div class="key-metric">
+                            <span class="key-metric-value">5+ Years</span>
+                            <span class="key-metric-label">Active Investing</span>
                         </div>
                     </div>
-
-                    <a href="../assets/resume/Resume-AVK.pdf" class="hero-cta" target="_blank" style="margin-top: 48px;">Download Full CV</a>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Timeline -->
+    <section class="section timeline-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Career Timeline</span>
+                <h2 class="section-title">Growth & Milestones</h2>
+            </div>
+
+            <div class="timeline">
+                <div class="timeline-line"></div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="tl-year">2021</span>
+                        <span class="tl-month">September</span>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="tl-tag tl-tag-investing">Investing</span>
+                        <h3>Began Individual Stock Trading</h3>
+                        <p>Started managing a personal US equity portfolio at age 14, developing investment theses through fundamental analysis and macroeconomic research.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="tl-year">2023</span>
+                        <span class="tl-month">August</span>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="tl-tag tl-tag-leadership">Leadership</span>
+                        <h3>Freestyle Divers' Eco-Team</h3>
+                        <p>Joined coral reef conservation programme in Fujairah, UAE. Propagated coral fragments and collected marine data for Project REEFrame for government analysis.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="tl-year">2023</span>
+                        <span class="tl-month">September</span>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="tl-tag tl-tag-leadership">Leadership</span>
+                        <h3>Vice President — Modern Cash Flow Society</h3>
+                        <p>Led personal finance workshops for over 3,000 participants across the UAE and India. Published 20+ macroeconomic research articles on mcfsuae.com.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="tl-year">2025</span>
+                        <span class="tl-month">July</span>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="tl-tag tl-tag-education">Education</span>
+                        <h3>IB Diploma — 42/45</h3>
+                        <p>Graduated from Gems Modern Academy, Dubai. Higher Level: Math AA, Physics, Economics. AP Psychology (5/5), AP Computer Science A (5/5).</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="tl-year">2025</span>
+                        <span class="tl-month">September</span>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="tl-tag tl-tag-education">Education</span>
+                        <h3>Imperial College London — BSc Physics</h3>
+                        <p>Enrolled in Physics with Theoretical Physics. On track for a First-Class. Combining quantitative rigour with financial applications.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="tl-year">2025</span>
+                        <span class="tl-month">September</span>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="tl-tag tl-tag-finance">Finance</span>
+                        <h3>QTC Quant Analyst — Queen's Tower Capital</h3>
+                        <p>Appointed Quant Trader and Head of Strategic Operations at Imperial's student-run investment fund. Responsible for asset class allocation and capital deployment to developers.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="tl-year">2025</span>
+                        <span class="tl-month">December</span>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="tl-tag tl-tag-project">Project</span>
+                        <h3>AI-Driven Equity Valuation Model</h3>
+                        <p>Developing AI-augmented financial modelling — employing Claude for Excel in 3-Statement, DCF, and LBO models, SEC filing sentiment analysis, and agentic AI for portfolio management.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">
+                        <span class="tl-year">2026</span>
+                        <span class="tl-month">March</span>
+                    </div>
+                    <div class="timeline-dot"></div>
+                    <div class="timeline-card">
+                        <span class="tl-tag tl-tag-finance">Competition</span>
+                        <h3>Algothon — 2nd Across UK Among First-Years</h3>
+                        <p>Competed at Imperial's all-university algorithmic trading hackathon. Employed ETF arbitrage and EMA momentum strategies. Placed 7th overall and 2nd in the novice (first-year) category for IMC's trading challenge.</p>
+                    </div>
+                </div>
+
+                <div class="timeline-item timeline-item-now">
+                    <div class="timeline-date">
+                        <span class="tl-year">Now</span>
+                        <span class="tl-month">Present</span>
+                    </div>
+                    <div class="timeline-dot timeline-dot-pulse"></div>
+                    <div class="timeline-card">
+                        <span class="tl-tag tl-tag-investing">Active</span>
+                        <h3>$250K+ Portfolio &middot; QTC &middot; AI Research</h3>
+                        <p>Continuing to manage a six-figure equity portfolio, lead strategy at Queen's Tower Capital, and push the frontier of AI-driven financial analysis.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Education -->
+    <section class="section detail-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Education</span>
+                <h2 class="section-title">Academic Background</h2>
+            </div>
+            <div class="edu-cards">
+                <div class="edu-card">
+                    <div class="edu-card-top">
+                        <h3>Imperial College London</h3>
+                        <span class="edu-date">2025 — 2028 (Expected)</span>
+                    </div>
+                    <p class="edu-degree">BSc Physics with Theoretical Physics</p>
+                    <p class="edu-note">On Track for First-Class Honours</p>
+                </div>
+                <div class="edu-card">
+                    <div class="edu-card-top">
+                        <h3>Gems Modern Academy, Dubai</h3>
+                        <span class="edu-date">Graduated July 2025</span>
+                    </div>
+                    <p class="edu-degree">IB Diploma — 42/45</p>
+                    <p class="edu-note">HL: Math AA, Physics, Economics &middot; AP Psychology (5/5) &middot; AP CS A (5/5)</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills & Technical -->
+    <section class="section detail-section detail-section-dark">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Capabilities</span>
+                <h2 class="section-title">Skills & Expertise</h2>
+            </div>
+            <div class="skills-sections">
+                <div class="skills-block">
+                    <h4 class="skills-block-title">Coding & Technical</h4>
+                    <div class="skills-grid">
+                        <div class="skill-item"><span class="skill-name">Python</span><span class="skill-level">Advanced</span></div>
+                        <div class="skill-item"><span class="skill-name">C</span><span class="skill-level">Advanced</span></div>
+                        <div class="skill-item"><span class="skill-name">Java</span><span class="skill-level">Proficient</span></div>
+                        <div class="skill-item"><span class="skill-name">JavaScript</span><span class="skill-level">Proficient</span></div>
+                        <div class="skill-item"><span class="skill-name">SQL</span><span class="skill-level">Proficient</span></div>
+                        <div class="skill-item"><span class="skill-name">Machine Learning</span><span class="skill-level">Well-versed</span></div>
+                        <div class="skill-item"><span class="skill-name">Excel / VBA</span><span class="skill-level">Advanced</span></div>
+                        <div class="skill-item"><span class="skill-name">Financial Modelling</span><span class="skill-level">Advanced</span></div>
+                    </div>
+                </div>
+                <div class="skills-block">
+                    <h4 class="skills-block-title">Finance & Analysis</h4>
+                    <div class="skills-grid">
+                        <div class="skill-item"><span class="skill-name">DCF Valuation</span><span class="skill-level">Advanced</span></div>
+                        <div class="skill-item"><span class="skill-name">Three-Statement Modelling</span><span class="skill-level">Advanced</span></div>
+                        <div class="skill-item"><span class="skill-name">LBO Analysis</span><span class="skill-level">Proficient</span></div>
+                        <div class="skill-item"><span class="skill-name">Relative Valuation</span><span class="skill-level">Advanced</span></div>
+                        <div class="skill-item"><span class="skill-name">Technical Analysis</span><span class="skill-level">Proficient</span></div>
+                        <div class="skill-item"><span class="skill-name">Algorithmic Trading</span><span class="skill-level">Proficient</span></div>
+                        <div class="skill-item"><span class="skill-name">Portfolio Management</span><span class="skill-level">Advanced</span></div>
+                        <div class="skill-item"><span class="skill-name">Macroeconomic Analysis</span><span class="skill-level">Proficient</span></div>
+                    </div>
+                </div>
+                <div class="skills-block">
+                    <h4 class="skills-block-title">Languages</h4>
+                    <div class="skills-grid skills-grid-narrow">
+                        <div class="skill-item"><span class="skill-name">English</span><span class="skill-level">Fluent</span></div>
+                        <div class="skill-item"><span class="skill-name">Hindi</span><span class="skill-level">Fluent</span></div>
+                        <div class="skill-item"><span class="skill-name">German</span><span class="skill-level">Fluent</span></div>
+                        <div class="skill-item"><span class="skill-name">Arabic</span><span class="skill-level">Fluent</span></div>
+                        <div class="skill-item"><span class="skill-name">Tamil</span><span class="skill-level">Fluent</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Courses & Certifications -->
+    <section class="section detail-section">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Learning</span>
+                <h2 class="section-title">Courses & Certifications</h2>
+            </div>
+            <div class="certs-grid">
+                <div class="cert-card">
+                    <span class="cert-issuer">HarvardX</span>
+                    <h3>CS50 — Introduction to Computer Science</h3>
+                </div>
+                <div class="cert-card">
+                    <span class="cert-issuer">Yale University</span>
+                    <h3>Financial Markets</h3>
+                    <p>Prof. Robert Shiller</p>
+                </div>
+                <div class="cert-card">
+                    <span class="cert-issuer">Harvard SSP</span>
+                    <h3>Deductive Logic</h3>
+                </div>
+                <div class="cert-card">
+                    <span class="cert-issuer">Wall Street Prep</span>
+                    <h3>Financial Modeling & Valuation</h3>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Awards -->
+    <section class="section detail-section detail-section-dark">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-label">Recognition</span>
+                <h2 class="section-title">Awards & Honours</h2>
+            </div>
+            <div class="awards-list">
+                <div class="award-row">
+                    <div class="award-medal award-medal-gold">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                            <circle cx="12" cy="8" r="7"/>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                        </svg>
+                    </div>
+                    <div class="award-info">
+                        <h3>Algothon — 2nd Across UK Among First-Years</h3>
+                        <p>Imperial College all-university algorithmic trading hackathon, IMC Trading Challenge. 7th place overall.</p>
+                    </div>
+                    <span class="award-year">2026</span>
+                </div>
+                <div class="award-row">
+                    <div class="award-medal award-medal-gold">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                            <circle cx="12" cy="8" r="7"/>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                        </svg>
+                    </div>
+                    <div class="award-info">
+                        <h3>ASSET — UAE National Mathematics Topper</h3>
+                        <p>Ranked 1st nationally in the ASSET Mathematics examination across the United Arab Emirates.</p>
+                    </div>
+                    <span class="award-year"></span>
+                </div>
+                <div class="award-row">
+                    <div class="award-medal award-medal-bronze">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                            <circle cx="12" cy="8" r="7"/>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                        </svg>
+                    </div>
+                    <div class="award-info">
+                        <h3>AUS National Math Competition — Bronze Medalist</h3>
+                        <p>American University of Sharjah national mathematics competition.</p>
+                    </div>
+                    <span class="award-year"></span>
+                </div>
+                <div class="award-row">
+                    <div class="award-medal award-medal-gold">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                            <circle cx="12" cy="8" r="7"/>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                        </svg>
+                    </div>
+                    <div class="award-info">
+                        <h3>K.S. Varkey Merit Scholarship</h3>
+                        <p>Awarded for sustained academic excellence at Gems Modern Academy, Dubai.</p>
+                    </div>
+                    <span class="award-year"></span>
+                </div>
+                <div class="award-row">
+                    <div class="award-medal award-medal-silver">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                            <circle cx="12" cy="8" r="7"/>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                        </svg>
+                    </div>
+                    <div class="award-info">
+                        <h3>Duke of Edinburgh — Silver Award</h3>
+                        <p>Completed the Silver level of the International Award programme.</p>
+                    </div>
+                    <span class="award-year"></span>
+                </div>
+                <div class="award-row">
+                    <div class="award-medal award-medal-bronze">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="22" height="22">
+                            <circle cx="12" cy="8" r="7"/>
+                            <polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/>
+                        </svg>
+                    </div>
+                    <div class="award-info">
+                        <h3>Duke of Edinburgh — Bronze Award</h3>
+                        <p>Completed the Bronze level of the International Award programme.</p>
+                    </div>
+                    <span class="award-year"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="section about-cta-section">
+        <div class="container about-cta-inner">
+            <h2 class="about-cta-title">Let's Connect</h2>
+            <p class="about-cta-text">Open to opportunities in quantitative finance, equity research, and investment analysis.</p>
+            <div class="about-cta-buttons">
+                <a href="../assets/resume/Resume-AVK.pdf" class="hero-cta" target="_blank">Download CV</a>
+                <a href="contact.html" class="hero-cta hero-cta-outline">Get in Touch</a>
             </div>
         </div>
     </section>
