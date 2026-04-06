@@ -1,5 +1,6 @@
 /* ============================================
    Portfolio App — Main Application Logic
+   Works on both landing page and sub-pages
    ============================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -17,45 +18,33 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ---- Loader ---- */
 function initLoader() {
     const loader = document.getElementById("loader");
+    if (!loader) return;
     window.addEventListener("load", () => {
         setTimeout(() => loader.classList.add("hidden"), 600);
     });
-    // Fallback
     setTimeout(() => loader.classList.add("hidden"), 2000);
 }
 
 /* ---- Navigation ---- */
 function initNavigation() {
     const navbar = document.getElementById("navbar");
-    const navLinks = document.querySelectorAll(".nav-link");
-    const sections = document.querySelectorAll(".section[id]");
+    if (!navbar) return;
 
-    // Scroll effect
-    window.addEventListener("scroll", () => {
-        navbar.classList.toggle("scrolled", window.scrollY > 60);
-    });
-
-    // Active link on scroll
-    const observerOptions = { rootMargin: "-40% 0px -60% 0px" };
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-                const id = entry.target.id;
-                navLinks.forEach((link) => {
-                    link.classList.toggle("active", link.dataset.section === id);
-                });
-            }
+    // Only apply scroll class toggle on pages where navbar isn't pre-scrolled
+    if (!navbar.classList.contains("scrolled")) {
+        window.addEventListener("scroll", () => {
+            navbar.classList.toggle("scrolled", window.scrollY > 60);
         });
-    }, observerOptions);
+    }
 
-    sections.forEach((section) => observer.observe(section));
-
-    // Smooth scroll on click
+    // Smooth scroll for same-page anchor links only
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener("click", (e) => {
-            e.preventDefault();
-            const target = document.querySelector(anchor.getAttribute("href"));
+            const href = anchor.getAttribute("href");
+            if (href === "#") return;
+            const target = document.querySelector(href);
             if (target) {
+                e.preventDefault();
                 target.scrollIntoView({ behavior: "smooth", block: "start" });
             }
         });
@@ -66,6 +55,7 @@ function initNavigation() {
 function initMobileMenu() {
     const btn = document.getElementById("menuBtn");
     const menu = document.getElementById("mobileMenu");
+    if (!btn || !menu) return;
 
     btn.addEventListener("click", () => {
         btn.classList.toggle("open");
@@ -86,6 +76,7 @@ function initMobileMenu() {
 function initTabs() {
     const tabBtns = document.querySelectorAll(".tab-btn");
     const tabContents = document.querySelectorAll(".tab-content");
+    if (tabBtns.length === 0) return;
 
     tabBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -101,7 +92,7 @@ function initTabs() {
 /* ---- Positions Table ---- */
 function initPositionsTable() {
     const tbody = document.getElementById("positionsBody");
-    if (!tbody) return;
+    if (!tbody || typeof POSITIONS === "undefined") return;
 
     POSITIONS.forEach((pos) => {
         const marketValue = pos.shares * pos.currentPrice;
@@ -133,7 +124,7 @@ function initPositionsTable() {
 /* ---- Watchlist ---- */
 function initWatchlist() {
     const grid = document.getElementById("watchlistGrid");
-    if (!grid) return;
+    if (!grid || typeof WATCHLIST === "undefined") return;
 
     WATCHLIST.forEach((item) => {
         const card = document.createElement("div");
@@ -165,11 +156,10 @@ function initWatchlist() {
 /* ---- Growth Chart ---- */
 function initGrowthChart() {
     const canvas = document.getElementById("growthChart");
-    if (!canvas) return;
+    if (!canvas || typeof Chart === "undefined" || typeof GROWTH_DATA === "undefined") return;
 
     const ctx = canvas.getContext("2d");
 
-    // Chart.js config
     new Chart(ctx, {
         type: "line",
         data: {
@@ -275,7 +265,10 @@ function initGrowthChart() {
 function initScrollReveal() {
     const revealElements = document.querySelectorAll(
         ".section-header, .about-grid, .portfolio-summary, .portfolio-tabs, " +
-        ".tab-content, .model-card, .contact-grid, .summary-card"
+        ".tab-content, .model-card, .contact-grid, .summary-card, " +
+        ".snippet-grid, .snippet-content-full, .snippet-highlights, " +
+        ".portfolio-preview-stats, .models-preview-grid, .contact-preview-links, " +
+        ".page-intro, .models-grid"
     );
 
     revealElements.forEach((el) => el.classList.add("reveal"));
@@ -301,11 +294,9 @@ function initContactForm() {
 
     form.addEventListener("submit", (e) => {
         e.preventDefault();
-
         const btn = form.querySelector(".form-submit span");
         const originalText = btn.textContent;
         btn.textContent = "Message Sent";
-
         setTimeout(() => {
             btn.textContent = originalText;
             form.reset();
