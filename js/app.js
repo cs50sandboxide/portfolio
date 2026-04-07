@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initTabs();
     initPositionsTable();
     initClosedTrades();
-    initTradeLog();
+    initDividends();
     initWatchlist();
     initGrowthChart();
     initPortfolioStats();
@@ -90,36 +90,45 @@ function initTabs() {
     });
 }
 
-/* ---- Portfolio Stats ---- */
+/* ---- Portfolio Stats (summary cards) ---- */
 function initPortfolioStats() {
     if (typeof PORTFOLIO_STATS === "undefined") return;
 
     const el = (id) => document.getElementById(id);
-    const fmt = (n) => "$" + n.toLocaleString("en-US");
+    const fmt = (n) => "$" + Math.round(n).toLocaleString("en-US");
 
-    if (el("portfolioValue")) el("portfolioValue").textContent = fmt(PORTFOLIO_STATS.totalValue);
-    if (el("recentPnl")) el("recentPnl").textContent = "+$" + PORTFOLIO_STATS.recentRealizedPnl.toLocaleString("en-US");
-    if (el("winRate")) el("winRate").textContent = PORTFOLIO_STATS.tradingWinRate;
+    if (el("portfolioValue")) el("portfolioValue").textContent = fmt(PORTFOLIO_STATS.totalOpenCostBasis);
+    if (el("totalRealizedPnl")) el("totalRealizedPnl").textContent = "+$" + PORTFOLIO_STATS.totalRealizedPnl.toLocaleString("en-US", { minimumFractionDigits: 2 });
+    if (el("totalDividends")) el("totalDividends").textContent = "+$" + PORTFOLIO_STATS.totalDividends.toLocaleString("en-US", { minimumFractionDigits: 2 });
+    if (el("winRate")) el("winRate").textContent = PORTFOLIO_STATS.winRate;
+    if (el("openCount")) el("openCount").textContent = PORTFOLIO_STATS.openPositions;
+    if (el("closedCount")) el("closedCount").textContent = PORTFOLIO_STATS.totalPositionsClosed;
 }
 
-/* ---- Positions Table ---- */
+/* ---- Positions Table (Unrealized P&L) ---- */
 function initPositionsTable() {
     const tbody = document.getElementById("positionsBody");
     if (!tbody || typeof POSITIONS === "undefined") return;
+
+    let totalCostBasis = 0;
+    let totalMarketValue = 0;
 
     POSITIONS.forEach((pos) => {
         const marketValue = pos.shares * pos.currentPrice;
         const costBasis = pos.shares * pos.avgCost;
         const pnl = marketValue - costBasis;
-        const returnPct = ((pnl / costBasis) * 100).toFixed(1);
+        const returnPct = costBasis > 0 ? ((pnl / costBasis) * 100).toFixed(1) : "0.0";
         const isPositive = pnl >= 0;
+
+        totalCostBasis += costBasis;
+        totalMarketValue += marketValue;
 
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td class="ticker">${pos.ticker}</td>
             <td>${pos.company}</td>
             <td>${pos.sector}</td>
-            <td>${pos.shares}</td>
+            <td>${pos.shares.toLocaleString()}</td>
             <td>$${pos.avgCost.toFixed(2)}</td>
             <td>$${pos.currentPrice.toFixed(2)}</td>
             <td>$${marketValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
@@ -132,6 +141,29 @@ function initPositionsTable() {
         `;
         tbody.appendChild(tr);
     });
+
+    // Totals row
+    const totalPnl = totalMarketValue - totalCostBasis;
+    const totalReturnPct = totalCostBasis > 0 ? ((totalPnl / totalCostBasis) * 100).toFixed(1) : "0.0";
+    const isPos = totalPnl >= 0;
+    const tfoot = document.getElementById("positionsTotals");
+    if (tfoot) {
+        tfoot.innerHTML = `
+            <tr class="totals-row">
+                <td colspan="3"><strong>TOTAL (${POSITIONS.length} positions)</strong></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td><strong>$${totalMarketValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
+                <td class="${isPos ? "positive" : "negative"}">
+                    <strong>${isPos ? "+" : "-"}$${Math.abs(totalPnl).toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong>
+                </td>
+                <td class="${isPos ? "positive" : "negative"}">
+                    <strong>${isPos ? "+" : ""}${totalReturnPct}%</strong>
+                </td>
+            </tr>
+        `;
+    }
 
     // Investment theses
     const thesesContainer = document.getElementById("positionTheses");
@@ -153,18 +185,22 @@ function initPositionsTable() {
     });
 }
 
-/* ---- Closed Trades ---- */
+/* ---- Closed Trades (Realized P&L) ---- */
 function initClosedTrades() {
     const grid = document.getElementById("closedTradesGrid");
     const summaryEl = document.getElementById("closedSummary");
     if (!grid || typeof CLOSED_TRADES === "undefined") return;
 
-    let totalPnl = 0;
-    let totalInvested = 0;
+    // Sort: wins first (descending by pnl), then losses
+    const sorted = [...CLOSED_TRADES].sort((a, b) => b.pnl - a.pnl);
 
-    CLOSED_TRADES.forEach((trade) => {
-        totalPnl += trade.grossPnl;
-        totalInvested += trade.sharesBought * trade.avgBuy;
+    sorted.forEach((trade) => {
+        const isPositive = trade.pnl >= 0;
+        const pnlClass = isPositive ? "positive" : "negative";
+        const pnlSign = isPositive ? "+" : "-";
+        const dividendLine = trade.dividends > 0
+            ? `<div class="closed-card-dividend">+ $${trade.dividends.toFixed(2)} dividends</div>`
+            : "";
 
         const card = document.createElement("div");
         card.className = "closed-card";
@@ -175,31 +211,10 @@ function initClosedTrades() {
                     <div class="closed-card-company">${trade.company}</div>
                 </div>
                 <div class="closed-card-return">
-                    <div class="closed-card-pnl positive">+$${trade.grossPnl.toFixed(2)}</div>
-                    <span class="closed-card-pct positive">+${trade.returnPct}%</span>
+                    <div class="closed-card-pnl ${pnlClass}">${pnlSign}$${Math.abs(trade.pnl).toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
+                    <span class="closed-card-pct ${pnlClass}">${isPositive ? "+" : ""}${trade.returnPct}%</span>
+                    ${dividendLine}
                 </div>
-            </div>
-            <div class="closed-card-details">
-                <div>
-                    <span class="closed-detail-label">Bought</span>
-                    <span class="closed-detail-value">${trade.sharesBought} @ $${trade.avgBuy.toFixed(2)}</span>
-                </div>
-                <div>
-                    <span class="closed-detail-label">Sold</span>
-                    <span class="closed-detail-value">${trade.sharesBought} @ $${trade.avgSell.toFixed(2)}</span>
-                </div>
-                <div>
-                    <span class="closed-detail-label">Entry</span>
-                    <span class="closed-detail-value">${trade.buyDate}</span>
-                </div>
-                <div>
-                    <span class="closed-detail-label">Exit</span>
-                    <span class="closed-detail-value">${trade.sellDate}</span>
-                </div>
-            </div>
-            <div class="closed-card-thesis">
-                <div class="thesis-label">Trade Rationale</div>
-                <p class="thesis-text">${trade.thesis}</p>
             </div>
         `;
         grid.appendChild(card);
@@ -207,49 +222,60 @@ function initClosedTrades() {
 
     // Summary bar
     if (summaryEl) {
+        const totalPnl = CLOSED_TRADES.reduce((s, t) => s + t.pnl, 0);
+        const totalDiv = CLOSED_TRADES.reduce((s, t) => s + t.dividends, 0);
         const avgReturn = CLOSED_TRADES.reduce((s, t) => s + t.returnPct, 0) / CLOSED_TRADES.length;
-        const avgHold = CLOSED_TRADES.reduce((s, t) => s + t.holdingDays, 0) / CLOSED_TRADES.length;
+        const wins = CLOSED_TRADES.filter((t) => t.pnl >= 0).length;
+        const losses = CLOSED_TRADES.filter((t) => t.pnl < 0).length;
+
         summaryEl.innerHTML = `
             <div class="closed-summary-stat">
                 <span class="closed-summary-label">Total Realized P&L</span>
-                <span class="closed-summary-value positive">+$${totalPnl.toFixed(2)}</span>
+                <span class="closed-summary-value positive">+$${totalPnl.toLocaleString("en-US", { minimumFractionDigits: 2 })}</span>
             </div>
             <div class="closed-summary-stat">
                 <span class="closed-summary-label">Win Rate</span>
-                <span class="closed-summary-value">${CLOSED_TRADES.length} / ${CLOSED_TRADES.length}</span>
+                <span class="closed-summary-value">${wins}W / ${losses}L (${((wins / (wins + losses)) * 100).toFixed(1)}%)</span>
             </div>
             <div class="closed-summary-stat">
                 <span class="closed-summary-label">Avg Return</span>
                 <span class="closed-summary-value positive">+${avgReturn.toFixed(1)}%</span>
             </div>
             <div class="closed-summary-stat">
-                <span class="closed-summary-label">Avg Hold Period</span>
-                <span class="closed-summary-value">${avgHold.toFixed(0)} days</span>
+                <span class="closed-summary-label">Dividends Earned</span>
+                <span class="closed-summary-value positive">+$${totalDiv.toFixed(2)}</span>
             </div>
         `;
     }
 }
 
-/* ---- Trade Log ---- */
-function initTradeLog() {
-    const tbody = document.getElementById("tradeLogBody");
-    if (!tbody || typeof TRADE_LOG === "undefined") return;
+/* ---- Dividends Breakdown ---- */
+function initDividends() {
+    const tbody = document.getElementById("dividendsBody");
+    if (!tbody || typeof DIVIDENDS === "undefined") return;
 
-    TRADE_LOG.forEach((t) => {
-        const isBuy = t.action === "Buy";
+    let totalDiv = 0;
+    DIVIDENDS.forEach((d) => {
+        totalDiv += d.amount;
         const tr = document.createElement("tr");
         tr.innerHTML = `
-            <td>${t.date}</td>
-            <td class="ticker">${t.ticker}</td>
-            <td class="${isBuy ? "action-buy" : "action-sell"}">${t.action}</td>
-            <td>${t.shares}</td>
-            <td>$${t.price.toFixed(2)}</td>
-            <td class="${t.value >= 0 ? "value-positive" : "value-negative"}">
-                ${t.value >= 0 ? "+" : ""}$${t.value.toLocaleString("en-US", { minimumFractionDigits: 2 })}
-            </td>
+            <td class="ticker">${d.ticker}</td>
+            <td>$${d.amount.toFixed(2)}</td>
+            <td>${d.source}</td>
         `;
         tbody.appendChild(tr);
     });
+
+    const tfoot = document.getElementById("dividendsTotals");
+    if (tfoot) {
+        tfoot.innerHTML = `
+            <tr class="totals-row">
+                <td><strong>TOTAL</strong></td>
+                <td><strong class="positive">$${totalDiv.toFixed(2)}</strong></td>
+                <td></td>
+            </tr>
+        `;
+    }
 }
 
 /* ---- Watchlist ---- */

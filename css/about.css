@@ -30,6 +30,9 @@
     object-fit: cover;
     object-position: top;
     border: 1px solid rgba(245, 240, 235, 0.06);
+    border-radius: 50% / 45%;
+    image-rendering: auto;
+    filter: contrast(1.02) brightness(1.02);
 }
 
 .cv-download-btn {
