@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Portfolio | Advaith Krishnan Vinod</title>
     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/portfolio.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
@@ -40,39 +41,42 @@
         <div class="container">
             <span class="section-label">02 / Portfolio</span>
             <h1 class="page-hero-title">Live Holdings</h1>
+            <p class="page-hero-sub">Real trades from an Interactive Brokers account. Updated from actual transaction history.</p>
         </div>
     </section>
 
+    <!-- Portfolio Summary -->
     <section class="section portfolio-section">
         <div class="container">
-            <!-- Portfolio Summary -->
             <div class="portfolio-summary">
                 <div class="summary-card">
                     <span class="summary-label">Portfolio Value</span>
-                    <span class="summary-value" id="portfolioValue">$250,000+</span>
+                    <span class="summary-value" id="portfolioValue">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Net Gain</span>
-                    <span class="summary-value positive" id="totalReturn">+$80,000</span>
+                    <span class="summary-label">Lifetime Gain</span>
+                    <span class="summary-value positive" id="totalGain">+$80,000</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Active Since</span>
-                    <span class="summary-value">2021</span>
+                    <span class="summary-label">Recent Realized P&L</span>
+                    <span class="summary-value positive" id="recentPnl">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Positions</span>
-                    <span class="summary-value" id="positionCount">8</span>
+                    <span class="summary-label">Win Rate (Recent)</span>
+                    <span class="summary-value" id="winRate">—</span>
                 </div>
             </div>
 
-            <!-- Portfolio Tabs -->
+            <!-- Tabs -->
             <div class="portfolio-tabs">
-                <button class="tab-btn active" data-tab="positions">Current Positions</button>
+                <button class="tab-btn active" data-tab="positions">Open Positions</button>
+                <button class="tab-btn" data-tab="closed">Closed Trades</button>
+                <button class="tab-btn" data-tab="log">Trade Log</button>
                 <button class="tab-btn" data-tab="watchlist">Watchlist & Signals</button>
                 <button class="tab-btn" data-tab="growth">Portfolio Growth</button>
             </div>
 
-            <!-- Positions Tab -->
+            <!-- Open Positions -->
             <div class="tab-content active" id="tab-positions">
                 <div class="positions-table-wrap">
                     <table class="positions-table">
@@ -92,42 +96,68 @@
                         <tbody id="positionsBody"></tbody>
                     </table>
                 </div>
+                <div id="positionTheses" class="position-theses"></div>
             </div>
 
-            <!-- Watchlist Tab -->
+            <!-- Closed Trades -->
+            <div class="tab-content" id="tab-closed">
+                <div class="closed-trades-grid" id="closedTradesGrid"></div>
+                <div class="closed-summary" id="closedSummary"></div>
+            </div>
+
+            <!-- Trade Log -->
+            <div class="tab-content" id="tab-log">
+                <div class="positions-table-wrap">
+                    <table class="positions-table trade-log-table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Ticker</th>
+                                <th>Action</th>
+                                <th>Shares</th>
+                                <th>Price</th>
+                                <th>Value</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tradeLogBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Watchlist -->
             <div class="tab-content" id="tab-watchlist">
                 <div class="watchlist-grid" id="watchlistGrid"></div>
             </div>
 
-            <!-- Growth Tab -->
+            <!-- Growth Chart -->
             <div class="tab-content" id="tab-growth">
                 <div class="chart-container">
                     <canvas id="growthChart"></canvas>
                 </div>
                 <div class="growth-stats">
                     <div class="growth-stat">
-                        <span class="growth-stat-label">1M Return</span>
-                        <span class="growth-stat-value positive">+3.2%</span>
+                        <span class="growth-stat-label">Recent Realized P&L</span>
+                        <span class="growth-stat-value positive">+$2,083</span>
                     </div>
                     <div class="growth-stat">
-                        <span class="growth-stat-label">3M Return</span>
-                        <span class="growth-stat-value positive">+8.1%</span>
+                        <span class="growth-stat-label">Win Rate</span>
+                        <span class="growth-stat-value">4 / 4</span>
                     </div>
                     <div class="growth-stat">
-                        <span class="growth-stat-label">6M Return</span>
-                        <span class="growth-stat-value positive">+12.7%</span>
+                        <span class="growth-stat-label">Avg Hold Period</span>
+                        <span class="growth-stat-value">3 days</span>
                     </div>
                     <div class="growth-stat">
-                        <span class="growth-stat-label">1Y Return</span>
-                        <span class="growth-stat-value positive">+18.4%</span>
+                        <span class="growth-stat-label">Best Trade</span>
+                        <span class="growth-stat-value positive">TSLA +6.0%</span>
                     </div>
                     <div class="growth-stat">
-                        <span class="growth-stat-label">Sharpe Ratio</span>
-                        <span class="growth-stat-value">1.42</span>
+                        <span class="growth-stat-label">Lifetime Gain</span>
+                        <span class="growth-stat-value positive">+$80,000</span>
                     </div>
                     <div class="growth-stat">
-                        <span class="growth-stat-label">Max Drawdown</span>
-                        <span class="growth-stat-value negative">-6.8%</span>
+                        <span class="growth-stat-label">Active Since</span>
+                        <span class="growth-stat-value">2021</span>
                     </div>
                 </div>
             </div>

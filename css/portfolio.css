@@ -1,0 +1,224 @@
+/* ============================================
+   Portfolio Page — Dedicated Styles
+   ============================================ */
+
+.page-hero-sub {
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--gray-500);
+    margin-top: 16px;
+    line-height: 1.6;
+}
+
+/* ---- Position Theses ---- */
+.position-theses {
+    margin-top: 40px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+    gap: 20px;
+}
+
+.thesis-card {
+    background: var(--black-soft);
+    border: 1px solid rgba(245, 240, 235, 0.06);
+    padding: 28px 32px;
+}
+
+.thesis-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 14px;
+}
+
+.thesis-ticker {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--off-white);
+    letter-spacing: 0.05em;
+}
+
+.thesis-company {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--gray-500);
+}
+
+.thesis-label {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 6px;
+}
+
+.thesis-text {
+    font-size: 0.85rem;
+    font-weight: 300;
+    color: var(--gray-300);
+    line-height: 1.7;
+}
+
+/* ---- Closed Trades ---- */
+.closed-trades-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 20px;
+}
+
+.closed-card {
+    background: var(--black-soft);
+    border: 1px solid rgba(245, 240, 235, 0.06);
+    padding: 28px 32px;
+    transition: border-color 0.3s;
+}
+
+.closed-card:hover {
+    border-color: rgba(245, 240, 235, 0.12);
+}
+
+.closed-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 16px;
+}
+
+.closed-card-ticker {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--off-white);
+    letter-spacing: 0.05em;
+}
+
+.closed-card-company {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--gray-500);
+    margin-top: 2px;
+}
+
+.closed-card-return {
+    text-align: right;
+}
+
+.closed-card-pnl {
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.closed-card-pct {
+    font-size: 0.8rem;
+    font-weight: 400;
+    margin-top: 2px;
+    display: block;
+}
+
+.closed-card-details {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+    padding-top: 16px;
+    border-top: 1px solid rgba(245, 240, 235, 0.06);
+    margin-bottom: 16px;
+}
+
+.closed-detail-label {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    display: block;
+}
+
+.closed-detail-value {
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: var(--gray-300);
+    display: block;
+    margin-top: 2px;
+}
+
+.closed-card-thesis {
+    padding-top: 16px;
+    border-top: 1px solid rgba(245, 240, 235, 0.06);
+}
+
+.closed-card-thesis .thesis-label {
+    margin-bottom: 4px;
+}
+
+.closed-card-thesis .thesis-text {
+    font-size: 0.8rem;
+}
+
+/* ---- Closed Summary ---- */
+.closed-summary {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1px;
+    background: rgba(245, 240, 235, 0.06);
+    border: 1px solid rgba(245, 240, 235, 0.06);
+}
+
+.closed-summary-stat {
+    background: var(--black-light);
+    padding: 24px;
+    text-align: center;
+}
+
+.closed-summary-label {
+    display: block;
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+    margin-bottom: 8px;
+}
+
+.closed-summary-value {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--off-white);
+}
+
+.closed-summary-value.positive { color: var(--green); }
+
+/* ---- Trade Log ---- */
+.trade-log-table .action-buy {
+    color: var(--green);
+    font-weight: 500;
+}
+
+.trade-log-table .action-sell {
+    color: var(--red);
+    font-weight: 500;
+}
+
+.trade-log-table .value-positive {
+    color: var(--green);
+}
+
+.trade-log-table .value-negative {
+    color: var(--red);
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+    .position-theses {
+        grid-template-columns: 1fr;
+    }
+    .closed-trades-grid {
+        grid-template-columns: 1fr;
+    }
+    .closed-summary {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .closed-card-details {
+        grid-template-columns: 1fr;
+    }
+}

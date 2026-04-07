@@ -9,8 +9,11 @@ document.addEventListener("DOMContentLoaded", () => {
     initMobileMenu();
     initTabs();
     initPositionsTable();
+    initClosedTrades();
+    initTradeLog();
     initWatchlist();
     initGrowthChart();
+    initPortfolioStats();
     initScrollReveal();
     initContactForm();
 });
@@ -30,14 +33,12 @@ function initNavigation() {
     const navbar = document.getElementById("navbar");
     if (!navbar) return;
 
-    // Only apply scroll class toggle on pages where navbar isn't pre-scrolled
     if (!navbar.classList.contains("scrolled")) {
         window.addEventListener("scroll", () => {
             navbar.classList.toggle("scrolled", window.scrollY > 60);
         });
     }
 
-    // Smooth scroll for same-page anchor links only
     document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
         anchor.addEventListener("click", (e) => {
             const href = anchor.getAttribute("href");
@@ -89,6 +90,18 @@ function initTabs() {
     });
 }
 
+/* ---- Portfolio Stats ---- */
+function initPortfolioStats() {
+    if (typeof PORTFOLIO_STATS === "undefined") return;
+
+    const el = (id) => document.getElementById(id);
+    const fmt = (n) => "$" + n.toLocaleString("en-US");
+
+    if (el("portfolioValue")) el("portfolioValue").textContent = fmt(PORTFOLIO_STATS.totalValue);
+    if (el("recentPnl")) el("recentPnl").textContent = "+$" + PORTFOLIO_STATS.recentRealizedPnl.toLocaleString("en-US");
+    if (el("winRate")) el("winRate").textContent = PORTFOLIO_STATS.tradingWinRate;
+}
+
 /* ---- Positions Table ---- */
 function initPositionsTable() {
     const tbody = document.getElementById("positionsBody");
@@ -111,10 +124,128 @@ function initPositionsTable() {
             <td>$${pos.currentPrice.toFixed(2)}</td>
             <td>$${marketValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
             <td class="${isPositive ? "positive" : "negative"}">
-                ${isPositive ? "+" : ""}$${Math.abs(pnl).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+                ${isPositive ? "+" : "-"}$${Math.abs(pnl).toLocaleString("en-US", { minimumFractionDigits: 2 })}
             </td>
             <td class="${isPositive ? "positive" : "negative"}">
                 ${isPositive ? "+" : ""}${returnPct}%
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    // Investment theses
+    const thesesContainer = document.getElementById("positionTheses");
+    if (!thesesContainer) return;
+
+    POSITIONS.forEach((pos) => {
+        if (!pos.thesis) return;
+        const card = document.createElement("div");
+        card.className = "thesis-card";
+        card.innerHTML = `
+            <div class="thesis-header">
+                <span class="thesis-ticker">${pos.ticker}</span>
+                <span class="thesis-company">${pos.company}</span>
+            </div>
+            <div class="thesis-label">Investment Thesis</div>
+            <p class="thesis-text">${pos.thesis}</p>
+        `;
+        thesesContainer.appendChild(card);
+    });
+}
+
+/* ---- Closed Trades ---- */
+function initClosedTrades() {
+    const grid = document.getElementById("closedTradesGrid");
+    const summaryEl = document.getElementById("closedSummary");
+    if (!grid || typeof CLOSED_TRADES === "undefined") return;
+
+    let totalPnl = 0;
+    let totalInvested = 0;
+
+    CLOSED_TRADES.forEach((trade) => {
+        totalPnl += trade.grossPnl;
+        totalInvested += trade.sharesBought * trade.avgBuy;
+
+        const card = document.createElement("div");
+        card.className = "closed-card";
+        card.innerHTML = `
+            <div class="closed-card-header">
+                <div>
+                    <div class="closed-card-ticker">${trade.ticker}</div>
+                    <div class="closed-card-company">${trade.company}</div>
+                </div>
+                <div class="closed-card-return">
+                    <div class="closed-card-pnl positive">+$${trade.grossPnl.toFixed(2)}</div>
+                    <span class="closed-card-pct positive">+${trade.returnPct}%</span>
+                </div>
+            </div>
+            <div class="closed-card-details">
+                <div>
+                    <span class="closed-detail-label">Bought</span>
+                    <span class="closed-detail-value">${trade.sharesBought} @ $${trade.avgBuy.toFixed(2)}</span>
+                </div>
+                <div>
+                    <span class="closed-detail-label">Sold</span>
+                    <span class="closed-detail-value">${trade.sharesBought} @ $${trade.avgSell.toFixed(2)}</span>
+                </div>
+                <div>
+                    <span class="closed-detail-label">Entry</span>
+                    <span class="closed-detail-value">${trade.buyDate}</span>
+                </div>
+                <div>
+                    <span class="closed-detail-label">Exit</span>
+                    <span class="closed-detail-value">${trade.sellDate}</span>
+                </div>
+            </div>
+            <div class="closed-card-thesis">
+                <div class="thesis-label">Trade Rationale</div>
+                <p class="thesis-text">${trade.thesis}</p>
+            </div>
+        `;
+        grid.appendChild(card);
+    });
+
+    // Summary bar
+    if (summaryEl) {
+        const avgReturn = CLOSED_TRADES.reduce((s, t) => s + t.returnPct, 0) / CLOSED_TRADES.length;
+        const avgHold = CLOSED_TRADES.reduce((s, t) => s + t.holdingDays, 0) / CLOSED_TRADES.length;
+        summaryEl.innerHTML = `
+            <div class="closed-summary-stat">
+                <span class="closed-summary-label">Total Realized P&L</span>
+                <span class="closed-summary-value positive">+$${totalPnl.toFixed(2)}</span>
+            </div>
+            <div class="closed-summary-stat">
+                <span class="closed-summary-label">Win Rate</span>
+                <span class="closed-summary-value">${CLOSED_TRADES.length} / ${CLOSED_TRADES.length}</span>
+            </div>
+            <div class="closed-summary-stat">
+                <span class="closed-summary-label">Avg Return</span>
+                <span class="closed-summary-value positive">+${avgReturn.toFixed(1)}%</span>
+            </div>
+            <div class="closed-summary-stat">
+                <span class="closed-summary-label">Avg Hold Period</span>
+                <span class="closed-summary-value">${avgHold.toFixed(0)} days</span>
+            </div>
+        `;
+    }
+}
+
+/* ---- Trade Log ---- */
+function initTradeLog() {
+    const tbody = document.getElementById("tradeLogBody");
+    if (!tbody || typeof TRADE_LOG === "undefined") return;
+
+    TRADE_LOG.forEach((t) => {
+        const isBuy = t.action === "Buy";
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td>${t.date}</td>
+            <td class="ticker">${t.ticker}</td>
+            <td class="${isBuy ? "action-buy" : "action-sell"}">${t.action}</td>
+            <td>${t.shares}</td>
+            <td>$${t.price.toFixed(2)}</td>
+            <td class="${t.value >= 0 ? "value-positive" : "value-negative"}">
+                ${t.value >= 0 ? "+" : ""}$${t.value.toLocaleString("en-US", { minimumFractionDigits: 2 })}
             </td>
         `;
         tbody.appendChild(tr);
@@ -170,8 +301,9 @@ function initGrowthChart() {
                     data: GROWTH_DATA.portfolio,
                     borderColor: "#f5f0eb",
                     borderWidth: 2,
-                    pointRadius: 0,
-                    pointHoverRadius: 5,
+                    pointRadius: 3,
+                    pointBackgroundColor: "#f5f0eb",
+                    pointHoverRadius: 6,
                     pointHoverBackgroundColor: "#f5f0eb",
                     tension: 0.3,
                     fill: {
@@ -242,7 +374,6 @@ function initGrowthChart() {
                         color: "#555555",
                         font: { family: "'Inter'", size: 10, weight: "400" },
                         maxRotation: 0,
-                        maxTicksLimit: 8,
                     },
                 },
                 y: {
@@ -264,11 +395,12 @@ function initGrowthChart() {
 /* ---- Scroll Reveal ---- */
 function initScrollReveal() {
     const revealElements = document.querySelectorAll(
-        ".section-header, .about-grid, .portfolio-summary, .portfolio-tabs, " +
+        ".section-header, .about-grid, .about-intro-grid, .portfolio-summary, .portfolio-tabs, " +
         ".tab-content, .model-card, .contact-grid, .summary-card, " +
         ".snippet-grid, .snippet-content-full, .snippet-highlights, " +
         ".portfolio-preview-stats, .models-preview-grid, .contact-preview-links, " +
-        ".page-intro, .models-grid"
+        ".page-intro, .models-grid, .timeline, .edu-cards, .skills-sections, " +
+        ".certs-grid, .awards-list, .about-cta-inner, .key-metrics"
     );
 
     revealElements.forEach((el) => el.classList.add("reveal"));
