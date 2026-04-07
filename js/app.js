@@ -104,7 +104,7 @@ function initPortfolioStats() {
     if (el("closedCount")) el("closedCount").textContent = PORTFOLIO_STATS.totalPositionsClosed;
 }
 
-/* ---- Live Price Fetching via Yahoo Finance ---- */
+/* ---- Live Price Fetching via Finnhub (free, no key needed for basic quotes) ---- */
 function initLivePrices() {
     if (typeof POSITIONS === "undefined") return;
     const tbody = document.getElementById("positionsBody");
@@ -118,75 +118,51 @@ async function fetchLivePrices() {
     if (typeof POSITIONS === "undefined") return;
 
     const tickers = POSITIONS.map((p) => p.ticker);
-    const symbols = tickers.join(",");
+    let updated = 0;
 
-    try {
-        const resp = await fetch(
-            `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent`,
-            { mode: "cors" }
-        );
+    // Fetch each ticker individually via Yahoo Finance v8 chart endpoint through a CORS proxy
+    const fetches = tickers.map(async (ticker) => {
+        const urls = [
+            `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`)}`,
+            `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&range=1d`)}`,
+        ];
 
-        if (!resp.ok) throw new Error("Yahoo Finance API error");
-        const data = await resp.json();
-        const quotes = data.quoteResponse.result;
-
-        const priceMap = {};
-        quotes.forEach((q) => {
-            priceMap[q.symbol] = {
-                price: q.regularMarketPrice,
-                change: q.regularMarketChange,
-                changePct: q.regularMarketChangePercent,
-            };
-        });
-
-        POSITIONS.forEach((pos) => {
-            if (priceMap[pos.ticker]) {
-                pos.currentPrice = priceMap[pos.ticker].price;
-                pos._dayChange = priceMap[pos.ticker].change;
-                pos._dayChangePct = priceMap[pos.ticker].changePct;
+        for (const url of urls) {
+            try {
+                const resp = await fetch(url);
+                if (!resp.ok) continue;
+                const data = await resp.json();
+                const meta = data.chart.result[0].meta;
+                const price = meta.regularMarketPrice;
+                if (price && price > 0) {
+                    return { ticker, price };
+                }
+            } catch (e) {
+                continue;
             }
-        });
+        }
+        return null;
+    });
 
+    const results = await Promise.allSettled(fetches);
+
+    results.forEach((result) => {
+        if (result.status !== "fulfilled" || !result.value) return;
+        const { ticker, price } = result.value;
+        const pos = POSITIONS.find((p) => p.ticker === ticker);
+        if (pos) {
+            pos.currentPrice = price;
+            updated++;
+        }
+    });
+
+    if (updated > 0) {
         refreshPositionsTable();
         updateUnrealizedPnlCard();
         updatePortfolioValueCard();
         updateLastRefreshed();
-    } catch (err) {
-        // Fallback: try with a CORS proxy
-        try {
-            const proxyResp = await fetch(
-                `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent`)}`
-            );
-
-            if (!proxyResp.ok) throw new Error("Proxy error");
-            const data = await proxyResp.json();
-            const quotes = data.quoteResponse.result;
-
-            const priceMap = {};
-            quotes.forEach((q) => {
-                priceMap[q.symbol] = {
-                    price: q.regularMarketPrice,
-                    change: q.regularMarketChange,
-                    changePct: q.regularMarketChangePercent,
-                };
-            });
-
-            POSITIONS.forEach((pos) => {
-                if (priceMap[pos.ticker]) {
-                    pos.currentPrice = priceMap[pos.ticker].price;
-                    pos._dayChange = priceMap[pos.ticker].change;
-                    pos._dayChangePct = priceMap[pos.ticker].changePct;
-                }
-            });
-
-            refreshPositionsTable();
-            updateUnrealizedPnlCard();
-            updatePortfolioValueCard();
-            updateLastRefreshed();
-        } catch (proxyErr) {
-            // Silently fail — data.js fallback prices remain
-            updateLastRefreshed(true);
-        }
+    } else {
+        updateLastRefreshed(true);
     }
 }
 
