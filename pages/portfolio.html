@@ -40,8 +40,8 @@
     <section class="page-hero">
         <div class="container">
             <span class="section-label">02 / Portfolio</span>
-            <h1 class="page-hero-title">Live Holdings</h1>
-            <p class="page-hero-sub">Real trades from an Interactive Brokers account. Updated from actual transaction history.</p>
+            <h1 class="page-hero-title">Investment Portfolio</h1>
+            <p class="page-hero-sub">Real trades from Charles Schwab (2022–2025) and Interactive Brokers (2025–Present). All cash deposits, withdrawals, and wire transfers excluded — only stock trades and dividends shown.</p>
         </div>
     </section>
 
@@ -50,20 +50,40 @@
         <div class="container">
             <div class="portfolio-summary">
                 <div class="summary-card">
-                    <span class="summary-label">Portfolio Value</span>
+                    <span class="summary-label">Cost Basis (Open)</span>
                     <span class="summary-value" id="portfolioValue">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Lifetime Gain</span>
-                    <span class="summary-value positive" id="totalGain">+$80,000</span>
+                    <span class="summary-label">Realized P&L</span>
+                    <span class="summary-value positive" id="totalRealizedPnl">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Recent Realized P&L</span>
-                    <span class="summary-value positive" id="recentPnl">—</span>
+                    <span class="summary-label">Dividend Income</span>
+                    <span class="summary-value positive" id="totalDividends">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Win Rate (Recent)</span>
+                    <span class="summary-label">Win Rate</span>
                     <span class="summary-value" id="winRate">—</span>
+                </div>
+            </div>
+
+            <!-- Quick Stats Bar -->
+            <div class="quick-stats-bar">
+                <div class="quick-stat">
+                    <span class="quick-stat-label">Open Positions</span>
+                    <span class="quick-stat-value" id="openCount">—</span>
+                </div>
+                <div class="quick-stat">
+                    <span class="quick-stat-label">Closed Trades</span>
+                    <span class="quick-stat-value" id="closedCount">—</span>
+                </div>
+                <div class="quick-stat">
+                    <span class="quick-stat-label">Active Since</span>
+                    <span class="quick-stat-value">April 2022</span>
+                </div>
+                <div class="quick-stat">
+                    <span class="quick-stat-label">Brokerages</span>
+                    <span class="quick-stat-value">Schwab + IBKR</span>
                 </div>
             </div>
 
@@ -71,13 +91,14 @@
             <div class="portfolio-tabs">
                 <button class="tab-btn active" data-tab="positions">Open Positions</button>
                 <button class="tab-btn" data-tab="closed">Closed Trades</button>
-                <button class="tab-btn" data-tab="log">Trade Log</button>
+                <button class="tab-btn" data-tab="dividends">Dividends</button>
                 <button class="tab-btn" data-tab="watchlist">Watchlist & Signals</button>
                 <button class="tab-btn" data-tab="growth">Portfolio Growth</button>
             </div>
 
-            <!-- Open Positions -->
+            <!-- Open Positions (Unrealized P&L) -->
             <div class="tab-content active" id="tab-positions">
+                <div class="tab-section-label">Unrealized P&L — Current Open Holdings</div>
                 <div class="positions-table-wrap">
                     <table class="positions-table">
                         <thead>
@@ -94,32 +115,33 @@
                             </tr>
                         </thead>
                         <tbody id="positionsBody"></tbody>
+                        <tfoot id="positionsTotals"></tfoot>
                     </table>
                 </div>
                 <div id="positionTheses" class="position-theses"></div>
             </div>
 
-            <!-- Closed Trades -->
+            <!-- Closed Trades (Realized P&L) -->
             <div class="tab-content" id="tab-closed">
+                <div class="tab-section-label">Realized P&L — All Closed Positions (Schwab + IBKR)</div>
                 <div class="closed-trades-grid" id="closedTradesGrid"></div>
                 <div class="closed-summary" id="closedSummary"></div>
             </div>
 
-            <!-- Trade Log -->
-            <div class="tab-content" id="tab-log">
+            <!-- Dividends -->
+            <div class="tab-content" id="tab-dividends">
+                <div class="tab-section-label">Dividend Income Breakdown by Ticker</div>
                 <div class="positions-table-wrap">
-                    <table class="positions-table trade-log-table">
+                    <table class="positions-table dividends-table">
                         <thead>
                             <tr>
-                                <th>Date</th>
                                 <th>Ticker</th>
-                                <th>Action</th>
-                                <th>Shares</th>
-                                <th>Price</th>
-                                <th>Value</th>
+                                <th>Amount</th>
+                                <th>Source</th>
                             </tr>
                         </thead>
-                        <tbody id="tradeLogBody"></tbody>
+                        <tbody id="dividendsBody"></tbody>
+                        <tfoot id="dividendsTotals"></tfoot>
                     </table>
                 </div>
             </div>
@@ -136,28 +158,28 @@
                 </div>
                 <div class="growth-stats">
                     <div class="growth-stat">
-                        <span class="growth-stat-label">Recent Realized P&L</span>
-                        <span class="growth-stat-value positive">+$2,083</span>
+                        <span class="growth-stat-label">Total Realized P&L</span>
+                        <span class="growth-stat-value positive">+$51,226</span>
                     </div>
                     <div class="growth-stat">
                         <span class="growth-stat-label">Win Rate</span>
-                        <span class="growth-stat-value">4 / 4</span>
+                        <span class="growth-stat-value">30W / 2L (93.8%)</span>
                     </div>
                     <div class="growth-stat">
-                        <span class="growth-stat-label">Avg Hold Period</span>
-                        <span class="growth-stat-value">3 days</span>
+                        <span class="growth-stat-label">Dividend Income</span>
+                        <span class="growth-stat-value positive">+$2,009</span>
                     </div>
                     <div class="growth-stat">
                         <span class="growth-stat-label">Best Trade</span>
-                        <span class="growth-stat-value positive">TSLA +6.0%</span>
+                        <span class="growth-stat-value positive">LW +$7,140</span>
                     </div>
                     <div class="growth-stat">
-                        <span class="growth-stat-label">Lifetime Gain</span>
-                        <span class="growth-stat-value positive">+$80,000</span>
+                        <span class="growth-stat-label">Portfolio Value</span>
+                        <span class="growth-stat-value">$275,000+</span>
                     </div>
                     <div class="growth-stat">
                         <span class="growth-stat-label">Active Since</span>
-                        <span class="growth-stat-value">2021</span>
+                        <span class="growth-stat-value">April 2022</span>
                     </div>
                 </div>
             </div>
