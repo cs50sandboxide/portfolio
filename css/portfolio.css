@@ -60,7 +60,39 @@
     line-height: 1.7;
 }
 
-/* ---- Closed Trades ---- */
+/* ---- Live Price Indicator ---- */
+.live-indicator {
+    float: right;
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--gray-500);
+    text-transform: none;
+}
+
+.live-indicator::before {
+    content: "";
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #4ade80;
+    margin-right: 6px;
+    animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
+}
+
+/* ---- Closed Trades Table ---- */
+.closed-trades-table td:nth-child(3),
+.closed-trades-table td:nth-child(4) {
+    font-weight: 500;
+}
+
+/* ---- Closed Trades Grid (legacy) ---- */
 .closed-trades-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));

@@ -50,7 +50,7 @@
         <div class="container">
             <div class="portfolio-summary">
                 <div class="summary-card">
-                    <span class="summary-label">Cost Basis (Open)</span>
+                    <span class="summary-label">Portfolio Value</span>
                     <span class="summary-value" id="portfolioValue">—</span>
                 </div>
                 <div class="summary-card">
@@ -58,17 +58,21 @@
                     <span class="summary-value positive" id="totalRealizedPnl">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Dividend Income</span>
-                    <span class="summary-value positive" id="totalDividends">—</span>
+                    <span class="summary-label">Unrealized P&L</span>
+                    <span class="summary-value" id="unrealizedPnl">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Win Rate</span>
-                    <span class="summary-value" id="winRate">—</span>
+                    <span class="summary-label">Dividend Income</span>
+                    <span class="summary-value positive" id="totalDividends">—</span>
                 </div>
             </div>
 
             <!-- Quick Stats Bar -->
             <div class="quick-stats-bar">
+                <div class="quick-stat">
+                    <span class="quick-stat-label">Win Rate</span>
+                    <span class="quick-stat-value" id="winRate">—</span>
+                </div>
                 <div class="quick-stat">
                     <span class="quick-stat-label">Open Positions</span>
                     <span class="quick-stat-value" id="openCount">—</span>
@@ -80,10 +84,6 @@
                 <div class="quick-stat">
                     <span class="quick-stat-label">Active Since</span>
                     <span class="quick-stat-value">April 2022</span>
-                </div>
-                <div class="quick-stat">
-                    <span class="quick-stat-label">Brokerages</span>
-                    <span class="quick-stat-value">Schwab + IBKR</span>
                 </div>
             </div>
 
@@ -98,16 +98,17 @@
 
             <!-- Open Positions (Unrealized P&L) -->
             <div class="tab-content active" id="tab-positions">
-                <div class="tab-section-label">Unrealized P&L — Current Open Holdings</div>
+                <div class="tab-section-label">
+                    Unrealized P&L — Current Open Holdings
+                    <span class="live-indicator" id="lastRefreshed">Fetching live prices...</span>
+                </div>
                 <div class="positions-table-wrap">
                     <table class="positions-table">
                         <thead>
                             <tr>
                                 <th>Ticker</th>
                                 <th>Company</th>
-                                <th>Sector</th>
                                 <th>Shares</th>
-                                <th>Avg Cost</th>
                                 <th>Current Price</th>
                                 <th>Market Value</th>
                                 <th>P&L</th>
@@ -121,10 +122,23 @@
                 <div id="positionTheses" class="position-theses"></div>
             </div>
 
-            <!-- Closed Trades (Realized P&L) -->
+            <!-- Closed Trades (Realized P&L) — Table Format -->
             <div class="tab-content" id="tab-closed">
                 <div class="tab-section-label">Realized P&L — All Closed Positions (Schwab + IBKR)</div>
-                <div class="closed-trades-grid" id="closedTradesGrid"></div>
+                <div class="positions-table-wrap">
+                    <table class="positions-table closed-trades-table">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Company</th>
+                                <th>Realized P&L</th>
+                                <th>Return</th>
+                                <th>Dividends</th>
+                            </tr>
+                        </thead>
+                        <tbody id="closedTradesBody"></tbody>
+                    </table>
+                </div>
                 <div class="closed-summary" id="closedSummary"></div>
             </div>
 
@@ -174,8 +188,8 @@
                         <span class="growth-stat-value positive">LW +$7,140</span>
                     </div>
                     <div class="growth-stat">
-                        <span class="growth-stat-label">Portfolio Value</span>
-                        <span class="growth-stat-value">$275,000+</span>
+                        <span class="growth-stat-label">Brokerages</span>
+                        <span class="growth-stat-value">Schwab + IBKR</span>
                     </div>
                     <div class="growth-stat">
                         <span class="growth-stat-label">Active Since</span>
