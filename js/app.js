@@ -16,6 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initPortfolioStats();
     initScrollReveal();
     initContactForm();
+    initLivePrices();
 });
 
 /* ---- Loader ---- */
@@ -95,9 +96,7 @@ function initPortfolioStats() {
     if (typeof PORTFOLIO_STATS === "undefined") return;
 
     const el = (id) => document.getElementById(id);
-    const fmt = (n) => "$" + Math.round(n).toLocaleString("en-US");
 
-    if (el("portfolioValue")) el("portfolioValue").textContent = fmt(PORTFOLIO_STATS.totalOpenCostBasis);
     if (el("totalRealizedPnl")) el("totalRealizedPnl").textContent = "+$" + PORTFOLIO_STATS.totalRealizedPnl.toLocaleString("en-US", { minimumFractionDigits: 2 });
     if (el("totalDividends")) el("totalDividends").textContent = "+$" + PORTFOLIO_STATS.totalDividends.toLocaleString("en-US", { minimumFractionDigits: 2 });
     if (el("winRate")) el("winRate").textContent = PORTFOLIO_STATS.winRate;
@@ -105,7 +104,183 @@ function initPortfolioStats() {
     if (el("closedCount")) el("closedCount").textContent = PORTFOLIO_STATS.totalPositionsClosed;
 }
 
-/* ---- Positions Table (Unrealized P&L) ---- */
+/* ---- Live Price Fetching via Yahoo Finance ---- */
+function initLivePrices() {
+    if (typeof POSITIONS === "undefined") return;
+    const tbody = document.getElementById("positionsBody");
+    if (!tbody) return;
+
+    fetchLivePrices();
+    setInterval(fetchLivePrices, 60000);
+}
+
+async function fetchLivePrices() {
+    if (typeof POSITIONS === "undefined") return;
+
+    const tickers = POSITIONS.map((p) => p.ticker);
+    const symbols = tickers.join(",");
+
+    try {
+        const resp = await fetch(
+            `https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent`,
+            { mode: "cors" }
+        );
+
+        if (!resp.ok) throw new Error("Yahoo Finance API error");
+        const data = await resp.json();
+        const quotes = data.quoteResponse.result;
+
+        const priceMap = {};
+        quotes.forEach((q) => {
+            priceMap[q.symbol] = {
+                price: q.regularMarketPrice,
+                change: q.regularMarketChange,
+                changePct: q.regularMarketChangePercent,
+            };
+        });
+
+        POSITIONS.forEach((pos) => {
+            if (priceMap[pos.ticker]) {
+                pos.currentPrice = priceMap[pos.ticker].price;
+                pos._dayChange = priceMap[pos.ticker].change;
+                pos._dayChangePct = priceMap[pos.ticker].changePct;
+            }
+        });
+
+        refreshPositionsTable();
+        updateUnrealizedPnlCard();
+        updatePortfolioValueCard();
+        updateLastRefreshed();
+    } catch (err) {
+        // Fallback: try with a CORS proxy
+        try {
+            const proxyResp = await fetch(
+                `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v7/finance/quote?symbols=${symbols}&fields=regularMarketPrice,regularMarketChange,regularMarketChangePercent`)}`
+            );
+
+            if (!proxyResp.ok) throw new Error("Proxy error");
+            const data = await proxyResp.json();
+            const quotes = data.quoteResponse.result;
+
+            const priceMap = {};
+            quotes.forEach((q) => {
+                priceMap[q.symbol] = {
+                    price: q.regularMarketPrice,
+                    change: q.regularMarketChange,
+                    changePct: q.regularMarketChangePercent,
+                };
+            });
+
+            POSITIONS.forEach((pos) => {
+                if (priceMap[pos.ticker]) {
+                    pos.currentPrice = priceMap[pos.ticker].price;
+                    pos._dayChange = priceMap[pos.ticker].change;
+                    pos._dayChangePct = priceMap[pos.ticker].changePct;
+                }
+            });
+
+            refreshPositionsTable();
+            updateUnrealizedPnlCard();
+            updatePortfolioValueCard();
+            updateLastRefreshed();
+        } catch (proxyErr) {
+            // Silently fail — data.js fallback prices remain
+            updateLastRefreshed(true);
+        }
+    }
+}
+
+function updateLastRefreshed(failed) {
+    const el = document.getElementById("lastRefreshed");
+    if (!el) return;
+    if (failed) {
+        el.textContent = "Live prices unavailable — showing last known prices";
+    } else {
+        const now = new Date();
+        el.textContent = `Prices updated ${now.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })}`;
+    }
+}
+
+function updatePortfolioValueCard() {
+    const el = document.getElementById("portfolioValue");
+    if (!el || typeof POSITIONS === "undefined") return;
+    let totalMV = 0;
+    POSITIONS.forEach((pos) => { totalMV += pos.shares * pos.currentPrice; });
+    el.textContent = "$" + Math.round(totalMV).toLocaleString("en-US");
+}
+
+function updateUnrealizedPnlCard() {
+    const el = document.getElementById("unrealizedPnl");
+    if (!el || typeof POSITIONS === "undefined") return;
+    let totalPnl = 0;
+    POSITIONS.forEach((pos) => {
+        totalPnl += (pos.currentPrice - pos.avgCost) * pos.shares;
+    });
+    const isPos = totalPnl >= 0;
+    el.textContent = `${isPos ? "+" : "-"}$${Math.abs(totalPnl).toLocaleString("en-US", { minimumFractionDigits: 2 })}`;
+    el.className = `summary-value ${isPos ? "positive" : "negative"}`;
+}
+
+function refreshPositionsTable() {
+    const tbody = document.getElementById("positionsBody");
+    const tfoot = document.getElementById("positionsTotals");
+    if (!tbody || typeof POSITIONS === "undefined") return;
+
+    tbody.innerHTML = "";
+
+    let totalCostBasis = 0;
+    let totalMarketValue = 0;
+
+    POSITIONS.forEach((pos) => {
+        const marketValue = pos.shares * pos.currentPrice;
+        const costBasis = pos.shares * pos.avgCost;
+        const pnl = marketValue - costBasis;
+        const returnPct = costBasis > 0 ? ((pnl / costBasis) * 100).toFixed(1) : "0.0";
+        const isPositive = pnl >= 0;
+
+        totalCostBasis += costBasis;
+        totalMarketValue += marketValue;
+
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td class="ticker">${pos.ticker}</td>
+            <td>${pos.company}</td>
+            <td>${pos.shares.toLocaleString()}</td>
+            <td>$${pos.currentPrice.toFixed(2)}</td>
+            <td>$${marketValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
+            <td class="${isPositive ? "positive" : "negative"}">
+                ${isPositive ? "+" : "-"}$${Math.abs(pnl).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            </td>
+            <td class="${isPositive ? "positive" : "negative"}">
+                ${isPositive ? "+" : ""}${returnPct}%
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+
+    // Totals row
+    if (tfoot) {
+        const totalPnl = totalMarketValue - totalCostBasis;
+        const totalReturnPct = totalCostBasis > 0 ? ((totalPnl / totalCostBasis) * 100).toFixed(1) : "0.0";
+        const isPos = totalPnl >= 0;
+        tfoot.innerHTML = `
+            <tr class="totals-row">
+                <td colspan="2"><strong>TOTAL (${POSITIONS.length} positions)</strong></td>
+                <td></td>
+                <td></td>
+                <td><strong>$${totalMarketValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
+                <td class="${isPos ? "positive" : "negative"}">
+                    <strong>${isPos ? "+" : "-"}$${Math.abs(totalPnl).toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong>
+                </td>
+                <td class="${isPos ? "positive" : "negative"}">
+                    <strong>${isPos ? "+" : ""}${totalReturnPct}%</strong>
+                </td>
+            </tr>
+        `;
+    }
+}
+
+/* ---- Positions Table (Unrealized P&L) — Initial Render ---- */
 function initPositionsTable() {
     const tbody = document.getElementById("positionsBody");
     if (!tbody || typeof POSITIONS === "undefined") return;
@@ -127,9 +302,7 @@ function initPositionsTable() {
         tr.innerHTML = `
             <td class="ticker">${pos.ticker}</td>
             <td>${pos.company}</td>
-            <td>${pos.sector}</td>
             <td>${pos.shares.toLocaleString()}</td>
-            <td>$${pos.avgCost.toFixed(2)}</td>
             <td>$${pos.currentPrice.toFixed(2)}</td>
             <td>$${marketValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}</td>
             <td class="${isPositive ? "positive" : "negative"}">
@@ -150,8 +323,7 @@ function initPositionsTable() {
     if (tfoot) {
         tfoot.innerHTML = `
             <tr class="totals-row">
-                <td colspan="3"><strong>TOTAL (${POSITIONS.length} positions)</strong></td>
-                <td></td>
+                <td colspan="2"><strong>TOTAL (${POSITIONS.length} positions)</strong></td>
                 <td></td>
                 <td></td>
                 <td><strong>$${totalMarketValue.toLocaleString("en-US", { minimumFractionDigits: 2 })}</strong></td>
@@ -164,6 +336,10 @@ function initPositionsTable() {
             </tr>
         `;
     }
+
+    // Initial portfolio value + unrealized P&L cards
+    updatePortfolioValueCard();
+    updateUnrealizedPnlCard();
 
     // Investment theses
     const thesesContainer = document.getElementById("positionTheses");
@@ -185,39 +361,32 @@ function initPositionsTable() {
     });
 }
 
-/* ---- Closed Trades (Realized P&L) ---- */
+/* ---- Closed Trades (Realized P&L) — Chronological Table ---- */
 function initClosedTrades() {
-    const grid = document.getElementById("closedTradesGrid");
+    const tbody = document.getElementById("closedTradesBody");
     const summaryEl = document.getElementById("closedSummary");
-    if (!grid || typeof CLOSED_TRADES === "undefined") return;
+    if (!tbody || typeof CLOSED_TRADES === "undefined") return;
 
-    // Sort: wins first (descending by pnl), then losses
-    const sorted = [...CLOSED_TRADES].sort((a, b) => b.pnl - a.pnl);
-
-    sorted.forEach((trade) => {
+    // Already in chronological order in data.js (sorted by pnl desc, but we want the table order)
+    CLOSED_TRADES.forEach((trade, i) => {
         const isPositive = trade.pnl >= 0;
         const pnlClass = isPositive ? "positive" : "negative";
         const pnlSign = isPositive ? "+" : "-";
-        const dividendLine = trade.dividends > 0
-            ? `<div class="closed-card-dividend">+ $${trade.dividends.toFixed(2)} dividends</div>`
-            : "";
+        const dividendCell = trade.dividends > 0
+            ? `$${trade.dividends.toFixed(2)}`
+            : "—";
 
-        const card = document.createElement("div");
-        card.className = "closed-card";
-        card.innerHTML = `
-            <div class="closed-card-header">
-                <div>
-                    <div class="closed-card-ticker">${trade.ticker}</div>
-                    <div class="closed-card-company">${trade.company}</div>
-                </div>
-                <div class="closed-card-return">
-                    <div class="closed-card-pnl ${pnlClass}">${pnlSign}$${Math.abs(trade.pnl).toLocaleString("en-US", { minimumFractionDigits: 2 })}</div>
-                    <span class="closed-card-pct ${pnlClass}">${isPositive ? "+" : ""}${trade.returnPct}%</span>
-                    ${dividendLine}
-                </div>
-            </div>
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td class="ticker">${trade.ticker}</td>
+            <td>${trade.company}</td>
+            <td class="${pnlClass}">
+                ${pnlSign}$${Math.abs(trade.pnl).toLocaleString("en-US", { minimumFractionDigits: 2 })}
+            </td>
+            <td class="${pnlClass}">${isPositive ? "+" : ""}${trade.returnPct}%</td>
+            <td>${dividendCell}</td>
         `;
-        grid.appendChild(card);
+        tbody.appendChild(tr);
     });
 
     // Summary bar
@@ -242,7 +411,7 @@ function initClosedTrades() {
                 <span class="closed-summary-value positive">+${avgReturn.toFixed(1)}%</span>
             </div>
             <div class="closed-summary-stat">
-                <span class="closed-summary-label">Dividends Earned</span>
+                <span class="closed-summary-label">Dividends from Closed</span>
                 <span class="closed-summary-value positive">+$${totalDiv.toFixed(2)}</span>
             </div>
         `;
