@@ -1,0 +1,36 @@
+Statement,Header,Field Name,Field Value
+Statement,Data,Title,Transaction History
+Statement,Data,Period,"March 3, 2026 - April 3, 2026"
+Statement,Data,WhenGenerated,"2026-04-06, 17:11:05 EDT"
+Summary,Header,Field Name,Field Value
+Summary,Data,Base Currency,USD
+Summary,Data,Starting Cash,96973.31464
+Summary,Data,Change,62928.282875000004
+Summary,Data,Ending Cash,159901.597515
+Transaction History,Header,Date,Account,Description,Transaction Type,Symbol,Quantity,Price,Price Currency,Gross Amount ,Commission,Net Amount
+Transaction History,Data,2026-04-02,vpk2,BLACKSTONE INC,Buy,BX,60.0,109.37,USD,-6562.2,-1.0,-6563.2
+Transaction History,Data,2026-04-01,vpk2,BLACKSTONE INC,Buy,BX,90.0,115.73,USD,-10415.7,-1.0,-10416.7
+Transaction History,Data,2026-04-01,vpk2,INTEL CORP,Sell,INTC,-250.0,45.0,USD,11250.0,-1.29875,11248.70125
+Transaction History,Data,2026-04-01,vpk2,KKR & CO INC,Buy,KKR,100.0,92.5,USD,-9250.0,-1.0,-9251.0
+Transaction History,Data,2026-04-01,vpk2,TESLA INC,Sell,TSLA,-40.0,381.5,USD,15260.0,-1.0078,15258.9922
+Transaction History,Data,2026-04-01,vpk2,GENERAL ELECTRIC,Sell,GE,-35.0,293.59,USD,10275.65,-1.006825,10274.643175
+Transaction History,Data,2026-04-01,vpk2,JPMORGAN CHASE & CO,Sell,JPM,-30.0,297.51,USD,8925.3,-1.00585,8924.29415
+Transaction History,Data,2026-04-01,vpk2,BLACKSTONE INC,Buy,BX,32.0,115.8795,USD,-3708.144,-1.0,-3709.144
+Transaction History,Data,2026-04-01,vpk2,BLACKSTONE INC,Buy,BX,33.0,115.8813,USD,-3824.0829,-,-3824.0829
+Transaction History,Data,2026-04-01,vpk2,KKR & CO INC,Buy,KKR,65.0,92.58,USD,-6017.7,-1.0,-6018.7
+Transaction History,Data,2026-03-31,vpk2,GENERAL ELECTRIC,Buy,GE,35.0,279.03,USD,-9766.05,-1.0,-9767.05
+Transaction History,Data,2026-03-31,vpk2,JPMORGAN CHASE & CO,Buy,JPM,22.0,289.5,USD,-6369.0,-1.0,-6370.0
+Transaction History,Data,2026-03-31,vpk2,JPMORGAN CHASE & CO,Buy,JPM,8.0,289.5,USD,-2316.0,-,-2316.0
+Transaction History,Data,2026-03-30,vpk2,Electronic Fund Transfer,Deposit,-,-,-,-,100000.0,-,100000.0
+Transaction History,Data,2026-03-27,vpk2,TESLA INC,Buy,TSLA,40.0,359.985,USD,-14399.4,-1.0,-14400.4
+Transaction History,Data,2026-03-27,vpk2,INTEL CORP,Buy,INTC,22.0,43.1093,USD,-948.4046,-0.11,-948.5146
+Transaction History,Data,2026-03-27,vpk2,INTEL CORP,Buy,INTC,28.0,43.1088,USD,-1207.0464,-1.0,-1208.0464
+Transaction History,Data,2026-03-27,vpk2,INTEL CORP,Buy,INTC,100.0,43.11,USD,-4311.0,-,-4311.0
+Transaction History,Data,2026-03-27,vpk2,INTEL CORP,Buy,INTC,100.0,43.1084,USD,-4310.84,-0.14,-4310.9800000000005
+Transaction History,Data,2026-03-26,vpk2,META(US30303M1027) Cash Dividend USD 0.525 per Share (Ordinary Dividend),Dividend,META,-,-,-,78.75,-,78.75
+Transaction History,Data,2026-03-26,vpk2,META(US30303M1027) Cash Dividend USD 0.525 per Share - US Tax,Foreign Tax Withholding,META,-,-,-,-23.63,-,-23.63
+Transaction History,Data,2026-03-16,vpk2,GOOG(US02079K1079) Cash Dividend USD 0.21 per Share - US Tax,Foreign Tax Withholding,GOOG,-,-,-,-18.9,-,-18.9
+Transaction History,Data,2026-03-16,vpk2,GOOG(US02079K1079) Cash Dividend USD 0.21 per Share (Ordinary Dividend),Dividend,GOOG,-,-,-,63.0,-,63.0
+Transaction History,Data,2026-03-12,vpk2,MSFT(US5949181045) Cash Dividend USD 0.91 per Share - US Tax,Foreign Tax Withholding,MSFT,-,-,-,-136.5,-,-136.5
+Transaction History,Data,2026-03-12,vpk2,MSFT(US5949181045) Cash Dividend USD 0.91 per Share (Ordinary Dividend),Dividend,MSFT,-,-,-,455.0,-,455.0
+Transaction History,Data,2026-03-04,vpk2,USD Credit Interest for Feb-2026,Credit Interest,-,-,-,-,218.75,-,218.75
