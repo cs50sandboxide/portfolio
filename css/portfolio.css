@@ -1,5 +1,6 @@
 /* ============================================
    Portfolio Page — Dedicated Styles
+   Portfolio Performance 2026
    ============================================ */
 
 .page-hero-sub {
@@ -8,267 +9,6 @@
     color: var(--gray-500);
     margin-top: 16px;
     line-height: 1.6;
-}
-
-/* ---- Position Theses ---- */
-.position-theses {
-    margin-top: 40px;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
-    gap: 20px;
-}
-
-.thesis-card {
-    background: var(--black-soft);
-    border: 1px solid rgba(245, 240, 235, 0.06);
-    padding: 28px 32px;
-}
-
-.thesis-header {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 14px;
-}
-
-.thesis-ticker {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--off-white);
-    letter-spacing: 0.05em;
-}
-
-.thesis-company {
-    font-size: 0.8rem;
-    font-weight: 300;
-    color: var(--gray-500);
-}
-
-.thesis-label {
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gray-500);
-    margin-bottom: 6px;
-}
-
-.thesis-text {
-    font-size: 0.85rem;
-    font-weight: 300;
-    color: var(--gray-300);
-    line-height: 1.7;
-}
-
-/* ---- Live Price Indicator ---- */
-.live-indicator {
-    float: right;
-    font-size: 0.6rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    color: var(--gray-500);
-    text-transform: none;
-}
-
-.live-indicator::before {
-    content: "";
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #4ade80;
-    margin-right: 6px;
-    animation: pulse-dot 2s ease-in-out infinite;
-}
-
-@keyframes pulse-dot {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.3; }
-}
-
-/* ---- Closed Trades Table ---- */
-.closed-trades-table td:nth-child(3),
-.closed-trades-table td:nth-child(4) {
-    font-weight: 500;
-}
-
-/* ---- Closed Trades Grid (legacy) ---- */
-.closed-trades-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-    gap: 20px;
-}
-
-.closed-card {
-    background: var(--black-soft);
-    border: 1px solid rgba(245, 240, 235, 0.06);
-    padding: 28px 32px;
-    transition: border-color 0.3s;
-}
-
-.closed-card:hover {
-    border-color: rgba(245, 240, 235, 0.12);
-}
-
-.closed-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 16px;
-}
-
-.closed-card-ticker {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--off-white);
-    letter-spacing: 0.05em;
-}
-
-.closed-card-company {
-    font-size: 0.8rem;
-    font-weight: 300;
-    color: var(--gray-500);
-    margin-top: 2px;
-}
-
-.closed-card-return {
-    text-align: right;
-}
-
-.closed-card-pnl {
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-.closed-card-pct {
-    font-size: 0.8rem;
-    font-weight: 400;
-    margin-top: 2px;
-    display: block;
-}
-
-.closed-card-details {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding-top: 16px;
-    border-top: 1px solid rgba(245, 240, 235, 0.06);
-    margin-bottom: 16px;
-}
-
-.closed-detail-label {
-    font-size: 0.6rem;
-    font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gray-600);
-    display: block;
-}
-
-.closed-detail-value {
-    font-size: 0.85rem;
-    font-weight: 400;
-    color: var(--gray-300);
-    display: block;
-    margin-top: 2px;
-}
-
-.closed-card-thesis {
-    padding-top: 16px;
-    border-top: 1px solid rgba(245, 240, 235, 0.06);
-}
-
-.closed-card-thesis .thesis-label {
-    margin-bottom: 4px;
-}
-
-.closed-card-thesis .thesis-text {
-    font-size: 0.8rem;
-}
-
-/* ---- Closed Summary ---- */
-.closed-summary {
-    margin-top: 32px;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: rgba(245, 240, 235, 0.06);
-    border: 1px solid rgba(245, 240, 235, 0.06);
-}
-
-.closed-summary-stat {
-    background: var(--black-light);
-    padding: 24px;
-    text-align: center;
-}
-
-.closed-summary-label {
-    display: block;
-    font-size: 0.6rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gray-500);
-    margin-bottom: 8px;
-}
-
-.closed-summary-value {
-    font-size: 1.1rem;
-    font-weight: 500;
-    color: var(--off-white);
-}
-
-.closed-summary-value.positive { color: var(--green); }
-
-/* ---- Trade Log ---- */
-.trade-log-table .action-buy {
-    color: var(--green);
-    font-weight: 500;
-}
-
-.trade-log-table .action-sell {
-    color: var(--red);
-    font-weight: 500;
-}
-
-.trade-log-table .value-positive {
-    color: var(--green);
-}
-
-.trade-log-table .value-negative {
-    color: var(--red);
-}
-
-/* ---- Quick Stats Bar ---- */
-.quick-stats-bar {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: rgba(245, 240, 235, 0.06);
-    border: 1px solid rgba(245, 240, 235, 0.06);
-    margin-bottom: 40px;
-}
-
-.quick-stat {
-    background: var(--black-light);
-    padding: 18px 24px;
-    text-align: center;
-}
-
-.quick-stat-label {
-    display: block;
-    font-size: 0.6rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gray-500);
-    margin-bottom: 6px;
-}
-
-.quick-stat-value {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: var(--off-white);
 }
 
 /* ---- Tab Section Label ---- */
@@ -283,45 +23,133 @@
     border-bottom: 1px solid rgba(245, 240, 235, 0.06);
 }
 
-/* ---- Totals Row ---- */
-.totals-row {
-    border-top: 2px solid rgba(245, 240, 235, 0.12);
+/* ---- 2026 Trades Table ---- */
+.trades-2026-table .trade-row {
+    cursor: pointer;
+    transition: background 0.2s;
 }
 
-.totals-row td {
-    padding-top: 16px;
-    color: var(--off-white);
+.trades-2026-table .trade-row:hover {
+    background: rgba(245, 240, 235, 0.03);
 }
 
-/* ---- Closed Card Dividend ---- */
-.closed-card-dividend {
-    font-size: 0.7rem;
+.trades-2026-table .trade-row.expanded {
+    background: rgba(245, 240, 235, 0.02);
+}
+
+/* ---- Status Badges ---- */
+.status-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 2px;
+}
+
+.status-closed {
+    background: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+}
+
+.status-open {
+    background: rgba(245, 240, 235, 0.06);
+    color: var(--gray-300);
+}
+
+.status-partial {
+    background: rgba(201, 169, 110, 0.12);
+    color: #c9a96e;
+}
+
+/* ---- Thesis Expand Row ---- */
+.thesis-row {
+    transition: opacity 0.2s;
+}
+
+.thesis-row.hidden {
+    display: none;
+}
+
+.thesis-expand {
+    padding: 12px 16px;
+    font-size: 0.8rem;
     font-weight: 300;
     color: var(--gray-400);
-    margin-top: 4px;
-    text-align: right;
+    line-height: 1.7;
+    background: rgba(245, 240, 235, 0.015);
+    border-left: 2px solid rgba(201, 169, 110, 0.3);
 }
 
-/* ---- Dividends Table ---- */
-.dividends-table {
-    max-width: 600px;
+.thesis-label-inline {
+    font-weight: 500;
+    color: var(--gray-300);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    font-size: 0.6rem;
+    margin-right: 8px;
+}
+
+/* ---- Chart Popup (Hover) ---- */
+.chart-popup {
+    position: fixed;
+    z-index: 1000;
+    width: 480px;
+    background: #111111;
+    border: 1px solid rgba(245, 240, 235, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+    pointer-events: none;
+    animation: popupFadeIn 0.15s ease-out;
+}
+
+@keyframes popupFadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.chart-popup-header {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 14px 16px 8px;
+    border-bottom: 1px solid rgba(245, 240, 235, 0.06);
+}
+
+.chart-popup-ticker {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--off-white);
+    letter-spacing: 0.05em;
+}
+
+.chart-popup-company {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--gray-500);
+}
+
+.chart-popup-body {
+    height: 220px;
+    padding: 0;
+}
+
+.chart-popup-footer {
+    padding: 6px 16px 10px;
+    font-size: 0.55rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    border-top: 1px solid rgba(245, 240, 235, 0.06);
 }
 
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
-    .position-theses {
-        grid-template-columns: 1fr;
+    .chart-popup {
+        display: none;
     }
-    .closed-trades-grid {
-        grid-template-columns: 1fr;
-    }
-    .closed-summary {
-        grid-template-columns: repeat(2, 1fr);
-    }
-    .closed-card-details {
-        grid-template-columns: 1fr;
-    }
-    .quick-stats-bar {
-        grid-template-columns: repeat(2, 1fr);
+    .trades-2026-table {
+        font-size: 0.75rem;
     }
 }
