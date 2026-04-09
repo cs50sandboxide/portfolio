@@ -206,17 +206,77 @@
                     </div>
                 </div>
                 <div class="ai-project-details">
-                    <div class="ai-detail-card">
-                        <h4>Pricing Architecture</h4>
-                        <p>Deep neural network trained on historical options data to learn implied volatility surfaces. Replaces closed-form Greeks with learned sensitivities that adapt to regime changes and volatility clustering.</p>
-                    </div>
-                    <div class="ai-detail-card">
-                        <h4>Signal Generation</h4>
-                        <p>Compares model-implied fair value against live bid/ask spreads to identify statistically significant mispricings. Filters by liquidity, delta exposure, and portfolio-level risk constraints before generating actionable trade signals.</p>
-                    </div>
-                    <div class="ai-detail-card">
-                        <h4>Backtesting & Deployment</h4>
-                        <p>Walk-forward backtesting across multiple market regimes (2018–2026) including COVID crash, 2022 rate hikes, and AI rally. Paper trading via IBKR API before live capital allocation.</p>
+                    <div class="ai-roadmap">
+                        <div class="roadmap-item">
+                            <div class="roadmap-check"></div>
+                            <div class="roadmap-content">
+                                <div class="roadmap-header">
+                                    <h4>Phase 1 — Research & Data Pipeline</h4>
+                                    <span class="roadmap-deadline">Apr 14 – Apr 27</span>
+                                </div>
+                                <p>Source historical options chain data (CBOE, IBKR). Build data ingestion pipeline for OHLCV + Greeks + IV surfaces. Literature review of neural network approaches to options pricing (Deep Hedging, DeepBSDE).</p>
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="roadmap-check"></div>
+                            <div class="roadmap-content">
+                                <div class="roadmap-header">
+                                    <h4>Phase 2 — Black-Scholes Baseline & Feature Engineering</h4>
+                                    <span class="roadmap-deadline">Apr 28 – May 11</span>
+                                </div>
+                                <p>Implement analytical Black-Scholes as baseline. Engineer features: moneyness, time-to-expiry, implied vol skew, put-call parity deviations, term structure slope, realised vs implied vol spread.</p>
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="roadmap-check"></div>
+                            <div class="roadmap-content">
+                                <div class="roadmap-header">
+                                    <h4>Phase 3 — Neural Network Pricing Model</h4>
+                                    <span class="roadmap-deadline">May 12 – May 25</span>
+                                </div>
+                                <p>Train deep neural network (PyTorch) to learn implied volatility surfaces and price options. Replace closed-form Greeks with learned sensitivities that adapt to regime changes and volatility clustering.</p>
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="roadmap-check"></div>
+                            <div class="roadmap-content">
+                                <div class="roadmap-header">
+                                    <h4>Phase 4 — Signal Generation & Risk Filters</h4>
+                                    <span class="roadmap-deadline">May 26 – Jun 8</span>
+                                </div>
+                                <p>Compare model-implied fair value against live bid/ask to identify mispricings. Build filters: liquidity thresholds, delta-neutral constraints, max portfolio Greeks exposure, position sizing via Kelly criterion.</p>
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="roadmap-check"></div>
+                            <div class="roadmap-content">
+                                <div class="roadmap-header">
+                                    <h4>Phase 5 — Walk-Forward Backtesting</h4>
+                                    <span class="roadmap-deadline">Jun 9 – Jun 22</span>
+                                </div>
+                                <p>Backtest across multiple market regimes (2018–2026): COVID crash, 2022 rate hikes, 2023 AI rally, 2024 vol compression. Measure Sharpe ratio, max drawdown, win rate, and P&L attribution by strategy leg.</p>
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="roadmap-check"></div>
+                            <div class="roadmap-content">
+                                <div class="roadmap-header">
+                                    <h4>Phase 6 — Paper Trading & IBKR API Integration</h4>
+                                    <span class="roadmap-deadline">Jun 23 – Jul 6</span>
+                                </div>
+                                <p>Connect to IBKR TWS API for real-time market data and order execution. Paper trade live signals for 2 weeks minimum. Monitor model drift, execution slippage, and latency.</p>
+                            </div>
+                        </div>
+                        <div class="roadmap-item">
+                            <div class="roadmap-check"></div>
+                            <div class="roadmap-content">
+                                <div class="roadmap-header">
+                                    <h4>Phase 7 — Live Deployment & Monitoring</h4>
+                                    <span class="roadmap-deadline">Jul 7 – Jul 20</span>
+                                </div>
+                                <p>Allocate initial capital with strict risk limits. Deploy monitoring dashboard for real-time P&L, Greeks exposure, and model confidence scores. Iterate on model retraining schedule.</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
