@@ -34,8 +34,7 @@ const REALIZED_TRADES = [
     { ticker: "SHOP",  company: "Shopify Inc.",                entryPrice: 47.67,  exitPrice: 53.82,  returnPct: 12.9,  entryDate: "2025-01-31", exitDate: "2025-04-09", source: "Schwab" },
     { ticker: "NVDA",  company: "NVIDIA Corp.",                entryPrice: 127.97, exitPrice: 144.06, returnPct: 12.6,  entryDate: "2025-04-22", exitDate: "2025-06-06", source: "Schwab" },
     { ticker: "TSLA",  company: "Tesla Inc.",                  entryPrice: 253.24, exitPrice: 228.38, returnPct: -9.8,  entryDate: "2022-05-06", exitDate: "2025-06-23", source: "Schwab" },
-    { ticker: "BTC",   company: "Grayscale Bitcoin Mini Trust",entryPrice: 34.02,  exitPrice: 51.40,  returnPct: 51.1,  entryDate: "2025-06-23", exitDate: "2025-08-22", source: "Schwab" },
-    { ticker: "INTC",  company: "Intel Corp.",                 entryPrice: 22.65,  exitPrice: 26.71,  returnPct: 17.9,  entryDate: "2022-06-10", exitDate: "2025-08-22", source: "Schwab" },
+{ ticker: "INTC",  company: "Intel Corp.",                 entryPrice: 22.65,  exitPrice: 26.71,  returnPct: 17.9,  entryDate: "2022-06-10", exitDate: "2025-08-22", source: "Schwab" },
     { ticker: "OSCR",  company: "Oscar Health Inc.",           entryPrice: 15.45,  exitPrice: 19.04,  returnPct: 23.3,  entryDate: "2025-08-15", exitDate: "2025-09-12", source: "Schwab" },
     { ticker: "RIVN",  company: "Rivian Automotive",           entryPrice: 13.12,  exitPrice: 14.89,  returnPct: 13.5,  entryDate: "2025-09-09", exitDate: "2025-09-18", source: "IBKR" },
     { ticker: "U",     company: "Unity Software Inc.",         entryPrice: 38.53,  exitPrice: 42.09,  returnPct: 9.2,   entryDate: "2025-09-09", exitDate: "2025-09-23", source: "Schwab" },
@@ -71,8 +70,7 @@ const OPEN_POSITIONS = [
     { ticker: "BX",    company: "Blackstone Inc.",         entryPrice: 114.00, entryDate: "2026-04-01", source: "IBKR" },
     { ticker: "COIN",  company: "Coinbase Global Inc.",    entryPrice: 174.63, entryDate: "2026-04-08", source: "IBKR" },
     { ticker: "GOOG",  company: "Alphabet Inc.",           entryPrice: 315.78, entryDate: "2025-12-04", source: "IBKR" },
-    { ticker: "INTC",  company: "Intel Corp.",             entryPrice: 35.75,  entryDate: "2025-10-14", source: "IBKR" },
-    { ticker: "IONQ",  company: "IonQ Inc.",               entryPrice: 62.20,  entryDate: "2025-10-14", source: "IBKR" },
+{ ticker: "IONQ",  company: "IonQ Inc.",               entryPrice: 62.20,  entryDate: "2025-10-14", source: "IBKR" },
     { ticker: "KKR",   company: "KKR & Co Inc.",           entryPrice: 92.53,  entryDate: "2026-04-01", source: "IBKR" },
     { ticker: "META",  company: "Meta Platforms Inc.",      entryPrice: 713.33, entryDate: "2025-10-29", source: "IBKR" },
     { ticker: "OSCR",  company: "Oscar Health Inc.",        entryPrice: 15.33,  entryDate: "2025-08-29", source: "IBKR" },
@@ -82,15 +80,15 @@ const OPEN_POSITIONS = [
 
 // --- Performance Stats ---
 const PERF_STATS = {
-    totalTrades: 57,
-    wins: 55,
+    totalTrades: 56,
+    wins: 54,
     losses: 2,
-    winRate: "96.5%",
-    avgReturn: 10.1,
-    totalRealizedProfit: 195911,
+    winRate: "96.4%",
+    avgReturn: 9.4,
+    totalRealizedProfit: 195894,
     annualReturn: 12.0,
-    bestTrade: { ticker: "BTC", returnPct: 51.1 },
-    openPositions: 11,
+    bestTrade: { ticker: "BLNK", returnPct: 35.5 },
+    openPositions: 10,
     activeSince: "April 2022",
 };
 
