@@ -88,7 +88,9 @@ function initTabs() {
 function initPerfStats() {
     if (typeof PERF_STATS === "undefined") return;
     const el = (id) => document.getElementById(id);
+    if (el("totalProfit")) el("totalProfit").textContent = "$" + PERF_STATS.totalRealizedProfit.toLocaleString() + "+";
     if (el("winRate")) el("winRate").textContent = PERF_STATS.winRate;
+    if (el("annualReturn")) el("annualReturn").textContent = "+" + PERF_STATS.annualReturn.toFixed(1) + "%";
     if (el("avgReturn")) el("avgReturn").textContent = "+" + PERF_STATS.avgReturn.toFixed(1) + "%";
     if (el("totalTrades")) el("totalTrades").textContent = PERF_STATS.totalTrades;
     if (el("bestTrade")) el("bestTrade").textContent = PERF_STATS.bestTrade.ticker + " +" + PERF_STATS.bestTrade.returnPct + "%";
@@ -107,7 +109,10 @@ function initRealizedTrades() {
     const tbody = document.getElementById("realizedBody");
     if (!tbody || typeof REALIZED_TRADES === "undefined") return;
 
-    REALIZED_TRADES.forEach((trade) => {
+    // Sort descending by exit date (most recent first)
+    const sorted = [...REALIZED_TRADES].sort((a, b) => b.exitDate.localeCompare(a.exitDate));
+
+    sorted.forEach((trade) => {
         const isPos = trade.returnPct >= 0;
         const returnDisplay = (isPos ? "+" : "") + trade.returnPct.toFixed(1) + "%";
         const returnClass = isPos ? "positive" : "negative";

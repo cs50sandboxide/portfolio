@@ -87,6 +87,8 @@ const PERF_STATS = {
     losses: 2,
     winRate: "96.5%",
     avgReturn: 10.1,
+    totalRealizedProfit: 51000,
+    annualReturn: 40.8,
     bestTrade: { ticker: "BTC", returnPct: 51.1 },
     openPositions: 11,
     activeSince: "April 2022",
