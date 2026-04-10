@@ -1,6 +1,6 @@
 /* ============================================
    Portfolio Page — Dedicated Styles
-   Portfolio Performance 2026
+   All Trades: Schwab + IBKR
    ============================================ */
 
 .page-hero-sub {
@@ -23,18 +23,42 @@
     border-bottom: 1px solid rgba(245, 240, 235, 0.06);
 }
 
-/* ---- 2026 Trades Table ---- */
-.trades-2026-table .trade-row {
+/* ---- Trade Rows (Realized + Open) ---- */
+.realized-table .trade-row,
+.open-table .trade-row {
     cursor: pointer;
     transition: background 0.2s;
 }
 
-.trades-2026-table .trade-row:hover {
+.realized-table .trade-row:hover,
+.open-table .trade-row:hover {
     background: rgba(245, 240, 235, 0.03);
 }
 
-.trades-2026-table .trade-row.expanded {
-    background: rgba(245, 240, 235, 0.02);
+/* ---- Source Badges ---- */
+.source-badge {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 8px;
+    border-radius: 2px;
+}
+
+.source-schwab {
+    background: rgba(201, 169, 110, 0.12);
+    color: #c9a96e;
+}
+
+.source-ibkr {
+    background: rgba(74, 222, 128, 0.1);
+    color: #4ade80;
+}
+
+.source-schwabibkr {
+    background: rgba(245, 240, 235, 0.06);
+    color: var(--gray-300);
 }
 
 /* ---- Status Badges ---- */
@@ -63,32 +87,10 @@
     color: #c9a96e;
 }
 
-/* ---- Thesis Expand Row ---- */
-.thesis-row {
-    transition: opacity 0.2s;
-}
-
-.thesis-row.hidden {
-    display: none;
-}
-
-.thesis-expand {
-    padding: 12px 16px;
-    font-size: 0.8rem;
-    font-weight: 300;
+/* ---- Live Price Pulse ---- */
+.live-price {
     color: var(--gray-400);
-    line-height: 1.7;
-    background: rgba(245, 240, 235, 0.015);
-    border-left: 2px solid rgba(201, 169, 110, 0.3);
-}
-
-.thesis-label-inline {
-    font-weight: 500;
-    color: var(--gray-300);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    font-size: 0.6rem;
-    margin-right: 8px;
+    font-variant-numeric: tabular-nums;
 }
 
 /* ---- Chart Popup (Hover) ---- */
@@ -149,7 +151,8 @@
     .chart-popup {
         display: none;
     }
-    .trades-2026-table {
+    .realized-table,
+    .open-table {
         font-size: 0.75rem;
     }
 }

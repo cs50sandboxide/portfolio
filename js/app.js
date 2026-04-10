@@ -1,6 +1,6 @@
 /* ============================================
    Portfolio App — Main Application Logic
-   Portfolio Performance 2026 — IBKR Only
+   All Trades: Schwab + IBKR (April 2022–Present)
    ============================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -8,8 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     initNavigation();
     initMobileMenu();
     initTabs();
-    initTradesTable();
     initPerfStats();
+    initRealizedTrades();
+    initOpenPositions();
     initWatchlist();
     initGrowthChart();
     initScrollReveal();
@@ -83,60 +84,33 @@ function initTabs() {
     });
 }
 
-/* ---- Performance Stats ---- */
+/* ---- Performance Stats (Summary Cards) ---- */
 function initPerfStats() {
-    if (typeof PERF_STATS_2026 === "undefined") return;
+    if (typeof PERF_STATS === "undefined") return;
     const el = (id) => document.getElementById(id);
-    if (el("winRate")) el("winRate").textContent = PERF_STATS_2026.winRate;
-    if (el("avgReturn")) el("avgReturn").textContent = "+" + PERF_STATS_2026.avgReturn.toFixed(1) + "%";
-    if (el("avgHold")) el("avgHold").textContent = PERF_STATS_2026.avgHoldDays + " days";
-    if (el("bestTrade")) el("bestTrade").textContent = PERF_STATS_2026.bestTrade.ticker + " +" + PERF_STATS_2026.bestTrade.returnPct + "%";
+    if (el("winRate")) el("winRate").textContent = PERF_STATS.winRate;
+    if (el("avgReturn")) el("avgReturn").textContent = "+" + PERF_STATS.avgReturn.toFixed(1) + "%";
+    if (el("totalTrades")) el("totalTrades").textContent = PERF_STATS.totalTrades;
+    if (el("bestTrade")) el("bestTrade").textContent = PERF_STATS.bestTrade.ticker + " +" + PERF_STATS.bestTrade.returnPct + "%";
+
+    // Growth tab stats
+    if (el("gsWinRate")) el("gsWinRate").textContent = PERF_STATS.wins + "/" + PERF_STATS.totalTrades + " (" + PERF_STATS.winRate + ")";
+    if (el("gsAvgReturn")) el("gsAvgReturn").textContent = "+" + PERF_STATS.avgReturn.toFixed(1) + "%";
+    if (el("gsBestTrade")) el("gsBestTrade").textContent = PERF_STATS.bestTrade.ticker + " +" + PERF_STATS.bestTrade.returnPct + "%";
+    if (el("gsActiveSince")) el("gsActiveSince").textContent = PERF_STATS.activeSince;
+    if (el("gsOpenPositions")) el("gsOpenPositions").textContent = PERF_STATS.openPositions;
+    if (el("gsClosedTrades")) el("gsClosedTrades").textContent = PERF_STATS.totalTrades;
 }
 
-/* ---- Trades Table with Hover Chart ---- */
-function initTradesTable() {
-    const tbody = document.getElementById("tradesBody");
-    if (!tbody || typeof TRADES_2026 === "undefined") return;
+/* ---- Realized Trades Table with Hover Chart ---- */
+function initRealizedTrades() {
+    const tbody = document.getElementById("realizedBody");
+    if (!tbody || typeof REALIZED_TRADES === "undefined") return;
 
-    // Sort: closed first (by exit date), then open
-    const sorted = [...TRADES_2026].sort((a, b) => {
-        if (a.status === "open" && b.status !== "open") return 1;
-        if (a.status !== "open" && b.status === "open") return -1;
-        const dateA = a.exitDate || a.entryDate;
-        const dateB = b.exitDate || b.entryDate;
-        return dateA.localeCompare(dateB);
-    });
-
-    sorted.forEach((trade) => {
-        const isClosed = trade.status === "closed";
-        const isPartial = trade.status === "partial";
-        const isOpen = trade.status === "open";
-
-        let returnDisplay, returnClass;
-        if (isClosed || isPartial) {
-            const isPos = trade.returnPct >= 0;
-            returnDisplay = (isPos ? "+" : "") + trade.returnPct.toFixed(1) + "%";
-            returnClass = isPos ? "positive" : "negative";
-        } else {
-            returnDisplay = "—";
-            returnClass = "";
-        }
-
-        let statusBadge;
-        if (isClosed) {
-            statusBadge = '<span class="status-badge status-closed">Closed</span>';
-        } else if (isPartial) {
-            statusBadge = '<span class="status-badge status-partial">Partial</span>';
-        } else {
-            statusBadge = '<span class="status-badge status-open">Open</span>';
-        }
-
-        const exitCol = trade.exitPrice
-            ? "$" + trade.exitPrice.toFixed(2)
-            : (trade.currentPrice ? "$" + trade.currentPrice.toFixed(2) + " *" : "—");
-
-        const holdCol = trade.holdDays ? trade.holdDays + "d" : "—";
-        const exitDateCol = trade.exitDate || "—";
+    REALIZED_TRADES.forEach((trade) => {
+        const isPos = trade.returnPct >= 0;
+        const returnDisplay = (isPos ? "+" : "") + trade.returnPct.toFixed(1) + "%";
+        const returnClass = isPos ? "positive" : "negative";
 
         const tr = document.createElement("tr");
         tr.className = "trade-row";
@@ -144,41 +118,102 @@ function initTradesTable() {
         tr.dataset.entry = trade.entryDate;
         tr.dataset.exit = trade.exitDate || "";
         tr.dataset.entryPrice = trade.entryPrice;
-        tr.dataset.exitPrice = trade.exitPrice || trade.currentPrice || "";
+        tr.dataset.exitPrice = trade.exitPrice || "";
         tr.innerHTML = `
             <td class="ticker">${trade.ticker}</td>
             <td>${trade.company}</td>
             <td>$${trade.entryPrice.toFixed(2)}</td>
-            <td>${exitCol}</td>
+            <td>$${trade.exitPrice.toFixed(2)}</td>
             <td class="${returnClass}">${returnDisplay}</td>
             <td>${trade.entryDate}</td>
-            <td>${exitDateCol}</td>
-            <td>${holdCol}</td>
-            <td>${statusBadge}</td>
+            <td>${trade.exitDate}</td>
+            <td><span class="source-badge source-${trade.source.toLowerCase().replace(/[^a-z]/g, '')}">${trade.source}</span></td>
         `;
         tbody.appendChild(tr);
-
-        // Thesis row (hidden by default, toggled on click)
-        const thesisTr = document.createElement("tr");
-        thesisTr.className = "thesis-row hidden";
-        thesisTr.innerHTML = `
-            <td colspan="9">
-                <div class="thesis-expand">
-                    <span class="thesis-label-inline">Thesis:</span> ${trade.thesis}
-                </div>
-            </td>
-        `;
-        tbody.appendChild(thesisTr);
-
-        tr.addEventListener("click", () => {
-            thesisTr.classList.toggle("hidden");
-            tr.classList.toggle("expanded");
-        });
 
         // Hover chart
         tr.addEventListener("mouseenter", (e) => showTradeChart(e, trade));
         tr.addEventListener("mouseleave", hideTradeChart);
     });
+}
+
+/* ---- Open Positions Table with Live Prices ---- */
+function initOpenPositions() {
+    const tbody = document.getElementById("openBody");
+    if (!tbody || typeof OPEN_POSITIONS === "undefined") return;
+
+    OPEN_POSITIONS.forEach((pos) => {
+        const tr = document.createElement("tr");
+        tr.className = "trade-row";
+        tr.dataset.ticker = pos.ticker;
+        tr.innerHTML = `
+            <td class="ticker">${pos.ticker}</td>
+            <td>${pos.company}</td>
+            <td>$${pos.entryPrice.toFixed(2)}</td>
+            <td class="live-price" data-ticker="${pos.ticker}">Loading...</td>
+            <td class="unrealized" data-ticker="${pos.ticker}" data-entry="${pos.entryPrice}">—</td>
+            <td>${pos.entryDate}</td>
+            <td><span class="source-badge source-${pos.source.toLowerCase().replace(/[^a-z]/g, '')}">${pos.source}</span></td>
+        `;
+        tbody.appendChild(tr);
+
+        // Hover chart for open positions too
+        tr.addEventListener("mouseenter", (e) => showTradeChart(e, pos));
+        tr.addEventListener("mouseleave", hideTradeChart);
+    });
+
+    // Fetch live prices immediately, then every 60s
+    fetchLivePrices();
+    setInterval(fetchLivePrices, 60000);
+}
+
+async function fetchLivePrices() {
+    if (typeof OPEN_POSITIONS === "undefined") return;
+    const tickers = OPEN_POSITIONS.map((p) => p.ticker);
+
+    for (const ticker of tickers) {
+        try {
+            const price = await fetchCurrentPrice(ticker);
+            if (price === null) continue;
+
+            const priceCell = document.querySelector(`.live-price[data-ticker="${ticker}"]`);
+            const unrealizedCell = document.querySelector(`.unrealized[data-ticker="${ticker}"]`);
+            if (!priceCell || !unrealizedCell) continue;
+
+            priceCell.textContent = "$" + price.toFixed(2);
+
+            const entry = parseFloat(unrealizedCell.dataset.entry);
+            const pct = ((price - entry) / entry) * 100;
+            const isPos = pct >= 0;
+            unrealizedCell.textContent = (isPos ? "+" : "") + pct.toFixed(1) + "%";
+            unrealizedCell.className = "unrealized " + (isPos ? "positive" : "negative");
+        } catch (e) {
+            // silently skip
+        }
+    }
+}
+
+async function fetchCurrentPrice(ticker) {
+    const period2 = Math.floor(Date.now() / 1000);
+    const period1 = period2 - 7 * 86400;
+
+    const urls = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&period1=${period1}&period2=${period2}`)}`,
+        `https://corsproxy.io/?${encodeURIComponent(`https://query1.finance.yahoo.com/v8/finance/chart/${ticker}?interval=1d&period1=${period1}&period2=${period2}`)}`,
+    ];
+
+    for (const url of urls) {
+        try {
+            const resp = await fetch(url);
+            if (!resp.ok) continue;
+            const data = await resp.json();
+            const meta = data.chart.result[0].meta;
+            return meta.regularMarketPrice;
+        } catch (e) {
+            continue;
+        }
+    }
+    return null;
 }
 
 /* ---- Hover Chart (TradingView Lightweight Charts) ---- */
@@ -224,7 +259,6 @@ function showTradeChart(event, trade) {
     const container = document.getElementById("chartPopupBody");
     if (!container) return;
 
-    // Fetch candle data
     fetchCandleData(trade.ticker, trade.entryDate, trade.exitDate).then((candles) => {
         if (!chartPopup || !candles || candles.length === 0) return;
 
@@ -278,7 +312,7 @@ function showTradeChart(event, trade) {
 
         // Entry marker
         const entryTime = dateToTimestamp(trade.entryDate);
-        candleSeries.setMarkers([
+        const markers = [
             {
                 time: findNearestTime(candles, entryTime),
                 position: "belowBar",
@@ -286,16 +320,22 @@ function showTradeChart(event, trade) {
                 shape: "arrowUp",
                 text: "Entry $" + trade.entryPrice.toFixed(2),
             },
-            ...(trade.exitDate
-                ? [{
-                    time: findNearestTime(candles, dateToTimestamp(trade.exitDate)),
-                    position: "aboveBar",
-                    color: "#f87171",
-                    shape: "arrowDown",
-                    text: "Exit $" + (trade.exitPrice || trade.currentPrice || 0).toFixed(2),
-                }]
-                : []),
-        ]);
+        ];
+
+        // Exit marker (only for realized trades)
+        if (trade.exitDate && trade.exitPrice) {
+            markers.push({
+                time: findNearestTime(candles, dateToTimestamp(trade.exitDate)),
+                position: "aboveBar",
+                color: "#f87171",
+                shape: "arrowDown",
+                text: "Exit $" + trade.exitPrice.toFixed(2),
+            });
+        }
+
+        // Sort markers by time (required by Lightweight Charts)
+        markers.sort((a, b) => a.time - b.time);
+        candleSeries.setMarkers(markers);
 
         chartInstance.timeScale().fitContent();
     });
@@ -350,10 +390,8 @@ function calcEMA(data, period) {
 }
 
 async function fetchCandleData(ticker, entryDate, exitDate) {
-    // Fetch ~6 months of weekly data ending around now, starting well before entry
-    const endDate = exitDate || new Date().toISOString().split("T")[0];
     const entryTs = new Date(entryDate).getTime() / 1000;
-    const period1 = Math.floor(entryTs - 180 * 86400); // 6 months before entry
+    const period1 = Math.floor(entryTs - 180 * 86400);
     const period2 = Math.floor(Date.now() / 1000);
 
     const urls = [

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Performance 2026 | Advaith Krishnan Vinod</title>
+    <title>Portfolio Performance | Advaith Krishnan Vinod</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/portfolio.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,8 +40,8 @@
     <section class="page-hero">
         <div class="container">
             <span class="section-label">02 / Portfolio</span>
-            <h1 class="page-hero-title">Portfolio Performance 2026</h1>
-            <p class="page-hero-sub">Active trades from Interactive Brokers, January–April 2026. Hover over a trade to see the chart with entry/exit markers. Click to expand thesis.</p>
+            <h1 class="page-hero-title">Portfolio Performance</h1>
+            <p class="page-hero-sub">All trades from Charles Schwab &amp; Interactive Brokers, April 2022 – present. Hover over a trade to see the chart with entry/exit markers.</p>
         </div>
     </section>
 
@@ -58,8 +58,8 @@
                     <span class="summary-value positive" id="avgReturn">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Avg Hold</span>
-                    <span class="summary-value" id="avgHold">—</span>
+                    <span class="summary-label">Total Trades</span>
+                    <span class="summary-value" id="totalTrades">—</span>
                 </div>
                 <div class="summary-card">
                     <span class="summary-label">Best Trade</span>
@@ -69,30 +69,51 @@
 
             <!-- Tabs -->
             <div class="portfolio-tabs">
-                <button class="tab-btn active" data-tab="trades">2026 Trades</button>
+                <button class="tab-btn active" data-tab="realized">Realized Trades</button>
+                <button class="tab-btn" data-tab="open">Open Positions</button>
                 <button class="tab-btn" data-tab="watchlist">Watchlist</button>
-                <button class="tab-btn" data-tab="growth">YTD Performance</button>
+                <button class="tab-btn" data-tab="growth">Portfolio Performance</button>
             </div>
 
-            <!-- 2026 Trades -->
-            <div class="tab-content active" id="tab-trades">
-                <div class="tab-section-label">All 2026 Trades — IBKR · Hover for chart · Click for thesis</div>
+            <!-- Realized Trades -->
+            <div class="tab-content active" id="tab-realized">
+                <div class="tab-section-label">All Realized Trades — Schwab + IBKR · Hover for chart</div>
                 <div class="positions-table-wrap">
-                    <table class="positions-table trades-2026-table">
+                    <table class="positions-table realized-table">
                         <thead>
                             <tr>
                                 <th>Ticker</th>
                                 <th>Company</th>
                                 <th>Entry</th>
-                                <th>Exit / Current</th>
+                                <th>Exit</th>
                                 <th>Return</th>
                                 <th>Entry Date</th>
                                 <th>Exit Date</th>
-                                <th>Hold</th>
-                                <th>Status</th>
+                                <th>Source</th>
                             </tr>
                         </thead>
-                        <tbody id="tradesBody"></tbody>
+                        <tbody id="realizedBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Open Positions -->
+            <div class="tab-content" id="tab-open">
+                <div class="tab-section-label">Current Holdings — Live prices update every 60s</div>
+                <div class="positions-table-wrap">
+                    <table class="positions-table open-table">
+                        <thead>
+                            <tr>
+                                <th>Ticker</th>
+                                <th>Company</th>
+                                <th>Entry Price</th>
+                                <th>Current Price</th>
+                                <th>Unrealized</th>
+                                <th>Entry Date</th>
+                                <th>Source</th>
+                            </tr>
+                        </thead>
+                        <tbody id="openBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -102,36 +123,36 @@
                 <div class="watchlist-grid" id="watchlistGrid"></div>
             </div>
 
-            <!-- YTD Performance -->
+            <!-- Portfolio Performance -->
             <div class="tab-content" id="tab-growth">
-                <div class="tab-section-label">Year-to-Date Return (indexed to 100)</div>
+                <div class="tab-section-label">Cumulative Return vs S&P 500 (indexed to 100)</div>
                 <div class="chart-container">
                     <canvas id="growthChart"></canvas>
                 </div>
                 <div class="growth-stats">
                     <div class="growth-stat">
                         <span class="growth-stat-label">Win Rate</span>
-                        <span class="growth-stat-value">6/6 (100%)</span>
+                        <span class="growth-stat-value" id="gsWinRate">—</span>
                     </div>
                     <div class="growth-stat">
                         <span class="growth-stat-label">Avg Return / Trade</span>
-                        <span class="growth-stat-value positive">+4.8%</span>
+                        <span class="growth-stat-value positive" id="gsAvgReturn">—</span>
                     </div>
                     <div class="growth-stat">
                         <span class="growth-stat-label">Best Trade</span>
-                        <span class="growth-stat-value positive">TSLA +7.4%</span>
+                        <span class="growth-stat-value positive" id="gsBestTrade">—</span>
                     </div>
                     <div class="growth-stat">
-                        <span class="growth-stat-label">Avg Hold Period</span>
-                        <span class="growth-stat-value">11 days</span>
+                        <span class="growth-stat-label">Active Since</span>
+                        <span class="growth-stat-value" id="gsActiveSince">—</span>
                     </div>
                     <div class="growth-stat">
                         <span class="growth-stat-label">Open Positions</span>
-                        <span class="growth-stat-value">4</span>
+                        <span class="growth-stat-value" id="gsOpenPositions">—</span>
                     </div>
                     <div class="growth-stat">
                         <span class="growth-stat-label">Closed Trades</span>
-                        <span class="growth-stat-value">6</span>
+                        <span class="growth-stat-value" id="gsClosedTrades">—</span>
                     </div>
                 </div>
             </div>
