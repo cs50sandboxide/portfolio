@@ -88,7 +88,7 @@ function initTabs() {
 function initPerfStats() {
     if (typeof PERF_STATS === "undefined") return;
     const el = (id) => document.getElementById(id);
-    if (el("totalProfit")) el("totalProfit").textContent = "$" + PERF_STATS.totalRealizedProfit.toLocaleString() + "+";
+    if (el("totalProfit")) el("totalProfit").textContent = "~$" + PERF_STATS.totalRealizedProfit.toLocaleString();
     if (el("winRate")) el("winRate").textContent = PERF_STATS.winRate;
     if (el("annualReturn")) el("annualReturn").textContent = "+" + PERF_STATS.annualReturn.toFixed(1) + "%";
     if (el("avgReturn")) el("avgReturn").textContent = "+" + PERF_STATS.avgReturn.toFixed(1) + "%";
@@ -243,20 +243,29 @@ function showTradeChart(event, trade) {
     `;
     document.body.appendChild(chartPopup);
 
-    // Position popup
+    // Position popup — center above row, clamp to viewport
     const rect = event.currentTarget.getBoundingClientRect();
     const popupWidth = 480;
     const popupHeight = 320;
-    let left = rect.right + 16;
-    let top = rect.top - 40;
 
-    if (left + popupWidth > window.innerWidth) {
-        left = rect.left - popupWidth - 16;
+    // Center horizontally on the row
+    let left = rect.left + (rect.width - popupWidth) / 2;
+    // Place above the row
+    let top = rect.top - popupHeight - 8;
+
+    // If it goes above the viewport, place below the row instead
+    if (top < 10) {
+        top = rect.bottom + 8;
     }
-    if (top + popupHeight > window.innerHeight) {
-        top = window.innerHeight - popupHeight - 20;
+    // Clamp horizontal to stay within viewport
+    if (left < 10) left = 10;
+    if (left + popupWidth > window.innerWidth - 10) {
+        left = window.innerWidth - popupWidth - 10;
     }
-    if (top < 10) top = 10;
+    // Clamp vertical
+    if (top + popupHeight > window.innerHeight - 10) {
+        top = window.innerHeight - popupHeight - 10;
+    }
 
     chartPopup.style.left = left + "px";
     chartPopup.style.top = top + "px";

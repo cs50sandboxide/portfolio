@@ -85,7 +85,7 @@ const PERF_STATS = {
     losses: 2,
     winRate: "96.4%",
     avgReturn: 9.4,
-    totalRealizedProfit: 195894,
+    totalRealizedProfit: 65000,
     annualReturn: 12.0,
     bestTrade: { ticker: "BLNK", returnPct: 35.5 },
     openPositions: 10,
