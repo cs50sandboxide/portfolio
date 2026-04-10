@@ -466,30 +466,25 @@ function initGrowthChart() {
     if (!canvas || typeof Chart === "undefined" || typeof GROWTH_DATA === "undefined") return;
 
     new Chart(canvas.getContext("2d"), {
-        type: "line",
+        type: "bar",
         data: {
             labels: GROWTH_DATA.labels,
             datasets: [
                 {
                     label: "Portfolio",
                     data: GROWTH_DATA.portfolio,
+                    backgroundColor: "rgba(245, 240, 235, 0.7)",
                     borderColor: "#f5f0eb",
-                    borderWidth: 2,
-                    pointRadius: 4,
-                    pointBackgroundColor: "#f5f0eb",
-                    pointHoverRadius: 6,
-                    tension: 0.3,
-                    fill: { target: "origin", above: "rgba(245, 240, 235, 0.04)" },
+                    borderWidth: 1,
+                    borderRadius: 2,
                 },
                 {
                     label: "S&P 500",
                     data: GROWTH_DATA.benchmark,
+                    backgroundColor: "rgba(85, 85, 85, 0.5)",
                     borderColor: "#555555",
                     borderWidth: 1,
-                    borderDash: [6, 4],
-                    pointRadius: 0,
-                    tension: 0.3,
-                    fill: false,
+                    borderRadius: 2,
                 },
             ],
         },
@@ -499,7 +494,7 @@ function initGrowthChart() {
             plugins: {
                 legend: {
                     display: true, position: "top", align: "end",
-                    labels: { color: "#777", font: { family: "'Inter'", size: 11 }, boxWidth: 20, boxHeight: 1, padding: 20 },
+                    labels: { color: "#777", font: { family: "'Inter'", size: 11 }, boxWidth: 14, boxHeight: 14, padding: 20 },
                 },
                 tooltip: {
                     backgroundColor: "#1a1a1a",
@@ -510,23 +505,22 @@ function initGrowthChart() {
                     padding: 14,
                     displayColors: false,
                     callbacks: {
-                        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y.toFixed(1)}%`,
+                        label: (ctx) => `${ctx.dataset.label}: ${ctx.parsed.y >= 0 ? "+" : ""}${ctx.parsed.y.toFixed(1)}%`,
                     },
                 },
             },
             scales: {
                 x: {
                     grid: { color: "rgba(245,240,235,0.04)" },
-                    ticks: { color: "#555", font: { family: "'Inter'", size: 10 } },
+                    ticks: { color: "#555", font: { family: "'Inter'", size: 11 } },
                 },
                 y: {
                     grid: { color: "rgba(245,240,235,0.04)" },
                     ticks: {
                         color: "#555",
                         font: { family: "'Inter'", size: 10 },
-                        callback: (v) => (v - 100 >= 0 ? "+" : "") + (v - 100).toFixed(0) + "%",
+                        callback: (v) => (v >= 0 ? "+" : "") + v.toFixed(0) + "%",
                     },
-                    suggestedMin: 95,
                 },
             },
         },

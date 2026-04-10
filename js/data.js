@@ -87,8 +87,8 @@ const PERF_STATS = {
     losses: 2,
     winRate: "96.5%",
     avgReturn: 10.1,
-    totalRealizedProfit: 51000,
-    annualReturn: 40.8,
+    totalRealizedProfit: 195911,
+    annualReturn: 12.0,
     bestTrade: { ticker: "BTC", returnPct: 51.1 },
     openPositions: 11,
     activeSince: "April 2022",
@@ -102,9 +102,9 @@ const WATCHLIST = [
     { ticker: "ASML", company: "ASML Holding NV", currentPrice: 684.50, change: "+3.2%", changeDirection: "positive", signal: "Semiconductor capex cycle. Watching EUV order book and China revenue guidance.", status: "waiting", statusText: "Pending Earnings" },
 ];
 
-// --- Portfolio Growth (indexed to 100, monthly) ---
+// --- Portfolio Growth (annual realized return vs S&P 500) ---
 const GROWTH_DATA = {
-    labels: ["May '22","Aug '22","Nov '22","Feb '23","May '23","Aug '23","Nov '23","Feb '24","May '24","Aug '24","Nov '24","Feb '25","May '25","Aug '25","Nov '25","Feb '26","Apr '26"],
-    portfolio: [100, 97.1, 147.1, 158.6, 154.3, 221.4, 217.1, 231.4, 240.0, 245.7, 264.3, 300.0, 314.3, 335.7, 354.3, 371.4, 392.9],
-    benchmark: [100, 95.0, 105.7, 114.3, 117.1, 125.7, 128.6, 145.7, 154.3, 162.9, 174.3, 182.9, 192.9, 200.0, 217.1, 225.7, 231.4],
+    labels: ["2022", "2023", "2024", "2025", "2026 YTD"],
+    portfolio: [13.8, 14.0, 13.1, 10.9, 8.0],
+    benchmark: [-18.1, 26.3, 25.0, 2.1, -4.2],
 };
