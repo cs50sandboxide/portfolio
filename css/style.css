@@ -80,6 +80,122 @@ ul {
     list-style: none;
 }
 
+/* ---- MTD Profit Banner ---- */
+.mtd-banner {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1001;
+    background: linear-gradient(90deg, rgba(10,10,10,0.97) 0%, rgba(20,20,20,0.97) 100%);
+    border-bottom: 1px solid rgba(74, 222, 128, 0.15);
+    backdrop-filter: blur(12px);
+}
+
+.mtd-banner-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 8px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: var(--font-sans);
+}
+
+.mtd-banner-label {
+    font-size: 0.65rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+}
+
+.mtd-banner-value {
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+}
+
+.mtd-banner-pct {
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+
+.mtd-banner-value.positive,
+.mtd-banner-pct.positive {
+    color: #4ade80;
+}
+
+.mtd-banner-value.negative,
+.mtd-banner-pct.negative {
+    color: #f87171;
+}
+
+/* Offset navbar when banner is present (homepage only) */
+body:has(.mtd-banner) #navbar {
+    top: 35px;
+}
+body:has(.mtd-banner) .page-hero {
+    padding-top: 215px;
+}
+
+/* ---- Internship Section ---- */
+.internship-text strong {
+    color: var(--off-white);
+    font-weight: 500;
+}
+
+.internship-details {
+    display: flex;
+    gap: 40px;
+    margin: 32px 0;
+    flex-wrap: wrap;
+}
+
+.internship-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.internship-detail-label {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--gray-500);
+}
+
+.internship-detail-value {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: var(--off-white);
+    line-height: 1.5;
+}
+
+.internship-ctas {
+    display: flex;
+    gap: 16px;
+    margin-top: 8px;
+}
+
+@media (max-width: 768px) {
+    .mtd-banner-inner {
+        padding: 6px 20px;
+        gap: 6px;
+    }
+    .mtd-banner-label {
+        font-size: 0.55rem;
+    }
+    .mtd-banner-value {
+        font-size: 0.75rem;
+    }
+    .internship-details {
+        gap: 24px;
+    }
+}
+
 /* ---- Loader ---- */
 #loader {
     position: fixed;

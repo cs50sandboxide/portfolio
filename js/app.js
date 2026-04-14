@@ -5,6 +5,7 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     initLoader();
+    initMtdBanner();
     initNavigation();
     initMobileMenu();
     initTabs();
@@ -16,6 +17,20 @@ document.addEventListener("DOMContentLoaded", () => {
     initScrollReveal();
     initContactForm();
 });
+
+/* ---- MTD Profit Banner ---- */
+function initMtdBanner() {
+    if (typeof MTD_STATS === "undefined") return;
+    const el = (id) => document.getElementById(id);
+    if (el("mtdValue")) {
+        const prefix = MTD_STATS.realizedProfit >= 0 ? "+$" : "-$";
+        el("mtdValue").textContent = prefix + Math.abs(MTD_STATS.realizedProfit).toLocaleString();
+    }
+    if (el("mtdPct")) {
+        const prefix = MTD_STATS.returnPct >= 0 ? "(+" : "(";
+        el("mtdPct").textContent = prefix + MTD_STATS.returnPct.toFixed(1) + "%)";
+    }
+}
 
 /* ---- Loader ---- */
 function initLoader() {

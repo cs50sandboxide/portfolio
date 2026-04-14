@@ -1,7 +1,7 @@
 /* ============================================
    Portfolio Data — All Realized + Open (Schwab + IBKR)
    Percentages only. No investment dollar values.
-   Last updated: April 9, 2026
+   Last updated: April 14, 2026
    ============================================ */
 
 // --- All Realized Trades (chronological by exit date, per-brokerage) ---
@@ -34,7 +34,7 @@ const REALIZED_TRADES = [
     { ticker: "SHOP",  company: "Shopify Inc.",                entryPrice: 47.67,  exitPrice: 53.82,  returnPct: 12.9,  entryDate: "2025-01-31", exitDate: "2025-04-09", source: "Schwab" },
     { ticker: "NVDA",  company: "NVIDIA Corp.",                entryPrice: 127.97, exitPrice: 144.06, returnPct: 12.6,  entryDate: "2025-04-22", exitDate: "2025-06-06", source: "Schwab" },
     { ticker: "TSLA",  company: "Tesla Inc.",                  entryPrice: 253.24, exitPrice: 228.38, returnPct: -9.8,  entryDate: "2022-05-06", exitDate: "2025-06-23", source: "Schwab" },
-{ ticker: "INTC",  company: "Intel Corp.",                 entryPrice: 22.65,  exitPrice: 26.71,  returnPct: 17.9,  entryDate: "2022-06-10", exitDate: "2025-08-22", source: "Schwab" },
+    { ticker: "INTC",  company: "Intel Corp.",                 entryPrice: 22.65,  exitPrice: 26.71,  returnPct: 17.9,  entryDate: "2022-06-10", exitDate: "2025-08-22", source: "Schwab" },
     { ticker: "OSCR",  company: "Oscar Health Inc.",           entryPrice: 15.45,  exitPrice: 19.04,  returnPct: 23.3,  entryDate: "2025-08-15", exitDate: "2025-09-12", source: "Schwab" },
     { ticker: "RIVN",  company: "Rivian Automotive",           entryPrice: 13.12,  exitPrice: 14.89,  returnPct: 13.5,  entryDate: "2025-09-09", exitDate: "2025-09-18", source: "IBKR" },
     { ticker: "U",     company: "Unity Software Inc.",         entryPrice: 38.53,  exitPrice: 42.09,  returnPct: 9.2,   entryDate: "2025-09-09", exitDate: "2025-09-23", source: "Schwab" },
@@ -62,16 +62,22 @@ const REALIZED_TRADES = [
     { ticker: "DT",    company: "Dynatrace Inc.",              entryPrice: 37.27,  exitPrice: 37.99,  returnPct: 1.9,   entryDate: "2026-04-06", exitDate: "2026-04-08", source: "IBKR" },
     { ticker: "GOOG",  company: "Alphabet Inc.",               entryPrice: 315.78, exitPrice: 316.41, returnPct: 0.2,   entryDate: "2025-12-04", exitDate: "2026-04-08", source: "IBKR" },
     { ticker: "PLUG",  company: "Plug Power Inc.",             entryPrice: 2.50,   exitPrice: 2.67,   returnPct: 7.0,   entryDate: "2026-04-07", exitDate: "2026-04-08", source: "IBKR" },
+    { ticker: "BLDP",  company: "Ballard Power Systems",      entryPrice: 2.54,   exitPrice: 2.68,   returnPct: 5.5,   entryDate: "2026-04-06", exitDate: "2026-04-09", source: "IBKR" },
+    { ticker: "TSLA",  company: "Tesla Inc.",                  entryPrice: 343.48, exitPrice: 347.63, returnPct: 1.2,   entryDate: "2026-04-08", exitDate: "2026-04-09", source: "IBKR" },
+    { ticker: "ORCL",  company: "Oracle Corp.",                entryPrice: 137.70, exitPrice: 146.36, returnPct: 6.3,   entryDate: "2026-04-10", exitDate: "2026-04-13", source: "IBKR" },
+    { ticker: "BX",    company: "Blackstone Inc.",             entryPrice: 114.00, exitPrice: 120.80, returnPct: 6.0,   entryDate: "2026-04-01", exitDate: "2026-04-13", source: "IBKR" },
+    { ticker: "KKR",   company: "KKR & Co Inc.",               entryPrice: 92.53,  exitPrice: 96.93,  returnPct: 4.8,   entryDate: "2026-04-01", exitDate: "2026-04-13", source: "IBKR" },
+    { ticker: "COIN",  company: "Coinbase Global Inc.",        entryPrice: 174.63, exitPrice: 187.21, returnPct: 7.2,   entryDate: "2026-04-08", exitDate: "2026-04-14", source: "IBKR" },
+    { ticker: "BLDP",  company: "Ballard Power Systems",      entryPrice: 2.71,   exitPrice: 2.91,   returnPct: 7.5,   entryDate: "2026-04-13", exitDate: "2026-04-14", source: "IBKR" },
 ];
 
 // --- Open Positions (current holdings) ---
 const OPEN_POSITIONS = [
-    { ticker: "BLDP",  company: "Ballard Power Systems",  entryPrice: 3.78,   entryDate: "2022-04-28", source: "Schwab + IBKR" },
-    { ticker: "BX",    company: "Blackstone Inc.",         entryPrice: 114.00, entryDate: "2026-04-01", source: "IBKR" },
-    { ticker: "COIN",  company: "Coinbase Global Inc.",    entryPrice: 174.63, entryDate: "2026-04-08", source: "IBKR" },
+    { ticker: "BLDP",  company: "Ballard Power Systems",  entryPrice: 3.78,   entryDate: "2022-04-28", source: "Schwab" },
+    { ticker: "DT",    company: "Dynatrace Inc.",          entryPrice: 34.24,  entryDate: "2026-04-09", source: "IBKR" },
+    { ticker: "FSLR",  company: "First Solar Inc.",        entryPrice: 202.79, entryDate: "2026-04-10", source: "IBKR" },
     { ticker: "GOOG",  company: "Alphabet Inc.",           entryPrice: 315.78, entryDate: "2025-12-04", source: "IBKR" },
-{ ticker: "IONQ",  company: "IonQ Inc.",               entryPrice: 62.20,  entryDate: "2025-10-14", source: "IBKR" },
-    { ticker: "KKR",   company: "KKR & Co Inc.",           entryPrice: 92.53,  entryDate: "2026-04-01", source: "IBKR" },
+    { ticker: "IONQ",  company: "IonQ Inc.",               entryPrice: 62.20,  entryDate: "2025-10-14", source: "IBKR" },
     { ticker: "META",  company: "Meta Platforms Inc.",      entryPrice: 713.33, entryDate: "2025-10-29", source: "IBKR" },
     { ticker: "OSCR",  company: "Oscar Health Inc.",        entryPrice: 15.33,  entryDate: "2025-08-29", source: "IBKR" },
     { ticker: "TSLA",  company: "Tesla Inc.",               entryPrice: 384.32, entryDate: "2026-02-03", source: "IBKR" },
@@ -80,24 +86,35 @@ const OPEN_POSITIONS = [
 
 // --- Performance Stats ---
 const PERF_STATS = {
-    totalTrades: 56,
-    wins: 54,
+    totalTrades: 63,
+    wins: 61,
     losses: 2,
-    winRate: "96.4%",
-    avgReturn: 9.4,
-    totalRealizedProfit: 65000,
+    winRate: "96.8%",
+    avgReturn: 8.9,
+    totalRealizedProfit: 81000,
     annualReturn: 12.0,
     bestTrade: { ticker: "BLNK", returnPct: 35.5 },
-    openPositions: 10,
+    openPositions: 9,
     activeSince: "April 2022",
+};
+
+// --- Month-to-Date Stats ---
+const MTD_STATS = {
+    month: "April 2026",
+    realizedProfit: 12200,
+    returnPct: 4.5,
 };
 
 // --- Watchlist ---
 const WATCHLIST = [
-    { ticker: "ARES", company: "Ares Management Corp.", currentPrice: 148.20, change: "+1.3%", changeDirection: "positive", signal: "Complementary alt-asset manager to BX/KKR thesis. Monitoring for pullback below $140.", status: "waiting", statusText: "Awaiting Entry" },
-    { ticker: "APO", company: "Apollo Global Management", currentPrice: 112.80, change: "-0.6%", changeDirection: "negative", signal: "Third leg of alt-asset manager conviction trade. Target entry below $108.", status: "waiting", statusText: "Monitoring Catalyst" },
-    { ticker: "NVDA", company: "NVIDIA Corp.", currentPrice: 482.30, change: "+2.4%", changeDirection: "positive", signal: "AI infrastructure capex cycle. Waiting for pullback to 50-day EMA. Target below $440.", status: "waiting", statusText: "Awaiting Pullback" },
-    { ticker: "ASML", company: "ASML Holding NV", currentPrice: 684.50, change: "+3.2%", changeDirection: "positive", signal: "Semiconductor capex cycle. Watching EUV order book and China revenue guidance.", status: "waiting", statusText: "Pending Earnings" },
+    { ticker: "ORCL", company: "Oracle Corp.", currentPrice: 146.36, change: "+6.3%", changeDirection: "positive", signal: "Cloud infrastructure and AI database demand accelerating. Recently traded — watching for pullback to $135 for re-entry.", status: "waiting", statusText: "Awaiting Re-entry" },
+    { ticker: "DDOG", company: "Datadog Inc.", currentPrice: 112.50, change: "+1.8%", changeDirection: "positive", signal: "Cloud observability leader benefiting from AI workload monitoring. Target entry below $105 on next earnings dip.", status: "waiting", statusText: "Awaiting Pullback" },
+    { ticker: "DT", company: "Dynatrace Inc.", currentPrice: 34.24, change: "-0.4%", changeDirection: "negative", signal: "APM leader with AI-driven automation. Currently held — monitoring for adding on dips below $32.", status: "waiting", statusText: "Monitoring Position" },
+    { ticker: "SMR", company: "NuScale Power Corp.", currentPrice: 28.40, change: "+3.1%", changeDirection: "positive", signal: "Small modular reactor leader. Long-term nuclear renaissance thesis. Watching for entry below $25.", status: "waiting", statusText: "Awaiting Entry" },
+    { ticker: "OKLO", company: "Oklo Inc.", currentPrice: 25.10, change: "+2.5%", changeDirection: "positive", signal: "Micro-reactor developer backed by Sam Altman. Speculative AI energy demand play. Target below $20.", status: "waiting", statusText: "Awaiting Entry" },
+    { ticker: "PLUG", company: "Plug Power Inc.", currentPrice: 2.67, change: "+0.8%", changeDirection: "positive", signal: "Hydrogen fuel cell speculative play. Recently traded profitably — watching for re-entry below $2.40.", status: "waiting", statusText: "Awaiting Re-entry" },
+    { ticker: "QBTS", company: "D-Wave Quantum Inc.", currentPrice: 7.85, change: "+4.2%", changeDirection: "positive", signal: "Quantum computing pure-play. Speculative position — monitoring for entry on pullback below $6.", status: "waiting", statusText: "Awaiting Pullback" },
+    { ticker: "RGTI", company: "Rigetti Computing Inc.", currentPrice: 11.60, change: "+3.7%", changeDirection: "positive", signal: "Superconducting quantum processor developer. Speculative quantum thesis alongside QBTS. Target below $9.", status: "waiting", statusText: "Awaiting Entry" },
 ];
 
 // --- Portfolio Growth (annual realized return vs S&P 500) ---
