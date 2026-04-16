@@ -69,12 +69,12 @@ const REALIZED_TRADES = [
     { ticker: "KKR",   company: "KKR & Co Inc.",               entryPrice: 92.53,  exitPrice: 96.93,  returnPct: 4.8,   entryDate: "2026-04-01", exitDate: "2026-04-13", source: "IBKR" },
     { ticker: "COIN",  company: "Coinbase Global Inc.",        entryPrice: 174.63, exitPrice: 187.21, returnPct: 7.2,   entryDate: "2026-04-08", exitDate: "2026-04-14", source: "IBKR" },
     { ticker: "BLDP",  company: "Ballard Power Systems",      entryPrice: 2.71,   exitPrice: 2.91,   returnPct: 7.5,   entryDate: "2026-04-13", exitDate: "2026-04-14", source: "IBKR" },
+    { ticker: "DT",    company: "Dynatrace Inc.",              entryPrice: 34.24,  exitPrice: 36.29,  returnPct: 6.0,   entryDate: "2026-04-09", exitDate: "2026-04-16", source: "IBKR" },
 ];
 
 // --- Open Positions (current holdings) ---
 const OPEN_POSITIONS = [
     { ticker: "BLDP",  company: "Ballard Power Systems",  entryPrice: 3.78,   entryDate: "2022-04-28", source: "Schwab" },
-    { ticker: "DT",    company: "Dynatrace Inc.",          entryPrice: 34.24,  entryDate: "2026-04-09", source: "IBKR" },
     { ticker: "FSLR",  company: "First Solar Inc.",        entryPrice: 202.79, entryDate: "2026-04-10", source: "IBKR" },
     { ticker: "GOOG",  company: "Alphabet Inc.",           entryPrice: 315.78, entryDate: "2025-12-04", source: "IBKR" },
     { ticker: "IONQ",  company: "IonQ Inc.",               entryPrice: 62.20,  entryDate: "2025-10-14", source: "IBKR" },
@@ -86,23 +86,23 @@ const OPEN_POSITIONS = [
 
 // --- Performance Stats ---
 const PERF_STATS = {
-    totalTrades: 63,
-    wins: 61,
+    totalTrades: 64,
+    wins: 62,
     losses: 2,
-    winRate: "96.8%",
+    winRate: "96.9%",
     avgReturn: 8.9,
-    totalRealizedProfit: 81000,
+    totalRealizedProfit: 83400,
     annualReturn: 12.0,
     bestTrade: { ticker: "BLNK", returnPct: 35.5 },
-    openPositions: 9,
+    openPositions: 8,
     activeSince: "April 2022",
 };
 
 // --- Month-to-Date Stats ---
 const MTD_STATS = {
     month: "April 2026",
-    realizedProfit: 12200,
-    returnPct: 4.5,
+    realizedProfit: 14600,
+    returnPct: 4.8,
 };
 
 // --- Watchlist ---
