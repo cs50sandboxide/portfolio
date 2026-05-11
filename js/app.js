@@ -1,5 +1,5 @@
 /* ============================================
-   Portfolio App — Main Application Logic
+   AKV Capital — Fund Application Logic
    All Trades: Schwab + IBKR (April 2022–Present)
    ============================================ */
 
@@ -18,17 +18,17 @@ document.addEventListener("DOMContentLoaded", () => {
     initContactForm();
 });
 
-/* ---- MTD Profit Banner ---- */
+/* ---- Banner ---- */
 function initMtdBanner() {
     if (typeof MTD_STATS === "undefined") return;
     const el = (id) => document.getElementById(id);
+    if (el("mtdLabel")) el("mtdLabel").textContent = "TTM Realized Profit";
     if (el("mtdValue")) {
         const prefix = MTD_STATS.realizedProfit >= 0 ? "+$" : "-$";
         el("mtdValue").textContent = prefix + Math.abs(MTD_STATS.realizedProfit).toLocaleString();
     }
     if (el("mtdPct")) {
-        const prefix = MTD_STATS.returnPct >= 0 ? "(+" : "(";
-        el("mtdPct").textContent = prefix + MTD_STATS.returnPct.toFixed(1) + "%)";
+        el("mtdPct").textContent = "(" + MTD_STATS.returnPct.toFixed(2) + "% QTD annualized)";
     }
 }
 
@@ -103,15 +103,11 @@ function initTabs() {
 function initPerfStats() {
     if (typeof PERF_STATS === "undefined") return;
     const el = (id) => document.getElementById(id);
-    if (el("totalProfit")) el("totalProfit").textContent = "~$" + PERF_STATS.totalRealizedProfit.toLocaleString();
-    if (el("winRate")) el("winRate").textContent = PERF_STATS.winRate;
-    if (el("annualReturn")) el("annualReturn").textContent = "+" + PERF_STATS.annualReturn.toFixed(1) + "%";
-    if (el("avgReturn")) el("avgReturn").textContent = "+" + PERF_STATS.avgReturn.toFixed(1) + "%";
-    if (el("totalTrades")) el("totalTrades").textContent = PERF_STATS.totalTrades;
-    if (el("bestTrade")) el("bestTrade").textContent = PERF_STATS.bestTrade.ticker + " +" + PERF_STATS.bestTrade.returnPct + "%";
+    if (el("totalAUM")) el("totalAUM").textContent = "$" + (PERF_STATS.totalAUM / 1000000).toFixed(1) + "M";
+    if (el("qtdReturn")) el("qtdReturn").textContent = "+" + PERF_STATS.qtdAnnualizedReturn.toFixed(2) + "%";
+    if (el("ttmProfit")) el("ttmProfit").textContent = "$" + (PERF_STATS.ttmProfit / 1000).toFixed(0) + "K";
 
     // Growth tab stats
-    if (el("gsWinRate")) el("gsWinRate").textContent = PERF_STATS.wins + "/" + PERF_STATS.totalTrades + " (" + PERF_STATS.winRate + ")";
     if (el("gsAvgReturn")) el("gsAvgReturn").textContent = "+" + PERF_STATS.avgReturn.toFixed(1) + "%";
     if (el("gsBestTrade")) el("gsBestTrade").textContent = PERF_STATS.bestTrade.ticker + " +" + PERF_STATS.bestTrade.returnPct + "%";
     if (el("gsActiveSince")) el("gsActiveSince").textContent = PERF_STATS.activeSince;
@@ -495,18 +491,10 @@ function initGrowthChart() {
             labels: GROWTH_DATA.labels,
             datasets: [
                 {
-                    label: "Portfolio",
+                    label: "Fund Return",
                     data: GROWTH_DATA.portfolio,
-                    backgroundColor: "rgba(245, 240, 235, 0.7)",
-                    borderColor: "#f5f0eb",
-                    borderWidth: 1,
-                    borderRadius: 2,
-                },
-                {
-                    label: "S&P 500",
-                    data: GROWTH_DATA.benchmark,
-                    backgroundColor: "rgba(85, 85, 85, 0.5)",
-                    borderColor: "#555555",
+                    backgroundColor: "rgba(201, 169, 110, 0.7)",
+                    borderColor: "#c9a96e",
                     borderWidth: 1,
                     borderRadius: 2,
                 },

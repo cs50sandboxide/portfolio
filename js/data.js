@@ -1,7 +1,7 @@
 /* ============================================
-   Portfolio Data — All Realized + Open (Schwab + IBKR)
-   Percentages only. No investment dollar values.
-   Last updated: May 2, 2026
+   AKV Capital — Family & Friends Investment Fund
+   All Realized + Open Positions (Schwab + IBKR)
+   Last updated: May 11, 2026
    ============================================ */
 
 // --- All Realized Trades (chronological by exit date, per-brokerage) ---
@@ -71,57 +71,56 @@ const REALIZED_TRADES = [
     { ticker: "BLDP",  company: "Ballard Power Systems",      entryPrice: 2.71,   exitPrice: 2.91,   returnPct: 7.5,   entryDate: "2026-04-13", exitDate: "2026-04-14", source: "IBKR" },
     { ticker: "DT",    company: "Dynatrace Inc.",              entryPrice: 34.24,  exitPrice: 36.50,  returnPct: 6.6,   entryDate: "2026-04-09", exitDate: "2026-04-16", source: "IBKR" },
     { ticker: "GOOG",  company: "Alphabet Inc.",               entryPrice: 315.78, exitPrice: 374.81, returnPct: 18.7,  entryDate: "2025-12-04", exitDate: "2026-04-30", source: "IBKR" },
+    { ticker: "OSCR",  company: "Oscar Health Inc.",           entryPrice: 15.33,  exitPrice: 19.18,  returnPct: 25.1,  entryDate: "2025-08-29", exitDate: "2026-05-06", source: "IBKR" },
+    { ticker: "BLDP",  company: "Ballard Power Systems",      entryPrice: 3.78,   exitPrice: 4.22,   returnPct: 11.5,  entryDate: "2022-04-28", exitDate: "2026-05-11", source: "Schwab" },
+    { ticker: "TSLA",  company: "Tesla Inc.",                  entryPrice: 417.82, exitPrice: 446.47, returnPct: 6.9,   entryDate: "2026-02-03", exitDate: "2026-05-11", source: "Schwab" },
+    { ticker: "UNH",   company: "UnitedHealth Group",         entryPrice: 353.28, exitPrice: 381.25, returnPct: 7.9,   entryDate: "2025-10-10", exitDate: "2026-05-11", source: "Schwab" },
 ];
 
 // --- Open Positions (current holdings) ---
 const OPEN_POSITIONS = [
-    { ticker: "BLDP",  company: "Ballard Power Systems",  entryPrice: 3.78,   entryDate: "2022-04-28", source: "Schwab" },
     { ticker: "BX",    company: "Blackstone Inc.",         entryPrice: 121.69, entryDate: "2026-04-23", source: "IBKR" },
-    { ticker: "COIN",  company: "Coinbase Global Inc.",    entryPrice: 198.64, entryDate: "2026-04-23", source: "IBKR" },
+    { ticker: "COIN",  company: "Coinbase Global Inc.",    entryPrice: 197.18, entryDate: "2026-04-23", source: "IBKR" },
     { ticker: "FSLR",  company: "First Solar Inc.",        entryPrice: 202.79, entryDate: "2026-04-10", source: "IBKR" },
     { ticker: "IONQ",  company: "IonQ Inc.",               entryPrice: 62.20,  entryDate: "2025-10-14", source: "IBKR" },
     { ticker: "KKR",   company: "KKR & Co Inc.",           entryPrice: 101.70, entryDate: "2026-04-23", source: "IBKR" },
     { ticker: "META",  company: "Meta Platforms Inc.",      entryPrice: 713.33, entryDate: "2025-10-29", source: "IBKR" },
-    { ticker: "OSCR",  company: "Oscar Health Inc.",        entryPrice: 15.33,  entryDate: "2025-08-29", source: "IBKR" },
-    { ticker: "UNH",   company: "UnitedHealth Group",      entryPrice: 353.28, entryDate: "2025-10-10", source: "Schwab" },
+    { ticker: "PLUG",  company: "Plug Power Inc.",         entryPrice: 3.21,   entryDate: "2026-05-06", source: "IBKR" },
 ];
 
-// --- Performance Stats ---
+// --- Fund Performance Stats ---
 const PERF_STATS = {
-    totalTrades: 65,
-    wins: 63,
-    losses: 2,
-    winRate: "96.9%",
-    avgReturn: 9.2,
-    totalRealizedProfit: 89500,
-    annualReturn: 12.6,
+    totalTrades: 69,
+    totalAUM: 1200000,
+    ttmProfit: 107000,
+    qtdAnnualizedReturn: 22.71,
+    avgReturn: 9.3,
     bestTrade: { ticker: "BLNK", returnPct: 35.5 },
-    openPositions: 9,
+    openPositions: 7,
     activeSince: "April 2022",
 };
 
-// --- Month-to-Date Stats ---
+// --- Quarter-to-Date Stats (banner) ---
 const MTD_STATS = {
-    month: "April 2026",
-    realizedProfit: 20500,
-    returnPct: 6.7,
+    month: "Q2 2026",
+    realizedProfit: 107000,
+    returnPct: 22.71,
 };
 
 // --- Watchlist ---
 const WATCHLIST = [
     { ticker: "ORCL", company: "Oracle Corp.", currentPrice: 146.36, change: "+6.3%", changeDirection: "positive", signal: "Cloud infrastructure and AI database demand accelerating. Recently traded — watching for pullback to $135 for re-entry.", status: "waiting", statusText: "Awaiting Re-entry" },
     { ticker: "DDOG", company: "Datadog Inc.", currentPrice: 112.50, change: "+1.8%", changeDirection: "positive", signal: "Cloud observability leader benefiting from AI workload monitoring. Target entry below $105 on next earnings dip.", status: "waiting", statusText: "Awaiting Pullback" },
-    { ticker: "DT", company: "Dynatrace Inc.", currentPrice: 34.24, change: "-0.4%", changeDirection: "negative", signal: "APM leader with AI-driven automation. Currently held — monitoring for adding on dips below $32.", status: "waiting", statusText: "Monitoring Position" },
+    { ticker: "DT", company: "Dynatrace Inc.", currentPrice: 34.24, change: "-0.4%", changeDirection: "negative", signal: "APM leader with AI-driven automation. Monitoring for re-entry on dips below $32.", status: "waiting", statusText: "Awaiting Re-entry" },
     { ticker: "SMR", company: "NuScale Power Corp.", currentPrice: 28.40, change: "+3.1%", changeDirection: "positive", signal: "Small modular reactor leader. Long-term nuclear renaissance thesis. Watching for entry below $25.", status: "waiting", statusText: "Awaiting Entry" },
     { ticker: "OKLO", company: "Oklo Inc.", currentPrice: 25.10, change: "+2.5%", changeDirection: "positive", signal: "Micro-reactor developer backed by Sam Altman. Speculative AI energy demand play. Target below $20.", status: "waiting", statusText: "Awaiting Entry" },
-    { ticker: "PLUG", company: "Plug Power Inc.", currentPrice: 2.67, change: "+0.8%", changeDirection: "positive", signal: "Hydrogen fuel cell speculative play. Recently traded profitably — watching for re-entry below $2.40.", status: "waiting", statusText: "Awaiting Re-entry" },
+    { ticker: "PLUG", company: "Plug Power Inc.", currentPrice: 3.21, change: "+0.8%", changeDirection: "positive", signal: "Hydrogen fuel cell speculative play. Currently held — monitoring position for exit above $3.50.", status: "active", statusText: "Active Position" },
     { ticker: "QBTS", company: "D-Wave Quantum Inc.", currentPrice: 7.85, change: "+4.2%", changeDirection: "positive", signal: "Quantum computing pure-play. Speculative position — monitoring for entry on pullback below $6.", status: "waiting", statusText: "Awaiting Pullback" },
     { ticker: "RGTI", company: "Rigetti Computing Inc.", currentPrice: 11.60, change: "+3.7%", changeDirection: "positive", signal: "Superconducting quantum processor developer. Speculative quantum thesis alongside QBTS. Target below $9.", status: "waiting", statusText: "Awaiting Entry" },
 ];
 
-// --- Portfolio Growth (annual realized return vs S&P 500) ---
+// --- Portfolio Growth (annual realized return) ---
 const GROWTH_DATA = {
     labels: ["2022", "2023", "2024", "2025", "2026 YTD"],
     portfolio: [13.8, 14.0, 13.1, 10.9, 11.0],
-    benchmark: [-18.1, 26.3, 25.0, 2.1, -4.2],
 };

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Portfolio Performance | Advaith Krishnan Vinod</title>
+    <title>Fund Performance | AKV Capital</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/portfolio.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -40,8 +40,8 @@
     <section class="page-hero">
         <div class="container">
             <span class="section-label">02 / Portfolio</span>
-            <h1 class="page-hero-title">Portfolio Performance</h1>
-            <p class="page-hero-sub">All trades from Charles Schwab &amp; Interactive Brokers, April 2022 – present. Hover over a trade to see the chart with entry/exit markers.</p>
+            <h1 class="page-hero-title">Fund Performance</h1>
+            <p class="page-hero-sub">AKV Capital — Family &amp; Friends Investment Fund. All trades across Charles Schwab &amp; Interactive Brokers, April 2022 – present. Hover over a trade to see the chart with entry/exit markers.</p>
         </div>
     </section>
 
@@ -50,16 +50,16 @@
         <div class="container">
             <div class="portfolio-summary">
                 <div class="summary-card">
-                    <span class="summary-label">Total Realized Profit</span>
-                    <span class="summary-value positive" id="totalProfit">—</span>
+                    <span class="summary-label">Total Assets Under Management</span>
+                    <span class="summary-value" id="totalAUM">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Win Rate</span>
-                    <span class="summary-value" id="winRate">—</span>
+                    <span class="summary-label">QTD Annualized Return</span>
+                    <span class="summary-value positive" id="qtdReturn">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Avg Return / Year</span>
-                    <span class="summary-value positive" id="annualReturn">—</span>
+                    <span class="summary-label">TTM Realized Profit</span>
+                    <span class="summary-value positive" id="ttmProfit">—</span>
                 </div>
             </div>
 
@@ -121,15 +121,11 @@
 
             <!-- Portfolio Performance -->
             <div class="tab-content" id="tab-growth">
-                <div class="tab-section-label">Annual Realized Return vs S&P 500</div>
+                <div class="tab-section-label">Annual Realized Return</div>
                 <div class="chart-container">
                     <canvas id="growthChart"></canvas>
                 </div>
                 <div class="growth-stats">
-                    <div class="growth-stat">
-                        <span class="growth-stat-label">Win Rate</span>
-                        <span class="growth-stat-value" id="gsWinRate">—</span>
-                    </div>
                     <div class="growth-stat">
                         <span class="growth-stat-label">Avg Return / Trade</span>
                         <span class="growth-stat-value positive" id="gsAvgReturn">—</span>
