@@ -1614,6 +1614,21 @@ body:has(.mtd-banner) .page-hero {
     color: var(--gray-500);
 }
 
+/* ---- Activities Grid ---- */
+.activities-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.activities-grid .preview-stat {
+    text-align: center;
+    align-items: center;
+    padding: 36px 32px;
+}
+
 /* ---- Models Preview Grid ---- */
 .models-preview-grid {
     display: grid;
