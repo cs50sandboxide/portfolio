@@ -1,5 +1,5 @@
 /* ============================================
-   AKV Capital — Fund Application Logic
+   Fund Application Logic
    All Trades: Schwab + IBKR (April 2022–Present)
    ============================================ */
 

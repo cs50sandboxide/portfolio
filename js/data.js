@@ -1,5 +1,5 @@
 /* ============================================
-   AKV Capital — Family & Friends Investment Fund
+   Family & Friends Investment Fund
    All Realized + Open Positions (Schwab + IBKR)
    Last updated: May 11, 2026
    ============================================ */
