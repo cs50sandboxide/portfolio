@@ -81,6 +81,7 @@ const REALIZED_TRADES = [
 const OPEN_POSITIONS = [
     { ticker: "BX",    company: "Blackstone Inc.",         entryPrice: 121.69, entryDate: "2026-04-23", source: "IBKR" },
     { ticker: "COIN",  company: "Coinbase Global Inc.",    entryPrice: 197.18, entryDate: "2026-04-23", source: "IBKR" },
+    { ticker: "DT",    company: "Dynatrace Inc.",          entryPrice: 37.82,  entryDate: "2026-05-16", source: "IBKR" },
     { ticker: "FSLR",  company: "First Solar Inc.",        entryPrice: 202.79, entryDate: "2026-04-10", source: "IBKR" },
     { ticker: "IONQ",  company: "IonQ Inc.",               entryPrice: 62.20,  entryDate: "2025-10-14", source: "IBKR" },
     { ticker: "KKR",   company: "KKR & Co Inc.",           entryPrice: 101.70, entryDate: "2026-04-23", source: "IBKR" },
@@ -96,7 +97,7 @@ const PERF_STATS = {
     qtdAnnualizedReturn: 22.71,
     avgReturn: 9.3,
     bestTrade: { ticker: "BLNK", returnPct: 35.5 },
-    openPositions: 7,
+    openPositions: 8,
     activeSince: "April 2022",
 };
 

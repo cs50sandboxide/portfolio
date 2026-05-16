@@ -405,6 +405,15 @@
     color: var(--gray-500);
 }
 
+.cert-card-featured {
+    border-color: rgba(201, 169, 110, 0.25);
+    background: linear-gradient(135deg, rgba(201, 169, 110, 0.08) 0%, rgba(201, 169, 110, 0.02) 100%);
+}
+
+.cert-card-featured h3 {
+    font-size: 1.1rem;
+}
+
 /* ---- Awards ---- */
 .awards-list {
     display: flex;

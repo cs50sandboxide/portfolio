@@ -1629,6 +1629,147 @@ body:has(.mtd-banner) .page-hero {
     padding: 36px 32px;
 }
 
+/* ---- CFA Feature Card ---- */
+.cfa-feature-card {
+    background: linear-gradient(135deg, rgba(201, 169, 110, 0.08) 0%, rgba(201, 169, 110, 0.03) 100%);
+    border: 1px solid rgba(201, 169, 110, 0.2);
+    padding: 40px;
+    margin-bottom: 1px;
+}
+
+.cfa-feature-inner {
+    display: flex;
+    align-items: flex-start;
+    gap: 32px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.cfa-feature-badge {
+    flex-shrink: 0;
+    width: 72px;
+    height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--gold);
+    color: var(--black);
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.cfa-feature-content h3 {
+    font-family: var(--font-serif);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--off-white);
+    margin-bottom: 6px;
+}
+
+.cfa-exam-date {
+    font-size: 0.85rem;
+    color: var(--gray-400);
+    margin-bottom: 16px;
+}
+
+.cfa-exam-date strong {
+    color: var(--gold);
+}
+
+.cfa-topics {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.cfa-topic {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--gray-400);
+    padding: 5px 12px;
+    border: 1px solid rgba(245, 240, 235, 0.1);
+    background: rgba(245, 240, 235, 0.03);
+}
+
+/* ---- HeadStart Banner ---- */
+.headstart-banner {
+    background: linear-gradient(135deg, rgba(201, 169, 110, 0.1) 0%, rgba(201, 169, 110, 0.04) 100%);
+    border: 1px solid rgba(201, 169, 110, 0.25);
+    padding: 24px 32px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.headstart-tag {
+    flex-shrink: 0;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--black);
+    background: var(--gold);
+    padding: 6px 14px;
+}
+
+.headstart-banner p {
+    font-size: 0.9rem;
+    color: var(--gray-300);
+    line-height: 1.6;
+}
+
+.headstart-banner strong {
+    color: var(--off-white);
+}
+
+/* ---- Contact Centered ---- */
+.contact-info-centered {
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.contact-info-centered .contact-intro {
+    margin-bottom: 48px;
+}
+
+.contact-links-centered {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: rgba(245, 240, 235, 0.06);
+    border: 1px solid rgba(245, 240, 235, 0.06);
+}
+
+.contact-links-centered .contact-link {
+    background: var(--black-light);
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 12px;
+}
+
+.contact-links-centered .contact-link div {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+/* ---- Models 2-col ---- */
+.models-preview-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 /* ---- Models Preview Grid ---- */
 .models-preview-grid {
     display: grid;
@@ -1911,6 +2052,25 @@ body:has(.mtd-banner) .page-hero {
         align-items: center;
     }
     .portfolio-preview-stats {
+        grid-template-columns: 1fr;
+    }
+    .cfa-feature-inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .cfa-feature-card {
+        padding: 28px 20px;
+    }
+    .cfa-topics {
+        justify-content: center;
+    }
+    .headstart-banner {
+        flex-direction: column;
+        text-align: center;
+        gap: 12px;
+    }
+    .contact-links-centered {
         grid-template-columns: 1fr;
     }
 }
