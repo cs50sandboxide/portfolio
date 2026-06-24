@@ -58,21 +58,45 @@
                     <span class="summary-value positive" id="qtdReturn">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">TTM Realized Profit</span>
-                    <span class="summary-value positive" id="ttmProfit">—</span>
+                    <span class="summary-label">YTD Realized Profit</span>
+                    <span class="summary-value positive" id="ytdProfit">—</span>
                 </div>
             </div>
 
             <!-- Tabs -->
             <div class="portfolio-tabs">
-                <button class="tab-btn active" data-tab="realized">Realized Trades</button>
-                <button class="tab-btn" data-tab="open">Open Positions</button>
+                <button class="tab-btn active" data-tab="composition">Portfolio Composition</button>
+                <button class="tab-btn" data-tab="realized">Realized Trades</button>
                 <button class="tab-btn" data-tab="watchlist">Watchlist</button>
                 <button class="tab-btn" data-tab="growth">Portfolio Performance</button>
             </div>
 
+            <!-- Portfolio Composition -->
+            <div class="tab-content active" id="tab-composition">
+                <div class="tab-section-label">Current Portfolio — 34 Open Positions across Longs, Shorts &amp; Options</div>
+                <div class="composition-viz" id="compositionViz"></div>
+                <div class="composition-legend">
+                    <button class="legend-item active" data-category="all">
+                        <span class="legend-dot" style="background:#f5f0eb"></span>All (34)
+                    </button>
+                    <button class="legend-item" data-category="longs">
+                        <span class="legend-dot" style="background:#4ade80"></span>Longs (18)
+                    </button>
+                    <button class="legend-item" data-category="shorts">
+                        <span class="legend-dot" style="background:#f87171"></span>Shorts (7)
+                    </button>
+                    <button class="legend-item" data-category="putOptions">
+                        <span class="legend-dot" style="background:#c9a96e"></span>Put Options (6)
+                    </button>
+                    <button class="legend-item" data-category="callOptions">
+                        <span class="legend-dot" style="background:#6495ed"></span>Call Options (3)
+                    </button>
+                </div>
+                <div class="composition-grid" id="compositionGrid"></div>
+            </div>
+
             <!-- Realized Trades -->
-            <div class="tab-content active" id="tab-realized">
+            <div class="tab-content" id="tab-realized">
                 <div class="tab-section-label">All Realized Trades — Schwab + IBKR · Hover for chart</div>
                 <div class="positions-table-wrap">
                     <table class="positions-table realized-table">
@@ -89,27 +113,6 @@
                             </tr>
                         </thead>
                         <tbody id="realizedBody"></tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Open Positions -->
-            <div class="tab-content" id="tab-open">
-                <div class="tab-section-label">Current Holdings — Live prices update every 60s</div>
-                <div class="positions-table-wrap">
-                    <table class="positions-table open-table">
-                        <thead>
-                            <tr>
-                                <th>Ticker</th>
-                                <th>Company</th>
-                                <th>Entry Price</th>
-                                <th>Current Price</th>
-                                <th>Unrealized</th>
-                                <th>Entry Date</th>
-                                <th>Source</th>
-                            </tr>
-                        </thead>
-                        <tbody id="openBody"></tbody>
                     </table>
                 </div>
             </div>

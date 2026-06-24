@@ -146,6 +146,212 @@
     border-top: 1px solid rgba(245, 240, 235, 0.06);
 }
 
+/* ============================================
+   Portfolio Composition — Constellation Diagram
+   ============================================ */
+
+.composition-viz {
+    position: relative;
+    margin-bottom: 32px;
+    border: 1px solid rgba(245, 240, 235, 0.06);
+    background: radial-gradient(ellipse at center, rgba(201, 169, 110, 0.03) 0%, transparent 60%);
+    overflow: hidden;
+}
+
+.constellation-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.constellation-svg text {
+    pointer-events: none;
+    user-select: none;
+}
+
+.constellation-ticker {
+    cursor: pointer;
+    transition: opacity 0.3s;
+}
+
+.constellation-ticker:hover circle {
+    filter: drop-shadow(0 0 6px currentColor);
+}
+
+.constellation-hub {
+    pointer-events: none;
+}
+
+/* Tooltip */
+.constellation-tooltip {
+    position: absolute;
+    z-index: 10;
+    background: #1a1a1a;
+    border: 1px solid rgba(245, 240, 235, 0.12);
+    padding: 12px 16px;
+    pointer-events: none;
+    opacity: 0;
+    transform: translateY(4px);
+    transition: opacity 0.15s, transform 0.15s;
+    min-width: 180px;
+}
+
+.constellation-tooltip.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.tooltip-ticker {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--off-white);
+    letter-spacing: 0.05em;
+}
+
+.tooltip-company {
+    font-size: 0.75rem;
+    font-weight: 300;
+    color: var(--gray-400);
+    margin-top: 2px;
+}
+
+.tooltip-detail {
+    font-size: 0.7rem;
+    font-weight: 400;
+    color: var(--gray-500);
+    margin-top: 6px;
+}
+
+/* Legend Filters */
+.composition-legend {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 32px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: transparent;
+    border: 1px solid rgba(245, 240, 235, 0.1);
+    color: var(--gray-400);
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: border-color 0.2s, color 0.2s, background 0.2s;
+}
+
+.legend-item:hover {
+    border-color: rgba(245, 240, 235, 0.2);
+    color: var(--off-white);
+}
+
+.legend-item.active {
+    border-color: rgba(245, 240, 235, 0.25);
+    background: rgba(245, 240, 235, 0.04);
+    color: var(--off-white);
+}
+
+.legend-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+/* Composition Grid — Category Cards */
+.composition-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.comp-category-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(245, 240, 235, 0.06);
+}
+
+.comp-category-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.comp-category-label {
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--off-white);
+}
+
+.comp-category-count {
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: var(--gray-500);
+    margin-left: auto;
+}
+
+.comp-positions {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+}
+
+.comp-card {
+    background: rgba(245, 240, 235, 0.02);
+    border: 1px solid rgba(245, 240, 235, 0.06);
+    padding: 14px 16px;
+    transition: border-color 0.2s, background 0.2s;
+}
+
+.comp-card:hover {
+    background: rgba(245, 240, 235, 0.04);
+    border-color: rgba(245, 240, 235, 0.12);
+}
+
+.comp-card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 4px;
+}
+
+.comp-card-ticker {
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.comp-card-price {
+    font-size: 0.75rem;
+    font-weight: 400;
+    color: var(--gray-400);
+    font-variant-numeric: tabular-nums;
+}
+
+.comp-card-options {
+    font-style: italic;
+    color: var(--gray-500);
+}
+
+.comp-card-company {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--gray-500);
+    display: block;
+}
+
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
     .chart-popup {
@@ -154,5 +360,11 @@
     .realized-table,
     .open-table {
         font-size: 0.75rem;
+    }
+    .composition-viz {
+        display: none;
+    }
+    .comp-positions {
+        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
     }
 }

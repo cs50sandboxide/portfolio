@@ -1,7 +1,7 @@
 /* ============================================
    Family & Friends Investment Fund
    All Realized + Open Positions (Schwab + IBKR)
-   Last updated: May 11, 2026
+   Last updated: June 24, 2026
    ============================================ */
 
 // --- All Realized Trades (chronological by exit date, per-brokerage) ---
@@ -77,34 +77,68 @@ const REALIZED_TRADES = [
     { ticker: "UNH",   company: "UnitedHealth Group",         entryPrice: 353.28, exitPrice: 381.25, returnPct: 7.9,   entryDate: "2025-10-10", exitDate: "2026-05-11", source: "Schwab" },
 ];
 
-// --- Open Positions (current holdings) ---
-const OPEN_POSITIONS = [
-    { ticker: "BX",    company: "Blackstone Inc.",         entryPrice: 121.69, entryDate: "2026-04-23", source: "IBKR" },
-    { ticker: "COIN",  company: "Coinbase Global Inc.",    entryPrice: 197.18, entryDate: "2026-04-23", source: "IBKR" },
-    { ticker: "DT",    company: "Dynatrace Inc.",          entryPrice: 37.82,  entryDate: "2026-05-16", source: "IBKR" },
-    { ticker: "FSLR",  company: "First Solar Inc.",        entryPrice: 202.79, entryDate: "2026-04-10", source: "IBKR" },
-    { ticker: "IONQ",  company: "IonQ Inc.",               entryPrice: 62.20,  entryDate: "2025-10-14", source: "IBKR" },
-    { ticker: "KKR",   company: "KKR & Co Inc.",           entryPrice: 101.70, entryDate: "2026-04-23", source: "IBKR" },
-    { ticker: "META",  company: "Meta Platforms Inc.",      entryPrice: 713.33, entryDate: "2025-10-29", source: "IBKR" },
-    { ticker: "PLUG",  company: "Plug Power Inc.",         entryPrice: 3.21,   entryDate: "2026-05-06", source: "IBKR" },
-];
+// --- Portfolio Composition (4 categories) ---
+const PORTFOLIO_COMPOSITION = {
+    longs: [
+        { ticker: "COIN",  company: "Coinbase Global Inc.",    entryPrice: 165.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "CRCL",  company: "Circle Internet Group",  entryPrice: 76.00,  entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "PLTR",  company: "Palantir Technologies",  entryPrice: 119.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "BX",    company: "Blackstone Inc.",         entryPrice: 124.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "KKR",   company: "KKR & Co Inc.",           entryPrice: 94.00,  entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "CEG",   company: "Constellation Energy",   entryPrice: 276.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "FSLR",  company: "First Solar Inc.",        entryPrice: 249.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "UBER",  company: "Uber Technologies",      entryPrice: 70.00,  entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "SOFI",  company: "SoFi Technologies",      entryPrice: 18.00,  entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "SHOP",  company: "Shopify Inc.",            entryPrice: 108.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "NOW",   company: "ServiceNow Inc.",         entryPrice: 95.00,  entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "CRM",   company: "Salesforce Inc.",         entryPrice: 150.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "MSFT",  company: "Microsoft Corp.",         entryPrice: 373.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "IBIT",  company: "iShares Bitcoin Trust",   entryPrice: 35.00,  entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "OSCR",  company: "Oscar Health Inc.",       entryPrice: 29.00,  entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "USAR",  company: "USA Rare Earth Inc.",     entryPrice: 25.00,  entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "XE",    company: "X-Energy Inc.",           entryPrice: 22.00,  entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "COST",  company: "Costco Wholesale Corp.",  entryPrice: 955.00, entryDate: "2026-06-24", source: "IBKR" },
+    ],
+    shorts: [
+        { ticker: "MU",    company: "Micron Technology",       entryPrice: 915.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "DELL",  company: "Dell Technologies",      entryPrice: 350.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "INTC",  company: "Intel Corp.",             entryPrice: 100.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "AMD",   company: "Advanced Micro Devices",  entryPrice: 550.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "SNDK",  company: "SanDisk Corp.",           entryPrice: 2100.00,entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "BE",    company: "Bloom Energy Corp.",      entryPrice: 350.00, entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "NBIS",  company: "Nebius Group",            entryPrice: 290.00, entryDate: "2026-06-24", source: "IBKR" },
+    ],
+    putOptions: [
+        { ticker: "DELL",  company: "Dell Technologies",      entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "MU",    company: "Micron Technology",       entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "SNDK",  company: "SanDisk Corp.",           entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "NVDA",  company: "NVIDIA Corp.",            entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "AAL",   company: "American Airlines Group", entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "INTC",  company: "Intel Corp.",             entryDate: "2026-06-24", source: "IBKR" },
+    ],
+    callOptions: [
+        { ticker: "COIN",  company: "Coinbase Global Inc.",    entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "META",  company: "Meta Platforms Inc.",     entryDate: "2026-06-24", source: "IBKR" },
+        { ticker: "PLTR",  company: "Palantir Technologies",  entryDate: "2026-06-24", source: "IBKR" },
+    ],
+};
 
 // --- Fund Performance Stats ---
 const PERF_STATS = {
     totalTrades: 69,
-    totalAUM: 1200000,
-    ttmProfit: 107000,
+    totalAUM: 1900000,
+    ytdProfit: 300000,
     qtdAnnualizedReturn: 22.71,
     avgReturn: 9.3,
     bestTrade: { ticker: "BLNK", returnPct: 35.5 },
-    openPositions: 8,
+    openPositions: 34,
     activeSince: "April 2022",
 };
 
-// --- Quarter-to-Date Stats (banner) ---
+// --- Year-to-Date Stats (banner) ---
 const MTD_STATS = {
-    month: "Q2 2026",
-    realizedProfit: 107000,
+    month: "YTD 2026",
+    realizedProfit: 300000,
     returnPct: 22.71,
 };
 
@@ -115,7 +149,6 @@ const WATCHLIST = [
     { ticker: "DT", company: "Dynatrace Inc.", currentPrice: 34.24, change: "-0.4%", changeDirection: "negative", signal: "APM leader with AI-driven automation. Monitoring for re-entry on dips below $32.", status: "waiting", statusText: "Awaiting Re-entry" },
     { ticker: "SMR", company: "NuScale Power Corp.", currentPrice: 28.40, change: "+3.1%", changeDirection: "positive", signal: "Small modular reactor leader. Long-term nuclear renaissance thesis. Watching for entry below $25.", status: "waiting", statusText: "Awaiting Entry" },
     { ticker: "OKLO", company: "Oklo Inc.", currentPrice: 25.10, change: "+2.5%", changeDirection: "positive", signal: "Micro-reactor developer backed by Sam Altman. Speculative AI energy demand play. Target below $20.", status: "waiting", statusText: "Awaiting Entry" },
-    { ticker: "PLUG", company: "Plug Power Inc.", currentPrice: 3.21, change: "+0.8%", changeDirection: "positive", signal: "Hydrogen fuel cell speculative play. Currently held — monitoring position for exit above $3.50.", status: "active", statusText: "Active Position" },
     { ticker: "QBTS", company: "D-Wave Quantum Inc.", currentPrice: 7.85, change: "+4.2%", changeDirection: "positive", signal: "Quantum computing pure-play. Speculative position — monitoring for entry on pullback below $6.", status: "waiting", statusText: "Awaiting Pullback" },
     { ticker: "RGTI", company: "Rigetti Computing Inc.", currentPrice: 11.60, change: "+3.7%", changeDirection: "positive", signal: "Superconducting quantum processor developer. Speculative quantum thesis alongside QBTS. Target below $9.", status: "waiting", statusText: "Awaiting Entry" },
 ];
