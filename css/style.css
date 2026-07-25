@@ -1727,6 +1727,41 @@ body:has(.mtd-banner) .page-hero {
     color: var(--off-white);
 }
 
+.internship-cards-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 32px;
+}
+
+.internship-cards-grid .headstart-banner {
+    margin-bottom: 0;
+    align-items: flex-start;
+}
+
+.headstart-banner-alt {
+    background: linear-gradient(135deg, rgba(100, 149, 237, 0.08) 0%, rgba(100, 149, 237, 0.03) 100%) !important;
+    border-color: rgba(100, 149, 237, 0.2) !important;
+}
+
+.headstart-tag-alt {
+    background: #6495ed !important;
+    color: var(--black) !important;
+}
+
+.internship-banner-meta {
+    font-size: 0.75rem !important;
+    color: var(--gray-500) !important;
+    margin-top: 4px !important;
+    letter-spacing: 0.03em;
+}
+
+.internship-banner-desc {
+    font-size: 0.85rem !important;
+    color: var(--gray-400) !important;
+    margin-top: 8px !important;
+}
+
 /* ---- Contact Centered ---- */
 .contact-info-centered {
     max-width: 680px;
@@ -2064,6 +2099,9 @@ body:has(.mtd-banner) .page-hero {
     }
     .cfa-topics {
         justify-content: center;
+    }
+    .internship-cards-grid {
+        grid-template-columns: 1fr;
     }
     .headstart-banner {
         flex-direction: column;

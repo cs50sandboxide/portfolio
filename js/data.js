@@ -126,8 +126,8 @@ const PORTFOLIO_COMPOSITION = {
 // --- Fund Performance Stats ---
 const PERF_STATS = {
     totalTrades: 69,
-    totalAUM: 1900000,
-    ytdProfit: 300000,
+    totalAUM: 2200000,
+    ytdProfit: 510000,
     qtdAnnualizedReturn: 22.71,
     avgReturn: 9.3,
     bestTrade: { ticker: "BLNK", returnPct: 35.5 },
@@ -138,7 +138,7 @@ const PERF_STATS = {
 // --- Year-to-Date Stats (banner) ---
 const MTD_STATS = {
     month: "YTD 2026",
-    realizedProfit: 300000,
+    realizedProfit: 510000,
     returnPct: 22.71,
 };
 
@@ -156,5 +156,5 @@ const WATCHLIST = [
 // --- Portfolio Growth (annual realized return) ---
 const GROWTH_DATA = {
     labels: ["2022", "2023", "2024", "2025", "2026 YTD"],
-    portfolio: [13.8, 14.0, 13.1, 10.9, 11.0],
+    portfolio: [13.8, 14.0, 13.1, 10.9, 22.71],
 };

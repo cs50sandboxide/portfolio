@@ -184,7 +184,7 @@ function initComposition() {
 
     // Center node
     const centerGroup = createNodeGroup(cx, cy, 42, "#1a1a1a", "#c9a96e", 2);
-    const centerText1 = createSVGText(cx, cy - 6, "$1.9M", 13, "#c9a96e", 600);
+    const centerText1 = createSVGText(cx, cy - 6, "$2.2M", 13, "#c9a96e", 600);
     const centerText2 = createSVGText(cx, cy + 12, totalPositions + " positions", 8, "#777", 400);
     centerGroup.appendChild(centerText1);
     centerGroup.appendChild(centerText2);
