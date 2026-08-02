@@ -47,45 +47,101 @@
     border-bottom: 1px solid rgba(245, 240, 235, 0.06);
 }
 
-/* ---- Benchmark Comparison ---- */
+/* ---- Benchmark Comparison (vertical bars) ---- */
 .benchmark-compare {
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
     margin-bottom: 28px;
 }
 
-.bench-row {
-    display: grid;
-    grid-template-columns: 190px 1fr 90px;
-    align-items: center;
-    gap: 20px;
+.bench-chart {
+    max-width: 460px;
 }
 
-.bench-label {
-    font-size: 0.78rem;
-    font-weight: 400;
-    color: var(--gray-300);
-    letter-spacing: 0.03em;
+.bench-plot-row {
+    position: relative;
+    height: 300px;
 }
 
-.bench-track {
-    height: 10px;
-    background: rgba(245, 240, 235, 0.04);
-    border: 1px solid rgba(245, 240, 235, 0.05);
-    overflow: hidden;
+/* Zero / baseline axis */
+.bench-axis {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(245, 240, 235, 0.14);
 }
 
-.bench-fill {
+.bench-cols {
+    display: flex;
+    align-items: stretch;
+    justify-content: center;
+    gap: 96px;
     height: 100%;
-    transition: width 1.1s var(--ease-out-expo);
 }
 
-.bench-value {
-    font-size: 0.95rem;
+.bench-col {
+    position: relative;
+    width: 104px;
+}
+
+.bench-label-row {
+    height: auto;
+    padding-top: 14px;
+}
+
+.bench-col-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+}
+
+.bench-bar {
+    position: absolute;
+    left: 0;
+    right: 0;
+    transition: height 1.2s var(--ease-out-expo);
+}
+
+.bench-bar-value {
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 10px;
+    font-size: 1.05rem;
     font-weight: 600;
-    text-align: right;
     font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--off-white);
+}
+
+/* A negative return must never read as visually neutral */
+.bench-bar-value.negative {
+    color: var(--red);
+}
+
+/* Negative bars hang below the axis, so label sits underneath */
+.bench-bar-neg .bench-bar-value {
+    bottom: auto;
+    top: 100%;
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+
+.bench-col-name {
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-300);
+    text-align: center;
+}
+
+.bench-col-sub {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.12em;
+    color: var(--gray-600);
 }
 
 .perf-footnote {
@@ -240,12 +296,17 @@
 
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
-    .bench-row {
-        grid-template-columns: 1fr;
-        gap: 8px;
+    .bench-plot-row {
+        height: 240px;
     }
-    .bench-value {
-        text-align: left;
+    .bench-cols {
+        gap: 48px;
+    }
+    .bench-col {
+        width: 88px;
+    }
+    .bench-bar-value {
+        font-size: 0.9rem;
     }
     .positions-table td,
     .positions-table th {

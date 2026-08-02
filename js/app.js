@@ -146,30 +146,61 @@ function initBenchmark() {
     const wrap = el("benchmarkCompare");
     if (!wrap || typeof FUND_DATA === "undefined") return;
 
-    const fund = FUND_DATA.returnSinceInception;
-    const bench = FUND_DATA.benchmark.sinceInception;
-    const peak = Math.max(Math.abs(fund), Math.abs(bench), 1);
-
-    const rows = [
-        { label: "This Fund", value: fund, accent: "#c9a96e" },
-        { label: FUND_DATA.benchmark.name + " (" + FUND_DATA.benchmark.proxy + ")", value: bench, accent: "#777777" },
+    const cols = [
+        { label: "This Fund", value: FUND_DATA.returnSinceInception, accent: "#c9a96e" },
+        { label: FUND_DATA.benchmark.name, sub: FUND_DATA.benchmark.proxy,
+          value: FUND_DATA.benchmark.sinceInception, accent: "#777777" },
     ];
 
-    rows.forEach((row) => {
-        const pct = (Math.abs(row.value) / peak) * 100;
-        const bar = document.createElement("div");
-        bar.className = "bench-row";
-        bar.innerHTML = `
-            <span class="bench-label">${row.label}</span>
-            <div class="bench-track">
-                <div class="bench-fill" style="width:0%; background:${row.accent}"></div>
-            </div>
-            <span class="bench-value ${row.value >= 0 ? "positive" : "negative"}">${fmtPct(row.value)}</span>
-        `;
-        wrap.appendChild(bar);
-        // Animate on next frame so the transition runs
-        requestAnimationFrame(() => {
-            bar.querySelector(".bench-fill").style.width = pct + "%";
+    // Scale so the zero line sits correctly even if a return goes negative.
+    // Pad whichever ends actually extend, so value labels always have room
+    // outside the bar without colliding with the category labels below.
+    const vals = cols.map((c) => c.value);
+    const maxV = Math.max(...vals, 0);
+    const minV = Math.min(...vals, 0);
+    const range = (maxV - minV) || 1;
+    const pad = range * 0.14;
+    const top = maxV + (maxV > 0 ? pad : 0);
+    const bottomBound = minV - (minV < 0 ? pad : 0);
+    const span = (top - bottomBound) || 1;
+    const zeroPct = (-bottomBound / span) * 100;
+
+    // Plot row: bars + axis. Labels sit in a separate row so the axis
+    // line never runs through them.
+    const barsHtml = cols.map((c) => {
+        const magnitude = (Math.abs(c.value) / span) * 100;
+        const isNeg = c.value < 0;
+        const bottom = isNeg ? zeroPct - magnitude : zeroPct;
+        return `
+            <div class="bench-col">
+                <div class="bench-bar${isNeg ? " bench-bar-neg" : ""}"
+                     data-target="${magnitude}"
+                     style="bottom:${bottom}%; height:0%; background:${c.accent}">
+                    <span class="bench-bar-value ${isNeg ? "negative" : "positive"}">${fmtPct(c.value)}</span>
+                </div>
+            </div>`;
+    }).join("");
+
+    const labelsHtml = cols.map((c) => `
+        <div class="bench-col bench-col-label">
+            <span class="bench-col-name">${c.label}</span>
+            ${c.sub ? `<span class="bench-col-sub">${c.sub}</span>` : ""}
+        </div>`).join("");
+
+    const chart = document.createElement("div");
+    chart.className = "bench-chart";
+    chart.innerHTML = `
+        <div class="bench-plot-row">
+            <div class="bench-axis" style="bottom:${zeroPct}%"></div>
+            <div class="bench-cols">${barsHtml}</div>
+        </div>
+        <div class="bench-cols bench-label-row">${labelsHtml}</div>
+    `;
+    wrap.appendChild(chart);
+
+    requestAnimationFrame(() => {
+        chart.querySelectorAll(".bench-bar").forEach((bar) => {
+            bar.style.height = bar.dataset.target + "%";
         });
     });
 
