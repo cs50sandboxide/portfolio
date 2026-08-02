@@ -1,6 +1,5 @@
 /* ============================================
-   Portfolio Page — Dedicated Styles
-   All Trades: Schwab + IBKR
+   Portfolio Page — Live IBKR Snapshot
    ============================================ */
 
 .page-hero-sub {
@@ -9,221 +8,98 @@
     color: var(--gray-500);
     margin-top: 16px;
     line-height: 1.6;
+    max-width: 720px;
 }
 
-/* ---- Tab Section Label ---- */
+.data-stamp {
+    font-size: 0.62rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    margin-top: 20px;
+}
+
+/* ---- Summary Cards ---- */
+.summary-note {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 400;
+    letter-spacing: 0.1em;
+    color: var(--gray-600);
+    margin-top: 10px;
+    line-height: 1.5;
+}
+
+/* ---- Section Blocks ---- */
+.perf-block {
+    margin-top: 80px;
+}
+
 .tab-section-label {
     font-size: 0.65rem;
     font-weight: 400;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--gray-500);
-    margin-bottom: 24px;
+    margin-bottom: 28px;
     padding-bottom: 12px;
     border-bottom: 1px solid rgba(245, 240, 235, 0.06);
 }
 
-/* ---- Trade Rows (Realized + Open) ---- */
-.realized-table .trade-row,
-.open-table .trade-row {
-    cursor: pointer;
-    transition: background 0.2s;
-}
-
-.realized-table .trade-row:hover,
-.open-table .trade-row:hover {
-    background: rgba(245, 240, 235, 0.03);
-}
-
-/* ---- Source Badges ---- */
-.source-badge {
-    display: inline-block;
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 3px 8px;
-    border-radius: 2px;
-}
-
-.source-schwab {
-    background: rgba(201, 169, 110, 0.12);
-    color: #c9a96e;
-}
-
-.source-ibkr {
-    background: rgba(74, 222, 128, 0.1);
-    color: #4ade80;
-}
-
-.source-schwabibkr {
-    background: rgba(245, 240, 235, 0.06);
-    color: var(--gray-300);
-}
-
-/* ---- Status Badges ---- */
-.status-badge {
-    display: inline-block;
-    font-size: 0.6rem;
-    font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 2px;
-}
-
-.status-closed {
-    background: rgba(74, 222, 128, 0.1);
-    color: #4ade80;
-}
-
-.status-open {
-    background: rgba(245, 240, 235, 0.06);
-    color: var(--gray-300);
-}
-
-.status-partial {
-    background: rgba(201, 169, 110, 0.12);
-    color: #c9a96e;
-}
-
-/* ---- Live Price Pulse ---- */
-.live-price {
-    color: var(--gray-400);
-    font-variant-numeric: tabular-nums;
-}
-
-/* ---- Chart Popup (Hover) ---- */
-.chart-popup {
-    position: fixed;
-    z-index: 1000;
-    width: 480px;
-    background: #111111;
-    border: 1px solid rgba(245, 240, 235, 0.1);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-    pointer-events: none;
-    animation: popupFadeIn 0.15s ease-out;
-}
-
-@keyframes popupFadeIn {
-    from { opacity: 0; transform: translateY(4px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.chart-popup-header {
+/* ---- Benchmark Comparison ---- */
+.benchmark-compare {
     display: flex;
-    align-items: baseline;
-    gap: 10px;
-    padding: 14px 16px 8px;
-    border-bottom: 1px solid rgba(245, 240, 235, 0.06);
+    flex-direction: column;
+    gap: 22px;
+    margin-bottom: 28px;
 }
 
-.chart-popup-ticker {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--off-white);
-    letter-spacing: 0.05em;
+.bench-row {
+    display: grid;
+    grid-template-columns: 190px 1fr 90px;
+    align-items: center;
+    gap: 20px;
 }
 
-.chart-popup-company {
-    font-size: 0.75rem;
-    font-weight: 300;
-    color: var(--gray-500);
-}
-
-.chart-popup-body {
-    height: 220px;
-    padding: 0;
-}
-
-.chart-popup-footer {
-    padding: 6px 16px 10px;
-    font-size: 0.55rem;
+.bench-label {
+    font-size: 0.78rem;
     font-weight: 400;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--gray-600);
-    border-top: 1px solid rgba(245, 240, 235, 0.06);
+    color: var(--gray-300);
+    letter-spacing: 0.03em;
 }
 
-/* ============================================
-   Portfolio Composition — Constellation Diagram
-   ============================================ */
-
-.composition-viz {
-    position: relative;
-    margin-bottom: 32px;
-    border: 1px solid rgba(245, 240, 235, 0.06);
-    background: radial-gradient(ellipse at center, rgba(201, 169, 110, 0.03) 0%, transparent 60%);
+.bench-track {
+    height: 10px;
+    background: rgba(245, 240, 235, 0.04);
+    border: 1px solid rgba(245, 240, 235, 0.05);
     overflow: hidden;
 }
 
-.constellation-svg {
-    display: block;
-    width: 100%;
-    height: auto;
+.bench-fill {
+    height: 100%;
+    transition: width 1.1s var(--ease-out-expo);
 }
 
-.constellation-svg text {
-    pointer-events: none;
-    user-select: none;
-}
-
-.constellation-ticker {
-    cursor: pointer;
-    transition: opacity 0.3s;
-}
-
-.constellation-ticker:hover circle {
-    filter: drop-shadow(0 0 6px currentColor);
-}
-
-.constellation-hub {
-    pointer-events: none;
-}
-
-/* Tooltip */
-.constellation-tooltip {
-    position: absolute;
-    z-index: 10;
-    background: #1a1a1a;
-    border: 1px solid rgba(245, 240, 235, 0.12);
-    padding: 12px 16px;
-    pointer-events: none;
-    opacity: 0;
-    transform: translateY(4px);
-    transition: opacity 0.15s, transform 0.15s;
-    min-width: 180px;
-}
-
-.constellation-tooltip.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.tooltip-ticker {
+.bench-value {
     font-size: 0.95rem;
     font-weight: 600;
-    color: var(--off-white);
-    letter-spacing: 0.05em;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
-.tooltip-company {
+.perf-footnote {
     font-size: 0.75rem;
     font-weight: 300;
-    color: var(--gray-400);
-    margin-top: 2px;
-}
-
-.tooltip-detail {
-    font-size: 0.7rem;
-    font-weight: 400;
     color: var(--gray-500);
-    margin-top: 6px;
+    line-height: 1.75;
+    max-width: 760px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(245, 240, 235, 0.05);
 }
 
-/* Legend Filters */
-.composition-legend {
+/* ---- Position Filters ---- */
+.positions-filter {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
@@ -264,30 +140,26 @@
     flex-shrink: 0;
 }
 
-/* Composition Grid — Category Cards */
-.composition-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 32px;
+/* ---- Position Groups ---- */
+.pos-group {
+    margin-bottom: 48px;
 }
 
-.comp-category-header {
+.pos-group-header {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin-bottom: 16px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid rgba(245, 240, 235, 0.06);
+    margin-bottom: 14px;
 }
 
-.comp-category-dot {
+.pos-group-dot {
     width: 10px;
     height: 10px;
     border-radius: 50%;
     flex-shrink: 0;
 }
 
-.comp-category-label {
+.pos-group-label {
     font-size: 0.7rem;
     font-weight: 500;
     letter-spacing: 0.18em;
@@ -295,76 +167,92 @@
     color: var(--off-white);
 }
 
-.comp-category-count {
+.pos-group-count {
     font-size: 0.65rem;
     font-weight: 400;
     color: var(--gray-500);
     margin-left: auto;
 }
 
-.comp-positions {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-    gap: 10px;
+.positions-table-wrap {
+    overflow-x: auto;
 }
 
-.comp-card {
+.positions-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.positions-table th {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gray-600);
+    text-align: left;
+    padding: 10px 16px 10px 0;
+    border-bottom: 1px solid rgba(245, 240, 235, 0.08);
+    white-space: nowrap;
+}
+
+.positions-table td {
+    font-size: 0.82rem;
+    font-weight: 300;
+    color: var(--gray-300);
+    padding: 14px 16px 14px 0;
+    border-bottom: 1px solid rgba(245, 240, 235, 0.04);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.positions-table tbody tr {
+    transition: background 0.2s;
+}
+
+.positions-table tbody tr:hover {
     background: rgba(245, 240, 235, 0.02);
-    border: 1px solid rgba(245, 240, 235, 0.06);
-    padding: 14px 16px;
-    transition: border-color 0.2s, background 0.2s;
 }
 
-.comp-card:hover {
-    background: rgba(245, 240, 235, 0.04);
-    border-color: rgba(245, 240, 235, 0.12);
-}
-
-.comp-card-top {
+.pos-name {
     display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    margin-bottom: 4px;
+    flex-direction: column;
+    gap: 3px;
 }
 
-.comp-card-ticker {
+.pos-ticker {
     font-size: 0.9rem;
     font-weight: 600;
-    letter-spacing: 0.05em;
+    color: var(--off-white);
+    letter-spacing: 0.04em;
 }
 
-.comp-card-price {
-    font-size: 0.75rem;
-    font-weight: 400;
-    color: var(--gray-400);
-    font-variant-numeric: tabular-nums;
-}
-
-.comp-card-options {
-    font-style: italic;
-    color: var(--gray-500);
-}
-
-.comp-card-company {
-    font-size: 0.7rem;
+.pos-contract {
+    font-size: 0.68rem;
     font-weight: 300;
     color: var(--gray-500);
-    display: block;
+}
+
+.pos-qty,
+.pos-value {
+    font-weight: 400;
+    color: var(--gray-300);
 }
 
 /* ---- Responsive ---- */
 @media (max-width: 768px) {
-    .chart-popup {
-        display: none;
+    .bench-row {
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
-    .realized-table,
-    .open-table {
-        font-size: 0.75rem;
+    .bench-value {
+        text-align: left;
     }
-    .composition-viz {
-        display: none;
+    .positions-table td,
+    .positions-table th {
+        font-size: 0.72rem;
+        padding-right: 12px;
     }
-    .comp-positions {
-        grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    .perf-block {
+        margin-top: 56px;
     }
 }

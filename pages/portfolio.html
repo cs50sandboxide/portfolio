@@ -18,7 +18,6 @@
             <div class="nav-links">
                 <a href="about.html" class="nav-link">About</a>
                 <a href="portfolio.html" class="nav-link active">Portfolio</a>
-                <a href="models.html" class="nav-link">Models</a>
                 <a href="contact.html" class="nav-link">Contact</a>
             </div>
             <button class="nav-menu-btn" id="menuBtn" aria-label="Toggle menu">
@@ -32,7 +31,6 @@
         <div class="mobile-menu-links">
             <a href="about.html" class="mobile-link">About</a>
             <a href="portfolio.html" class="mobile-link">Portfolio</a>
-            <a href="models.html" class="mobile-link">Models</a>
             <a href="contact.html" class="mobile-link">Contact</a>
         </div>
     </div>
@@ -41,115 +39,51 @@
         <div class="container">
             <span class="section-label">02 / Portfolio</span>
             <h1 class="page-hero-title">Fund Performance</h1>
-            <p class="page-hero-sub">Family &amp; Friends Investment Fund — All trades across Charles Schwab &amp; Interactive Brokers, April 2022 – present. Hover over a trade to see the chart with entry/exit markers.</p>
+            <p class="page-hero-sub">Family &amp; Friends Investment Fund. Figures below are pulled directly from Interactive Brokers and refresh automatically every Friday after the US market close.</p>
+            <p class="data-stamp">Last updated <span id="asOfDate">—</span> &middot; Source: Interactive Brokers</p>
         </div>
     </section>
 
-    <!-- Performance Summary -->
+    <!-- Headline Figures -->
     <section class="section portfolio-section">
         <div class="container">
             <div class="portfolio-summary">
                 <div class="summary-card">
-                    <span class="summary-label">Total Assets Under Management</span>
-                    <span class="summary-value" id="totalAUM">—</span>
+                    <span class="summary-label">Portfolio Value</span>
+                    <span class="summary-value" id="portfolioValue">—</span>
+                    <span class="summary-note">Net liquidation value</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">QTD Annualized Return</span>
-                    <span class="summary-value positive" id="qtdReturn">—</span>
+                    <span class="summary-label">Return Since Inception</span>
+                    <span class="summary-value positive" id="returnSinceInception">—</span>
+                    <span class="summary-note" id="inceptionNote">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">YTD Realized Profit</span>
-                    <span class="summary-value positive" id="ytdProfit">—</span>
+                    <span class="summary-label">Month to Date</span>
+                    <span class="summary-value positive" id="mtdReturn">—</span>
+                    <span class="summary-note" id="mtdNote">—</span>
                 </div>
             </div>
 
-            <!-- Tabs -->
-            <div class="portfolio-tabs">
-                <button class="tab-btn active" data-tab="composition">Portfolio Composition</button>
-                <button class="tab-btn" data-tab="realized">Realized Trades</button>
-                <button class="tab-btn" data-tab="watchlist">Watchlist</button>
-                <button class="tab-btn" data-tab="growth">Portfolio Performance</button>
+            <!-- Performance vs Benchmark -->
+            <div class="perf-block">
+                <div class="tab-section-label">Performance vs S&amp;P 500 — Like-for-like window</div>
+                <div class="benchmark-compare" id="benchmarkCompare"></div>
+                <p class="perf-footnote" id="perfFootnote">—</p>
             </div>
 
-            <!-- Portfolio Composition -->
-            <div class="tab-content active" id="tab-composition">
-                <div class="tab-section-label">Current Portfolio — 34 Open Positions across Longs, Shorts &amp; Options</div>
-                <div class="composition-viz" id="compositionViz"></div>
-                <div class="composition-legend">
-                    <button class="legend-item active" data-category="all">
-                        <span class="legend-dot" style="background:#f5f0eb"></span>All (34)
-                    </button>
-                    <button class="legend-item" data-category="longs">
-                        <span class="legend-dot" style="background:#4ade80"></span>Longs (18)
-                    </button>
-                    <button class="legend-item" data-category="shorts">
-                        <span class="legend-dot" style="background:#f87171"></span>Shorts (7)
-                    </button>
-                    <button class="legend-item" data-category="putOptions">
-                        <span class="legend-dot" style="background:#c9a96e"></span>Put Options (6)
-                    </button>
-                    <button class="legend-item" data-category="callOptions">
-                        <span class="legend-dot" style="background:#6495ed"></span>Call Options (3)
-                    </button>
+            <!-- Open Positions -->
+            <div class="perf-block">
+                <div class="tab-section-label">
+                    Open Positions — <span id="positionCount">—</span> held
                 </div>
-                <div class="composition-grid" id="compositionGrid"></div>
-            </div>
-
-            <!-- Realized Trades -->
-            <div class="tab-content" id="tab-realized">
-                <div class="tab-section-label">All Realized Trades — Schwab + IBKR · Hover for chart</div>
-                <div class="positions-table-wrap">
-                    <table class="positions-table realized-table">
-                        <thead>
-                            <tr>
-                                <th>Ticker</th>
-                                <th>Company</th>
-                                <th>Entry</th>
-                                <th>Exit</th>
-                                <th>Return</th>
-                                <th>Entry Date</th>
-                                <th>Exit Date</th>
-                                <th>Source</th>
-                            </tr>
-                        </thead>
-                        <tbody id="realizedBody"></tbody>
-                    </table>
+                <div class="positions-filter" id="positionsFilter">
+                    <button class="legend-item active" data-group="all"><span class="legend-dot" style="background:#f5f0eb"></span>All</button>
+                    <button class="legend-item" data-group="longs"><span class="legend-dot" style="background:#4ade80"></span>Long</button>
+                    <button class="legend-item" data-group="shorts"><span class="legend-dot" style="background:#f87171"></span>Short</button>
+                    <button class="legend-item" data-group="options"><span class="legend-dot" style="background:#c9a96e"></span>Options</button>
                 </div>
-            </div>
-
-            <!-- Watchlist -->
-            <div class="tab-content" id="tab-watchlist">
-                <div class="watchlist-grid" id="watchlistGrid"></div>
-            </div>
-
-            <!-- Portfolio Performance -->
-            <div class="tab-content" id="tab-growth">
-                <div class="tab-section-label">Annual Realized Return</div>
-                <div class="chart-container">
-                    <canvas id="growthChart"></canvas>
-                </div>
-                <div class="growth-stats">
-                    <div class="growth-stat">
-                        <span class="growth-stat-label">Avg Return / Trade</span>
-                        <span class="growth-stat-value positive" id="gsAvgReturn">—</span>
-                    </div>
-                    <div class="growth-stat">
-                        <span class="growth-stat-label">Best Trade</span>
-                        <span class="growth-stat-value positive" id="gsBestTrade">—</span>
-                    </div>
-                    <div class="growth-stat">
-                        <span class="growth-stat-label">Active Since</span>
-                        <span class="growth-stat-value" id="gsActiveSince">—</span>
-                    </div>
-                    <div class="growth-stat">
-                        <span class="growth-stat-label">Open Positions</span>
-                        <span class="growth-stat-value" id="gsOpenPositions">—</span>
-                    </div>
-                    <div class="growth-stat">
-                        <span class="growth-stat-label">Closed Trades</span>
-                        <span class="growth-stat-value" id="gsClosedTrades">—</span>
-                    </div>
-                </div>
+                <div id="positionsWrap"></div>
             </div>
         </div>
     </section>
@@ -165,9 +99,7 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
-    <script src="https://unpkg.com/lightweight-charts@4.1.3/dist/lightweight-charts.standalone.production.js"></script>
-    <script src="../js/data.js"></script>
+    <script src="../js/fund-data.js"></script>
     <script src="../js/app.js"></script>
 </body>
 </html>

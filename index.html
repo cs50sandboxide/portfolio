@@ -11,12 +11,12 @@
 </head>
 <body>
 
-    <!-- YTD Profit Banner -->
+    <!-- Live Performance Banner (populated from js/fund-data.js) -->
     <div class="mtd-banner" id="mtdBanner">
         <div class="mtd-banner-inner">
-            <span class="mtd-banner-label" id="mtdLabel">YTD Realized Profit</span>
-            <span class="mtd-banner-value positive" id="mtdValue">+$510,000</span>
-            <span class="mtd-banner-pct positive" id="mtdPct">(22.71% QTD annualized)</span>
+            <span class="mtd-banner-label" id="mtdLabel">Return Since Inception</span>
+            <span class="mtd-banner-value positive" id="mtdValue">—</span>
+            <span class="mtd-banner-pct positive" id="mtdPct"></span>
         </div>
     </div>
 
@@ -32,7 +32,6 @@
             <div class="nav-links">
                 <a href="pages/about.html" class="nav-link">About</a>
                 <a href="pages/portfolio.html" class="nav-link">Portfolio</a>
-                <a href="pages/models.html" class="nav-link">Models</a>
                 <a href="pages/contact.html" class="nav-link">Contact</a>
             </div>
             <button class="nav-menu-btn" id="menuBtn" aria-label="Toggle menu">
@@ -47,7 +46,6 @@
         <div class="mobile-menu-links">
             <a href="pages/about.html" class="mobile-link">About</a>
             <a href="pages/portfolio.html" class="mobile-link">Portfolio</a>
-            <a href="pages/models.html" class="mobile-link">Models</a>
             <a href="pages/contact.html" class="mobile-link">Contact</a>
         </div>
     </div>
@@ -59,7 +57,7 @@
             <h1 class="hero-title">
                 <span class="title-line">Advaith Krishnan Vinod</span>
             </h1>
-            <p class="hero-subtitle">Physics at Imperial College London. Quant Analyst at Queen's Tower Capital. Portfolio Manager of a family &amp; friends investment fund with $2.2M in assets under management and $510K in YTD realized profit.</p>
+            <p class="hero-subtitle">Physics at Imperial College London. Quant Analyst at Queen's Tower Capital. Portfolio Manager of a family &amp; friends investment fund running a leveraged long/short equity and options book through Interactive Brokers.</p>
             <div class="hero-ctas">
                 <a href="pages/portfolio.html" class="hero-cta">View Fund Performance</a>
                 <a href="CV - Advaith Krishnan Vinod.pdf" class="hero-cta hero-cta-outline" target="_blank">Download CV</a>
@@ -84,20 +82,20 @@
                 </div>
                 <div class="snippet-content">
                     <h3 class="snippet-name">Advaith Krishnan Vinod</h3>
-                    <p class="snippet-role">Portfolio Manager — $2.2M AUM Family &amp; Friends Fund</p>
-                    <p class="snippet-text">Physics undergraduate at Imperial College London, on track for a First-Class. Quant Trader and Head of Strategic Operations at Queen's Tower Capital. Portfolio Manager of a family &amp; friends investment fund managing $2.2M in assets across Charles Schwab and Interactive Brokers, with $510K in year-to-date realized profit — built through DCF analysis, relative valuations, and macroeconomic insight.</p>
+                    <p class="snippet-role">Portfolio Manager — Family &amp; Friends Investment Fund</p>
+                    <p class="snippet-text">Physics undergraduate at Imperial College London, on track for a First-Class. Quant Trader and Head of Strategic Operations at Queen's Tower Capital. Portfolio Manager of a family &amp; friends investment fund running a leveraged long/short equity and options book through Interactive Brokers — positions built on DCF analysis, relative valuations, and macroeconomic insight.</p>
                     <div class="snippet-highlights">
                         <div class="highlight">
-                            <span class="highlight-value">$2.2M</span>
-                            <span class="highlight-label">Assets Under Management</span>
+                            <span class="highlight-value" data-fund="value">—</span>
+                            <span class="highlight-label">Portfolio Value</span>
                         </div>
                         <div class="highlight">
-                            <span class="highlight-value">$510K</span>
-                            <span class="highlight-label">YTD Realized Profit</span>
+                            <span class="highlight-value" data-fund="return">—</span>
+                            <span class="highlight-label">Return Since Inception</span>
                         </div>
                         <div class="highlight">
-                            <span class="highlight-value">22.71%</span>
-                            <span class="highlight-label">QTD Annualized Return</span>
+                            <span class="highlight-value" data-fund="positions">—</span>
+                            <span class="highlight-label">Open Positions</span>
                         </div>
                     </div>
                     <a href="pages/about.html" class="read-more">
@@ -164,59 +162,27 @@
                 <h2 class="section-title">Fund Performance</h2>
             </div>
             <div class="snippet-content-full">
-                <p class="snippet-text">Family &amp; Friends Investment Fund — All trades across Charles Schwab &amp; Interactive Brokers since April 2022. Swing and momentum-driven entries across 69 realized trades. Hover over trades for live candlestick charts with entry/exit markers.</p>
+                <p class="snippet-text">A long/short equity and options book run through Interactive Brokers. Figures below are pulled directly from the brokerage account and refresh automatically every Friday after the US market close.</p>
                 <div class="portfolio-preview-stats">
                     <div class="preview-stat">
-                        <span class="preview-stat-value">$2.2M</span>
-                        <span class="preview-stat-label">Assets Under Management</span>
+                        <span class="preview-stat-value" data-fund="value">—</span>
+                        <span class="preview-stat-label">Portfolio Value</span>
                     </div>
                     <div class="preview-stat">
-                        <span class="preview-stat-value positive">$510K</span>
-                        <span class="preview-stat-label">YTD Realized Profit</span>
+                        <span class="preview-stat-value positive" data-fund="return">—</span>
+                        <span class="preview-stat-label">Return Since Inception</span>
                     </div>
                     <div class="preview-stat">
-                        <span class="preview-stat-value positive">22.71%</span>
-                        <span class="preview-stat-label">QTD Annualized Return</span>
+                        <span class="preview-stat-value" data-fund="benchmark">—</span>
+                        <span class="preview-stat-label">S&amp;P 500, Same Window</span>
                     </div>
                     <div class="preview-stat">
-                        <span class="preview-stat-value">69</span>
-                        <span class="preview-stat-label">Realized Trades</span>
+                        <span class="preview-stat-value" data-fund="positions">—</span>
+                        <span class="preview-stat-label">Open Positions</span>
                     </div>
                 </div>
                 <a href="pages/portfolio.html" class="read-more">
                     <span>Explore Fund</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
-                        <line x1="5" y1="12" x2="19" y2="12"/>
-                        <polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                </a>
-            </div>
-        </div>
-    </section>
-
-    <!-- Models Snippet -->
-    <section id="models-snippet" class="section snippet-section">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-label">03 / Models</span>
-                <h2 class="section-title">Financial Models & Research</h2>
-            </div>
-            <div class="snippet-content-full">
-                <p class="snippet-text">Proprietary financial models built for fundamental equity analysis — from fully integrated three-statement models to DCF and LBO valuations. Complemented by quantitative trading algorithms developed in Python and backtested across multiple market regimes.</p>
-                <div class="models-preview-grid models-preview-grid-2">
-                    <div class="model-preview-card">
-                        <span class="model-preview-type">Excel</span>
-                        <h4>Three-Statement Model</h4>
-                        <p>Datadog Inc. — Integrated IS, BS, CF</p>
-                    </div>
-                    <div class="model-preview-card">
-                        <span class="model-preview-type">Excel</span>
-                        <h4>DCF Valuation</h4>
-                        <p>WACC, terminal value, sensitivity</p>
-                    </div>
-                </div>
-                <a href="pages/models.html" class="read-more">
-                    <span>View All Models</span>
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
                         <line x1="5" y1="12" x2="19" y2="12"/>
                         <polyline points="12 5 19 12 12 19"/>
@@ -326,7 +292,7 @@
         </div>
     </footer>
 
-    <script src="js/data.js"></script>
+    <script src="js/fund-data.js"></script>
     <script src="js/app.js"></script>
 </body>
 </html>
