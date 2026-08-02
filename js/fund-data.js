@@ -37,6 +37,40 @@ const FUND_DATA = {
         calendarYtd: 9.55,       // 31 Dec close 681.92 -> 747.03
     },
 
+    // --- Exposure, straight from get_pa_allocation (reconciles to NAV) ---
+    exposure: {
+        long: 1624847.14,        // long equities incl. options
+        short: -873963.62,
+        net: 750883.52,
+        gross: 2498810.76,
+        cash: 245701.67,
+        longPct: 163.3,
+        shortPct: -87.8,
+        netPct: 75.5,
+        grossPct: 251.1,
+        cashPct: 24.7,
+    },
+
+    // --- Risk, derived from IBKR's own daily time-weighted return series ---
+    // IBKR exposes no risk-analytics endpoint; these are standard statistics
+    // computed on the `cps` series that IBKR itself reports. See AUTOUPDATE.md.
+    risk: {
+        maxDrawdown: -27.1,
+        annualizedVol: 103.5,
+        sharpe: 2.53,
+        sharpeRiskFree: 4.0,
+        tradingDays: 71,
+    },
+
+    // --- Monthly time-weighted returns vs benchmark ---
+    monthlyReturns: [
+        { month: "2026-04", fund: -4.27,  benchmark: 0.66,  partial: true },
+        { month: "2026-05", fund: -19.08, benchmark: 5.26 },
+        { month: "2026-06", fund: -2.13,  benchmark: -1.28 },
+        { month: "2026-07", fund: 89.26,  benchmark: 0.03 },
+        { month: "2026-08", fund: 0.44,   benchmark: null,  partial: true },
+    ],
+
     // --- Open positions (34) ---
     positions: {
         longs: [

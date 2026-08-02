@@ -51,10 +51,46 @@ Cron `0 22 * * 5` (UTC) — 22:00 UTC Friday, which is 6pm ET during EDT and
      If `inceptionDate` is not a trading day, use the last close on or before it.
    - `benchmark.calendarYtd` = (last close ÷ last close of the prior December − 1) × 100.
 
-5. Rewrite `js/fund-data.js` in full, preserving the existing structure and
+5. **`get_pa_allocation`** with `type: "ALL"` → `exposure`. Use
+   `allocations.ASSET_CLASS`:
+   - `long_positions.items` where id `EQ` → `exposure.long`; `CA` → `exposure.cash`
+   - `short_positions.items` where id `EQ` → `exposure.short`
+   - `net` = long + short. `gross` = |long| + |short|.
+   - Percentages are each figure ÷ `portfolioValue` × 100.
+
+   Sanity check: long total + short total must equal net liquidation exactly.
+   If it does not, something is wrong — stop rather than publish.
+
+6. Derive `risk` and `monthlyReturns` from the `YTD.cps` / `YTD.dates` series.
+   IBKR exposes **no** risk-analytics endpoint (verified against connector
+   v1.1.5), so these are computed — but computed on IBKR's own official
+   time-weighted series, never on NAV.
+
+   Build a wealth index `w = [1.0, ...(1 + cps[i])]`, then daily returns
+   `r[i] = w[i]/w[i-1] - 1`.
+   - `maxDrawdown` — running peak of `w`, worst `w/peak - 1`, × 100.
+   - `annualizedVol` — `stdev(r) × sqrt(252) × 100`.
+   - `sharpe` — `(cagr - rf) / vol` where `cagr = w[-1]^(252/n) - 1` and
+     `rf = 0.04`. Record `n` as `risk.tradingDays`.
+   - `monthlyReturns` — for each calendar month, `w[last day of month] ÷
+     w[last day of previous month] - 1`, × 100. First and current months are
+     partial: set `partial: true`. Benchmark column is the same calculation on
+     SPY closes; use `null` when a month has no SPY trading day yet.
+
+7. Rewrite `js/fund-data.js` in full, preserving the existing structure and
    the header comment. Round money to 2dp and percentages to 2dp.
 
-6. Commit and push to `main`.
+8. Commit and push to `main`.
+
+## Figures that must never be published
+
+- **Annualised or extrapolated return.** The CAGR term is used only inside the
+  Sharpe calculation. As a headline it is indefensible on a short sample — at
+  the time of writing it computes to +266% from 71 days.
+- **Beta or correlation vs the benchmark.** Over this sample it computes to
+  −1.04 with correlation −0.13 while the book is net *long* 76%. The estimate
+  is noise dominated by one outlier day and contradicts the actual positioning.
+- **Unrealized P&L** and **realized P&L** (see below).
 
 ## Why realized P&L is not shown
 

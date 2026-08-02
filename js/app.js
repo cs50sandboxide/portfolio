@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initMobileMenu();
     initSnapshot();
     initBenchmark();
+    initMonthlyReturns();
+    initRisk();
     initPositions();
     initScrollReveal();
 });
@@ -211,6 +213,92 @@ function initBenchmark() {
             "The account has no performance history before that date. " +
             "For reference, the " + FUND_DATA.benchmark.name + " returned " +
             fmtPct(FUND_DATA.benchmark.calendarYtd) + " over the calendar year to date.";
+    }
+}
+
+/* ---- Monthly Returns ---- */
+function initMonthlyReturns() {
+    const body = el("monthlyBody");
+    if (!body || typeof FUND_DATA === "undefined" || !FUND_DATA.monthlyReturns) return;
+
+    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+    FUND_DATA.monthlyReturns.forEach((m) => {
+        const [y, mo] = m.month.split("-").map(Number);
+        const hasBench = m.benchmark !== null && m.benchmark !== undefined;
+        const diff = hasBench ? m.fund - m.benchmark : null;
+
+        const cls = (v) => (v >= 0 ? "positive" : "negative");
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+            <td class="month-cell">
+                ${MONTHS[mo - 1]} ${y}
+                ${m.partial ? '<span class="month-partial">partial</span>' : ""}
+            </td>
+            <td class="num ${cls(m.fund)}">${fmtPct(m.fund)}</td>
+            <td class="num ${hasBench ? cls(m.benchmark) : "muted"}">${hasBench ? fmtPct(m.benchmark) : "—"}</td>
+            <td class="num ${diff === null ? "muted" : cls(diff)}">${diff === null ? "—" : fmtPct(diff)}</td>
+        `;
+        body.appendChild(tr);
+    });
+
+    const note = el("monthlyFootnote");
+    if (note) {
+        const full = FUND_DATA.monthlyReturns.filter((m) => !m.partial);
+        const down = full.filter((m) => m.fund < 0).length;
+        note.textContent =
+            "Time-weighted monthly returns, net of deposits and withdrawals. " +
+            "April and August are partial periods — the account opened " +
+            fmtDate(FUND_DATA.inceptionDate) + ". Of " + full.length +
+            " complete months, " + down + " were negative; the cumulative return " +
+            "is concentrated in a single month, which the table is here to make visible " +
+            "rather than obscure.";
+    }
+}
+
+/* ---- Risk & Exposure ---- */
+function initRisk() {
+    if (typeof FUND_DATA === "undefined" || !FUND_DATA.risk) return;
+    const r = FUND_DATA.risk;
+    const x = FUND_DATA.exposure;
+
+    if (el("riskDrawdown")) el("riskDrawdown").textContent = fmtPct(r.maxDrawdown);
+    if (el("riskSharpe")) el("riskSharpe").textContent = r.sharpe.toFixed(2);
+    if (el("riskSharpeNote")) {
+        el("riskSharpeNote").textContent =
+            "Over " + r.tradingDays + " trading days · " + r.sharpeRiskFree.toFixed(0) + "% risk-free";
+    }
+    if (el("riskGross")) el("riskGross").textContent = x.grossPct.toFixed(0) + "%";
+    if (el("riskNet")) el("riskNet").textContent = "+" + x.netPct.toFixed(0) + "%";
+
+    // Long / short / cash composition bar, scaled to gross + cash
+    const bar = el("exposureBar");
+    if (bar) {
+        const segs = [
+            { label: "Long", pct: x.longPct, color: "#4ade80" },
+            { label: "Short", pct: Math.abs(x.shortPct), color: "#f87171" },
+            { label: "Cash", pct: x.cashPct, color: "#777777" },
+        ];
+        const total = segs.reduce((s, g) => s + g.pct, 0) || 1;
+        bar.innerHTML = `
+            <div class="exposure-track">
+                ${segs.map((g) => `<div class="exposure-seg" style="width:${(g.pct / total) * 100}%; background:${g.color}"></div>`).join("")}
+            </div>
+            <div class="exposure-key">
+                ${segs.map((g) => `<span class="exposure-key-item"><span class="legend-dot" style="background:${g.color}"></span>${g.label} ${g.pct.toFixed(0)}% of NAV</span>`).join("")}
+            </div>
+        `;
+    }
+
+    if (el("riskFootnote")) {
+        el("riskFootnote").textContent =
+            "Exposure is reported by Interactive Brokers and reconciles exactly to net liquidation value. " +
+            "Drawdown and Sharpe are standard statistics computed on IBKR's own daily time-weighted return " +
+            "series, measured over " + r.tradingDays + " trading days since inception — a short sample, so " +
+            "they describe the period rather than predict future results. Annualised volatility over the same " +
+            "window is " + r.annualizedVol.toFixed(0) + "%, reflecting " + FUND_DATA.leverage +
+            "x gross leverage. No return figure on this site is annualised or extrapolated.";
     }
 }
 

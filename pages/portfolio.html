@@ -72,6 +72,54 @@
                 <p class="perf-footnote" id="perfFootnote">—</p>
             </div>
 
+            <!-- Monthly Returns -->
+            <div class="perf-block">
+                <div class="tab-section-label">Monthly Returns — Time-weighted, vs S&amp;P 500</div>
+                <div class="positions-table-wrap">
+                    <table class="positions-table monthly-table">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th class="num">Fund</th>
+                                <th class="num">S&amp;P 500</th>
+                                <th class="num">Difference</th>
+                            </tr>
+                        </thead>
+                        <tbody id="monthlyBody"></tbody>
+                    </table>
+                </div>
+                <p class="perf-footnote" id="monthlyFootnote">—</p>
+            </div>
+
+            <!-- Risk & Exposure -->
+            <div class="perf-block">
+                <div class="tab-section-label">Risk &amp; Exposure</div>
+                <div class="risk-grid">
+                    <div class="risk-card">
+                        <span class="risk-label">Maximum Drawdown</span>
+                        <span class="risk-value negative" id="riskDrawdown">—</span>
+                        <span class="risk-note">Largest peak-to-trough decline</span>
+                    </div>
+                    <div class="risk-card">
+                        <span class="risk-label">Sharpe Ratio</span>
+                        <span class="risk-value" id="riskSharpe">—</span>
+                        <span class="risk-note" id="riskSharpeNote">—</span>
+                    </div>
+                    <div class="risk-card">
+                        <span class="risk-label">Gross Exposure</span>
+                        <span class="risk-value" id="riskGross">—</span>
+                        <span class="risk-note">Long + short notional</span>
+                    </div>
+                    <div class="risk-card">
+                        <span class="risk-label">Net Exposure</span>
+                        <span class="risk-value" id="riskNet">—</span>
+                        <span class="risk-note">Long less short</span>
+                    </div>
+                </div>
+                <div class="exposure-bar" id="exposureBar"></div>
+                <p class="perf-footnote" id="riskFootnote">—</p>
+            </div>
+
             <!-- Open Positions -->
             <div class="perf-block">
                 <div class="tab-section-label">
