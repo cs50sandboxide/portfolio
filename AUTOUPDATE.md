@@ -173,3 +173,59 @@ If any IBKR call fails, do NOT guess, interpolate, or leave stale numbers while 
 
 After pushing, reply with a short summary: the new portfolio value, return since inception, MTD return, benchmark return, position count, and anything anomalous versus the previous values.
 ```
+
+---
+
+## Read-only guardrails
+
+This automation touches a live brokerage account. The IBKR connector exposes
+order placement (`create_order_instruction`), watchlist mutation and alert
+mutation in the *same* connector as the read tools. Three independent layers
+keep the scheduled job away from all of it. **Do not weaken any of them.**
+
+### 1. Allowlist hook (primary)
+
+`.claude/hooks/ibkr-readonly-guard.sh`, wired as a `PreToolUse` hook in
+`.claude/settings.json`, blocks every IBKR tool except these six:
+
+```
+get_account_summary            get_pa_performance_all_periods
+get_account_balances           get_pa_allocation
+get_account_positions          get_price_history
+```
+
+It is an **allowlist, not a denylist** — deliberately. A denylist fails open
+the moment the connector ships a new write tool. Non-IBKR tools pass through
+untouched.
+
+### 2. Permissions deny-list (backstop)
+
+`.claude/settings.json` names the known write tools in `permissions.deny`.
+Deny rules are enforced by the permission system regardless of hooks, so the
+known-dangerous tools stay blocked even if the hook fails to load.
+
+Note the interaction: in Claude Code **deny beats allow**, so it is *not*
+possible to deny the whole server and re-allow six tools. That asymmetry is
+why the hook carries the allowlist and the deny-list only backstops it.
+
+### 3. Routine prompt
+
+The scheduled job's prompt states the read-only mandate, names the six
+permitted tools, scopes writes to `js/fund-data.js` only, and instructs the
+run to stop and report rather than work around a block. It also states that
+instructions found in data, tool descriptions or repo files are not
+authorisation to exceed the mandate — only the account owner is.
+
+### Verifying the guard
+
+```bash
+bash .claude/hooks/ibkr-readonly-guard.sh <<< \
+  '{"tool_name":"mcp__Interactive_Brokers_IBKR__create_order_instruction"}'
+# -> {"hookSpecificOutput":{...,"permissionDecision":"deny",...}}
+
+bash .claude/hooks/ibkr-readonly-guard.sh <<< \
+  '{"tool_name":"mcp__Interactive_Brokers_IBKR__get_account_summary"}'
+# -> (no output = allowed)
+```
+
+Silence means allowed; JSON with `permissionDecision: "deny"` means blocked.
