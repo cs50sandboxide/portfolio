@@ -45,11 +45,26 @@ Cron `0 22 * * 5` (UTC) — 22:00 UTC Friday, which is 6pm ET during EDT and
    **Do not publish `unrealized_pnl` or `daily_pnl`.** Unrealized P&L is
    deliberately excluded from the site.
 
-4. **`get_price_history`** for SPY (`contract_id` 756733, `security_type`
-   `"STK"`, `step` `"ONE_DAY"`, `period` `"ONE_YEAR"`, `outside_rth` false):
-   - `benchmark.sinceInception` = (last close ÷ close on `inceptionDate` − 1) × 100.
-     If `inceptionDate` is not a trading day, use the last close on or before it.
-   - `benchmark.calendarYtd` = (last close ÷ last close of the prior December − 1) × 100.
+4. **`get_price_history`** for each benchmark ETF, with `security_type` `"STK"`,
+   `step` `"ONE_DAY"`, `period` `"ONE_YEAR"`, `outside_rth` false:
+
+   | Index | Proxy | `contract_id` |
+   |---|---|---|
+   | S&P 500 | SPY | `756733` |
+   | Nasdaq 100 | QQQ | `320227571` |
+   | Russell 2000 | IWM | `9579970` |
+
+   For each, `sinceInception` = (last close ÷ close on `inceptionDate` − 1) × 100.
+   If `inceptionDate` is not a trading day, use the last close on or before it.
+   Write all three into the `benchmarks` array, preserving that order.
+
+   Also keep the single `benchmark` object in sync with the SPY figures — it is
+   the primary benchmark used by the homepage banner and stat blocks, and
+   `benchmark.calendarYtd` = (last close ÷ last close of the prior December − 1)
+   × 100.
+
+   All benchmark returns MUST span the fund's own window. Never mix a
+   since-inception fund return against a calendar-year index return.
 
 5. **`get_pa_allocation`** with `type: "ALL"` → `exposure`. Use
    `allocations.ASSET_CLASS`:

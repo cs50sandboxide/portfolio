@@ -53,7 +53,8 @@
 }
 
 .bench-chart {
-    max-width: 460px;
+    max-width: 720px;
+    margin: 0 auto;
 }
 
 .bench-plot-row {
@@ -74,13 +75,13 @@
     display: flex;
     align-items: stretch;
     justify-content: center;
-    gap: 96px;
+    gap: 44px;
     height: 100%;
 }
 
 .bench-col {
     position: relative;
-    width: 104px;
+    width: 116px;
 }
 
 .bench-label-row {
@@ -150,8 +151,15 @@
     color: var(--gray-500);
     line-height: 1.75;
     max-width: 760px;
+    margin: 0 auto;
     padding-top: 20px;
     border-top: 1px solid rgba(245, 240, 235, 0.05);
+}
+
+/* The monthly-returns and risk footnotes sit in left-aligned blocks */
+.perf-block .positions-table-wrap + .perf-footnote,
+.exposure-bar + .perf-footnote {
+    margin-left: 0;
 }
 
 /* ---- Monthly Returns Table ---- */
@@ -412,13 +420,31 @@
         height: 240px;
     }
     .bench-cols {
-        gap: 48px;
+        gap: 12px;
     }
     .bench-col {
-        width: 88px;
+        width: auto;
+        flex: 1;
+        min-width: 0;
     }
     .bench-bar-value {
-        font-size: 0.9rem;
+        font-size: 0.72rem;
+    }
+    /* Long index names do not fit four-across on a phone. Every benchmark
+       already carries its tracking ticker, so show that instead — "IWM" says
+       the same thing as "Russell 2000" in a quarter of the width. The fund
+       column has no ticker, so it keeps its name. */
+    .bench-col-label:has(.bench-col-sub) .bench-col-name {
+        display: none;
+    }
+    .bench-col-name {
+        font-size: 0.58rem;
+        letter-spacing: 0.06em;
+    }
+    .bench-col-sub {
+        font-size: 0.66rem;
+        letter-spacing: 0.1em;
+        color: var(--gray-300);
     }
     .positions-table td,
     .positions-table th {

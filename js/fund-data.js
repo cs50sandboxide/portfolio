@@ -35,13 +35,22 @@ const FUND_DATA = {
     mtdReturn: 90.10,
     mtdWindow: "30 Jun – 2 Aug 2026",
 
-    // --- Benchmark: SPDR S&P 500 ETF (SPY) daily closes ---
+    // --- Primary benchmark (used in the homepage banner and stat blocks) ---
     benchmark: {
         name: "S&P 500",
         proxy: "SPY",
-        sinceInception: 4.64,    // 24 Apr close 713.94 -> 747.03
+        sinceInception: 4.63,    // 24 Apr close 713.94 -> 31 Jul 747.03
         calendarYtd: 9.55,       // 31 Dec close 681.92 -> 747.03
     },
+
+    // --- Benchmark panel, all measured over the SAME window as the fund ---
+    // ETF closes are used as index proxies. Every figure runs from the
+    // account's inception date to `asOf`, so the comparison is like-for-like.
+    benchmarks: [
+        { name: "S&P 500",      proxy: "SPY", sinceInception: 4.63 },  // 713.94 -> 747.03
+        { name: "Nasdaq 100",   proxy: "QQQ", sinceInception: 3.63 },  // 663.88 -> 687.99
+        { name: "Russell 2000", proxy: "IWM", sinceInception: 5.26 },  // 276.65 -> 291.20
+    ],
 
     // --- Exposure, straight from get_pa_allocation (reconciles to NAV) ---
     exposure: {

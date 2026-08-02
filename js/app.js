@@ -148,10 +148,17 @@ function initBenchmark() {
     const wrap = el("benchmarkCompare");
     if (!wrap || typeof FUND_DATA === "undefined") return;
 
+    const marks = FUND_DATA.benchmarks || [{
+        name: FUND_DATA.benchmark.name,
+        proxy: FUND_DATA.benchmark.proxy,
+        sinceInception: FUND_DATA.benchmark.sinceInception,
+    }];
+
     const cols = [
         { label: "This Fund", value: FUND_DATA.returnSinceInception, accent: "#c9a96e" },
-        { label: FUND_DATA.benchmark.name, sub: FUND_DATA.benchmark.proxy,
-          value: FUND_DATA.benchmark.sinceInception, accent: "#777777" },
+        ...marks.map((m) => ({
+            label: m.name, sub: m.proxy, value: m.sinceInception, accent: "#777777",
+        })),
     ];
 
     // Scale so the zero line sits correctly even if a return goes negative.
@@ -207,12 +214,13 @@ function initBenchmark() {
     });
 
     if (el("perfFootnote")) {
+        const names = marks.map((m) => m.proxy).join(", ");
         el("perfFootnote").textContent =
-            "Both figures measured over the same window — " + fmtDate(FUND_DATA.inceptionDate) +
+            "Every figure is measured over the same window — " + fmtDate(FUND_DATA.inceptionDate) +
             " to " + fmtDate(FUND_DATA.asOf) + " — so they are directly comparable. " +
-            "The account has no performance history before that date. " +
-            "For reference, the " + FUND_DATA.benchmark.name + " returned " +
-            fmtPct(FUND_DATA.benchmark.calendarYtd) + " over the calendar year to date.";
+            "The account has no performance history before that date, which is why the " +
+            "comparison is not run over the calendar year. Indices are represented by their " +
+            "tracking ETFs (" + names + ") using daily closes.";
     }
 }
 
