@@ -79,3 +79,61 @@ period.
 
 Ask Claude Code: *"Refresh the fund data from IBKR following AUTOUPDATE.md,
 then commit and push."*
+
+---
+
+## Routine setup
+
+The schedule runs as a Claude Code Routine, created from a session and
+visible at **claude.ai → Settings → Routines**.
+
+| Field | Value |
+|---|---|
+| Name | Weekly IBKR fund data refresh |
+| Cron | `0 22 * * 5` (UTC) |
+| Mode | New session per firing |
+| Connector | **Interactive Brokers (IBKR)** — required |
+| Notifications | Push on completion |
+
+The connector grant **must be added through the claude.ai UI**. It cannot be
+attached programmatically — the API rejects the `connectors` parameter for
+this organization, by design, so that an agent cannot hand a background job
+access to the brokerage account without a human approving it.
+
+Until the connector is attached the routine still fires, finds no IBKR
+tools, and stops without editing anything. It will never publish stale or
+invented figures.
+
+### Routine prompt
+
+Paste this verbatim if the routine has to be recreated from scratch.
+
+```text
+Refresh the portfolio website's fund data from Interactive Brokers.
+
+The repo is cs50sandboxide/portfolio, working on branch `claude/investment-portfolio-website-ArW23`. Read `AUTOUPDATE.md` in the repo root FIRST — it is the authoritative spec for this job and explains exactly which IBKR fields map to which keys, and which pitfalls to avoid.
+
+PRECONDITION: this job needs the "Interactive Brokers (IBKR)" connector. Check for the IBKR MCP tools first (ToolSearch, query: "IBKR account summary positions"). If they are NOT available, STOP immediately, change nothing, and reply saying the routine needs the IBKR connector enabled on it in the claude.ai Routines settings. Do not edit or commit anything in that case.
+
+Task:
+1. Read AUTOUPDATE.md.
+2. Pull live data using the IBKR MCP tools (ToolSearch query: "select:mcp__Interactive_Brokers_IBKR__get_account_summary,mcp__Interactive_Brokers_IBKR__get_pa_performance_all_periods,mcp__Interactive_Brokers_IBKR__get_account_positions,mcp__Interactive_Brokers_IBKR__get_price_history"):
+   - `get_account_summary` (net liquidation, gross position value, cash, leverage)
+   - `get_pa_performance_all_periods` (YTD and MTD returns, inception date)
+   - `get_account_positions` (all open positions)
+   - `get_price_history` for SPY, contract_id 756733, security_type "STK", step "ONE_DAY", period "ONE_YEAR", outside_rth false
+3. Rewrite `js/fund-data.js` completely, following the structure already in that file. Fully replace it — never append.
+4. Commit and push to BOTH `claude/investment-portfolio-website-ArW23` and `main` (push to main triggers the Vercel deploy).
+
+Critical correctness rules (also in AUTOUPDATE.md):
+- Compute returns ONLY from the `cps` arrays, which are time-weighted and already net of deposits and withdrawals. NEVER derive returns from the `nav` arrays — NAV includes cash transfers and will massively overstate performance.
+- `cps` values are fractions, not percentages: multiply by 100.
+- Take the LAST element of each `cps` array.
+- Do NOT publish `unrealized_pnl` or `daily_pnl` from positions. Unrealized P&L is intentionally excluded from this site.
+- Do NOT try to compute or publish realized P&L. IBKR exposes no cumulative figure and the site does not show one.
+- Benchmark must be measured over the SAME window as the fund (from the account's inception date), not calendar YTD. Keep `benchmark.calendarYtd` as a separate reference field only.
+
+If any IBKR call fails, do NOT guess, interpolate, or leave stale numbers while changing the `asOf` date. Leave the file untouched and report the failure.
+
+After pushing, reply with a short summary: the new portfolio value, return since inception, MTD return, benchmark return, position count, and anything anomalous versus the previous values.
+```
