@@ -80,7 +80,16 @@ Cron `0 22 * * 5` (UTC) — 22:00 UTC Friday, which is 6pm ET during EDT and
 7. Rewrite `js/fund-data.js` in full, preserving the existing structure and
    the header comment. Round money to 2dp and percentages to 2dp.
 
-8. Commit and push to `main`.
+   Always set `generatedAt` to the current UTC time in ISO-8601
+   (`YYYY-MM-DDTHH:MM:SSZ`). This field exists so that **every run produces a
+   commit**, even a quiet week where no market data moved. Without it, a
+   healthy run that changed nothing is indistinguishable in `git log` from a
+   job that silently never fired — and an unobservable scheduled job is an
+   untrustworthy one.
+
+8. Commit and push to `main` **even if the only change is `generatedAt`**.
+   Do not skip the commit because "nothing meaningful changed" — the heartbeat
+   is the point.
 
 ## Figures that must never be published
 

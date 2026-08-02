@@ -12,7 +12,13 @@
 const FUND_DATA = {
     // --- Snapshot metadata ---
     asOf: "2026-08-02",
-    ibkrLastUpdate: "2026-08-02 11:28:44",
+    ibkrLastUpdate: "2026-08-02 12:28:46",
+
+    // Wall-clock time this file was regenerated. Always changes, even when the
+    // market data does not — so every refresh leaves a commit and `git log`
+    // answers "did the weekly job actually run?". Without it, a healthy run on
+    // a quiet week is indistinguishable from a job that never fired.
+    generatedAt: "2026-08-02T12:30:00Z",
 
     // --- Headline figures ---
     portfolioValue: 994975.73,   // net liquidation value
