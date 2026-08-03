@@ -20,6 +20,23 @@ figures settle for a while after the bell; firing at 20:00 UTC risks pulling
 numbers that have not finished processing, and the job would then publish
 them as final.
 
+## Keep the pull small
+
+Two standing rules, because every byte pulled costs tokens:
+
+1. **Never re-fetch history that cannot change.** Closes on past dates are
+   fixed forever. They live in `FUND_DATA.baselines` and are read from there,
+   not re-downloaded. Each run pulls only the newest close.
+2. **Never compute what IBKR already reports.** Returns, exposure and
+   allocation come straight from IBKR's own endpoints. Only figures IBKR does
+   not expose at all (drawdown, volatility, Sharpe, monthly returns) are
+   derived — see step 5.
+
+Exactly **four calls per run**, plus three tiny price lookups. Do not call
+`get_account_balances`: everything it offers is already in
+`get_account_summary`, and its extra fields (`unrealized_pnl`, `realized_pnl`)
+are never published.
+
 ## What the routine does
 
 1. **`get_account_summary`** → `net_liquidation` becomes `portfolioValue`.
@@ -50,8 +67,8 @@ them as final.
    **Do not publish `unrealized_pnl` or `daily_pnl`.** Unrealized P&L is
    deliberately excluded from the site.
 
-4. **`get_price_history`** for each benchmark ETF, with `security_type` `"STK"`,
-   `step` `"ONE_DAY"`, `period` `"ONE_YEAR"`, `outside_rth` false:
+4. **`get_price_history`** for each benchmark ETF — **`period` `"ONE_WEEK"`**,
+   `step` `"ONE_DAY"`, `security_type` `"STK"`, `outside_rth` false:
 
    | Index | Proxy | `contract_id` |
    |---|---|---|
@@ -59,14 +76,22 @@ them as final.
    | Nasdaq 100 | QQQ | `320227571` |
    | Russell 2000 | IWM | `9579970` |
 
-   For each, `sinceInception` = (last close ÷ close on `inceptionDate` − 1) × 100.
-   If `inceptionDate` is not a trading day, use the last close on or before it.
-   Write all three into the `benchmarks` array, preserving that order.
+   **Use `ONE_WEEK`, not `ONE_YEAR`.** All you need is the latest close —
+   about five bars. A year of daily OHLCV for three ETFs is roughly fifty
+   times the payload for no extra information, because the historical
+   denominators are already cached.
 
-   Also keep the single `benchmark` object in sync with the SPY figures — it is
-   the primary benchmark used by the homepage banner and stat blocks, and
-   `benchmark.calendarYtd` = (last close ÷ last close of the prior December − 1)
-   × 100.
+   For each, `sinceInception` =
+   (latest close ÷ `baselines.inceptionClose[PROXY]` − 1) × 100.
+   Write all three into `benchmarks`, preserving that order.
+
+   Keep the single `benchmark` object in sync with SPY — it drives the
+   homepage banner and stat blocks. `benchmark.calendarYtd` =
+   (latest SPY close ÷ `baselines.priorDecClose.SPY` − 1) × 100.
+
+   **When a calendar month has just completed**, append that month's final SPY
+   close to `baselines.spyMonthEnd` (key `"YYYY-MM"`). Never rewrite existing
+   entries — they are settled history.
 
    All benchmark returns MUST span the fund's own window. Never mix a
    since-inception fund return against a calendar-year index return.
@@ -94,8 +119,10 @@ them as final.
      `rf = 0.04`. Record `n` as `risk.tradingDays`.
    - `monthlyReturns` — for each calendar month, `w[last day of month] ÷
      w[last day of previous month] - 1`, × 100. First and current months are
-     partial: set `partial: true`. Benchmark column is the same calculation on
-     SPY closes; use `null` when a month has no SPY trading day yet.
+     partial: set `partial: true`. The benchmark column comes from
+     `baselines.spyMonthEnd` (consecutive months divided), **not** from a
+     fresh price-history pull; use `null` for the current month, which has no
+     month-end close yet.
 
 7. Rewrite `js/fund-data.js` in full, preserving the existing structure and
    the header comment. Round money to 2dp and percentages to 2dp.

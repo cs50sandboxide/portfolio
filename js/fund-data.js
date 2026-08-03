@@ -52,6 +52,27 @@ const FUND_DATA = {
         { name: "Russell 2000", proxy: "IWM", sinceInception: 5.26 },  // 276.65 -> 291.20
     ],
 
+    // --- Cached baselines: fixed history the refresh job must NOT re-fetch ---
+    // These are closes on dates already in the past, so they can never change.
+    // Caching them means each run pulls only the newest close (one week of
+    // daily bars) instead of a full year of OHLCV for three ETFs.
+    baselines: {
+        // Closes on inceptionDate — denominator for every `sinceInception`.
+        inceptionClose: { SPY: 713.94, QQQ: 663.88, IWM: 276.65 },
+
+        // Prior-December close — denominator for benchmark.calendarYtd (SPY only).
+        priorDecClose: { SPY: 681.92 },
+
+        // SPY month-end closes, for the S&P column of the monthly table.
+        // Append one entry when a month completes; never recompute the rest.
+        spyMonthEnd: {
+            "2026-04": 718.66,
+            "2026-05": 756.48,
+            "2026-06": 746.77,
+            "2026-07": 747.03,
+        },
+    },
+
     // --- Exposure, straight from get_pa_allocation (reconciles to NAV) ---
     exposure: {
         long: 1624847.14,        // long equities incl. options
