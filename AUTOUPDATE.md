@@ -1,7 +1,7 @@
 # Weekly Fund Data Refresh
 
 `js/fund-data.js` is a generated snapshot of the Interactive Brokers account.
-It is regenerated **every Friday after the US market close** by a scheduled
+It is regenerated **every Monday and Friday after the US market close** by a scheduled
 Claude Code routine, which commits and pushes to `main`, triggering a Vercel
 redeploy.
 
@@ -12,8 +12,13 @@ the fund runs or how many trades are placed.
 
 ## Schedule
 
-Cron `0 22 * * 5` (UTC) — 22:00 UTC Friday, which is 6pm ET during EDT and
-5pm ET during EST. Both land safely after the 4pm ET close.
+Cron `0 22 * * 1,5` (UTC) — 22:00 UTC on Mondays and Fridays, which is 6pm ET
+during EDT and 5pm ET during EST. Both land safely after the 4pm ET close.
+
+The two-hour gap after the close is deliberate. IBKR's PortfolioAnalyst
+figures settle for a while after the bell; firing at 20:00 UTC risks pulling
+numbers that have not finished processing, and the job would then publish
+them as final.
 
 ## What the routine does
 
@@ -150,7 +155,7 @@ visible at **claude.ai → Settings → Routines**.
 | Field | Value |
 |---|---|
 | Name | Weekly IBKR fund data refresh |
-| Cron | `0 22 * * 5` (UTC) |
+| Cron | `0 22 * * 1,5` (UTC) — Mondays and Fridays |
 | Mode | New session per firing |
 | Connector | **Interactive Brokers (IBKR)** — required |
 | Notifications | Push on completion |
