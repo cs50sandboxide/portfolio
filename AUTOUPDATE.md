@@ -1,7 +1,7 @@
-# Weekly Fund Data Refresh
+# Fund Data Refresh
 
 `js/fund-data.js` is a generated snapshot of the Interactive Brokers account.
-It is regenerated **every Monday and Friday after the US market close** by a scheduled
+It is regenerated **every Saturday, while markets are closed**, by a scheduled
 Claude Code routine, which commits and pushes to `main`, triggering a Vercel
 redeploy.
 
@@ -12,13 +12,14 @@ the fund runs or how many trades are placed.
 
 ## Schedule
 
-Cron `0 22 * * 1,5` (UTC) — 22:00 UTC on Mondays and Fridays, which is 6pm ET
-during EDT and 5pm ET during EST. Both land safely after the 4pm ET close.
+Cron `12 10 * * 6` (UTC) — 10:12 UTC every Saturday, which is around midday
+in London and mid-afternoon in Dubai.
 
-The two-hour gap after the close is deliberate. IBKR's PortfolioAnalyst
-figures settle for a while after the bell; firing at 20:00 UTC risks pulling
-numbers that have not finished processing, and the job would then publish
-them as final.
+Saturday is chosen deliberately over a weeknight run. Markets are shut, so
+Friday's close has had many hours to settle in IBKR's PortfolioAnalyst — no
+risk of publishing half-processed figures as final. It also means unchanged
+data between runs is normal, which is exactly why the `generatedAt` heartbeat
+exists (step 7).
 
 ## Keep the pull small
 
@@ -181,11 +182,11 @@ visible at **claude.ai → Settings → Routines**.
 
 | Field | Value |
 |---|---|
-| Name | Weekly IBKR fund data refresh |
-| Cron | `0 22 * * 1,5` (UTC) — Mondays and Fridays |
+| Name | Saturday IBKR fund data refresh |
+| Cron | `12 10 * * 6` (UTC) — Saturdays |
 | Mode | New session per firing |
 | Connector | **Interactive Brokers (IBKR)** — required |
-| Notifications | Push on completion |
+| Notifications | Push + email on completion |
 
 The connector grant **must be added through the claude.ai UI**. It cannot be
 attached programmatically — the API rejects the `connectors` parameter for
