@@ -47,6 +47,55 @@
     border-bottom: 1px solid rgba(245, 240, 235, 0.06);
 }
 
+/* ---- Chart view toggle ---- */
+.chart-toggle {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 28px;
+}
+
+/* ---- Weekly return path (line chart) ---- */
+.benchmark-path {
+    max-width: 820px;
+    margin: 0 auto 28px;
+}
+
+.benchmark-path[hidden],
+.benchmark-compare[hidden] {
+    display: none;
+}
+
+.path-svg {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+.path-key {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 8px;
+}
+
+.path-key-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.68rem;
+    font-weight: 400;
+    letter-spacing: 0.08em;
+    color: var(--gray-400);
+}
+
+.path-swatch {
+    width: 14px;
+    height: 2px;
+    flex-shrink: 0;
+}
+
 /* ---- Benchmark Comparison (vertical bars) ---- */
 .benchmark-compare {
     margin-bottom: 28px;

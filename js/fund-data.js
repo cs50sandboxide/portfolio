@@ -54,6 +54,37 @@ const FUND_DATA = {
         { name: "Russell 2000", proxy: "IWM", sinceInception: 9.00 },  // 276.65 -> 301.56
     ],
 
+    // --- Weekly cumulative return path, fund vs benchmarks ---
+    // One row per refresh, appended — never recomputed. Every value is a
+    // cumulative return from inceptionDate, in percent, measured at that
+    // week's Friday close.
+    //
+    // Costs nothing extra to maintain: the fund figure is the same `cps` the
+    // run already reads, and the index figures come from the same latest
+    // closes it already fetches for the bar chart.
+    //
+    // The final `fund` value can differ slightly from `returnSinceInception`
+    // above — this series is pinned to Friday closes, while the headline uses
+    // the most recent mark IBKR reports. That is intended, not a mismatch.
+    history: [
+        { date: "2026-04-24", fund:   0.00, spy: 0.00, qqq:  0.00 },
+        { date: "2026-05-01", fund:  -4.58, spy: 0.94, qqq:  1.55 },
+        { date: "2026-05-08", fund:  -2.72, spy: 3.32, qqq:  7.13 },
+        { date: "2026-05-15", fund:  -5.01, spy: 3.53, qqq:  6.79 },
+        { date: "2026-05-22", fund:  -4.96, spy: 4.44, qqq:  8.08 },
+        { date: "2026-05-29", fund: -22.54, spy: 5.96, qqq: 11.21 },
+        { date: "2026-06-05", fund:  -6.23, spy: 3.31, qqq:  6.20 },
+        { date: "2026-06-12", fund: -12.86, spy: 3.90, qqq:  8.66 },
+        { date: "2026-06-19", fund: -19.60, spy: 4.59, qqq: 11.56 },
+        { date: "2026-06-26", fund: -13.46, spy: 2.11, qqq:  6.42 },
+        { date: "2026-07-03", fund:  -1.78, spy: 4.32, qqq:  7.34 },
+        { date: "2026-07-10", fund:   1.51, spy: 5.74, qqq:  9.28 },
+        { date: "2026-07-17", fund:   7.58, spy: 4.11, qqq:  4.74 },
+        { date: "2026-07-24", fund:   6.12, spy: 3.50, qqq:  3.07 },
+        { date: "2026-07-31", fund:  43.49, spy: 4.63, qqq:  3.63 },
+        { date: "2026-08-07", fund:  80.01, spy: 8.31, qqq:  8.91 },
+    ],
+
     // --- Cached baselines: fixed history the refresh job must NOT re-fetch ---
     // These are closes on dates already in the past, so they can never change.
     // Caching them means each run pulls only the newest close (one week of

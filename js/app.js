@@ -213,15 +213,162 @@ function initBenchmark() {
         });
     });
 
-    if (el("perfFootnote")) {
-        const names = marks.map((m) => m.proxy).join(", ");
-        el("perfFootnote").textContent =
-            "Every figure is measured over the same window — " + fmtDate(FUND_DATA.inceptionDate) +
-            " to " + fmtDate(FUND_DATA.asOf) + " — so they are directly comparable. " +
-            "The account has no performance history before that date, which is why the " +
-            "comparison is not run over the calendar year. Indices are represented by their " +
-            "tracking ETFs (" + names + ") using daily closes.";
+    renderReturnPath();
+
+    // Each view gets its own footnote — they measure different things.
+    const window = fmtDate(FUND_DATA.inceptionDate) + " to " + fmtDate(FUND_DATA.asOf);
+    FOOTNOTES.total =
+        "Every figure is measured over the same window — " + window + " — so they are " +
+        "directly comparable. The account has no performance history before that date, " +
+        "which is why the comparison is not run over the calendar year. Indices are " +
+        "represented by their tracking ETFs (" + marks.map((m) => m.proxy).join(", ") +
+        ") using daily closes.";
+    FOOTNOTES.path =
+        "Cumulative return since inception, marked at each Friday close from " + window +
+        ". The fund's final point can sit slightly below the headline figure above, " +
+        "because this line is pinned to Friday closes while the headline uses the most " +
+        "recent mark. One point is added per weekly refresh — the line grows with the " +
+        "track record rather than being recalculated.";
+
+    initChartToggle();
+}
+
+/* ---- Weekly Return Path (line chart) ---- */
+const FOOTNOTES = { total: "", path: "" };
+
+const SERIES = [
+    { key: "fund", label: "This Fund", color: "#c9a96e", width: 2 },
+    { key: "spy",  label: "S&P 500",   color: "#8d8d8d", width: 1.4 },
+    { key: "qqq",  label: "Nasdaq 100", color: "#6495ed", width: 1.4 },
+];
+
+function renderReturnPath() {
+    const wrap = el("benchmarkPath");
+    if (!wrap || typeof FUND_DATA === "undefined") return;
+    const rows = FUND_DATA.history;
+    if (!rows || rows.length < 2) {
+        // Not enough points to draw a line — hide the toggle rather than
+        // show a chart with one dot on it.
+        const t = el("chartToggle");
+        if (t) t.hidden = true;
+        return;
     }
+
+    const W = 760, H = 340;
+    const M = { top: 24, right: 56, bottom: 40, left: 52 };
+    const iw = W - M.left - M.right;
+    const ih = H - M.top - M.bottom;
+
+    const vals = rows.flatMap((r) => SERIES.map((s) => r[s.key]));
+    let lo = Math.min(...vals, 0);
+    let hi = Math.max(...vals, 0);
+    const pad = (hi - lo) * 0.12 || 1;
+    lo -= pad; hi += pad;
+
+    const x = (i) => M.left + (i / (rows.length - 1)) * iw;
+    const y = (v) => M.top + (1 - (v - lo) / (hi - lo)) * ih;
+
+    // Y gridlines on rounded values
+    const span = hi - lo;
+    const stepRaw = span / 5;
+    const mag = Math.pow(10, Math.floor(Math.log10(stepRaw)));
+    const step = Math.ceil(stepRaw / mag) * mag;
+    const ticks = [];
+    for (let t = Math.ceil(lo / step) * step; t <= hi; t += step) ticks.push(t);
+
+    const gridHtml = ticks.map((t) => `
+        <line x1="${M.left}" y1="${y(t).toFixed(1)}" x2="${W - M.right}" y2="${y(t).toFixed(1)}"
+              stroke="${Math.abs(t) < 1e-9 ? "rgba(245,240,235,0.18)" : "rgba(245,240,235,0.05)"}"
+              stroke-width="1"/>
+        <text x="${M.left - 10}" y="${(y(t) + 3.5).toFixed(1)}" text-anchor="end"
+              font-size="9" fill="#666" font-family="Inter, sans-serif">${t > 0 ? "+" : ""}${Math.round(t)}%</text>
+    `).join("");
+
+    // X labels — first, last, and a few between, without crowding
+    const every = Math.max(1, Math.ceil(rows.length / 6));
+    const xLabels = rows.map((r, i) => {
+        if (i !== 0 && i !== rows.length - 1 && i % every !== 0) return "";
+        const [, m, d] = r.date.split("-");
+        const mon = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m - 1];
+        return `<text x="${x(i).toFixed(1)}" y="${H - M.bottom + 20}" text-anchor="middle"
+                 font-size="9" fill="#666" font-family="Inter, sans-serif">${+d} ${mon}</text>`;
+    }).join("");
+
+    // End-of-line value labels. Series that finish close together would print
+    // on top of each other (SPY and QQQ routinely land within a point of one
+    // another), so nudge them apart before drawing.
+    const MIN_GAP = 12;
+    const labels = SERIES.map((s) => {
+        const v = rows[rows.length - 1][s.key];
+        return { color: s.color, value: v, yAnchor: y(v), yText: y(v) };
+    }).sort((a, b) => a.yText - b.yText);
+
+    for (let i = 1; i < labels.length; i++) {
+        const gap = labels[i].yText - labels[i - 1].yText;
+        if (gap < MIN_GAP) labels[i].yText = labels[i - 1].yText + MIN_GAP;
+    }
+    // Keep the nudged stack inside the plot
+    const overflow = labels[labels.length - 1].yText - (H - M.bottom);
+    if (overflow > 0) labels.forEach((l) => { l.yText -= overflow; });
+
+    const linesHtml = SERIES.map((s) => {
+        const d = rows.map((r, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(r[s.key]).toFixed(1)}`).join(" ");
+        const last = rows[rows.length - 1][s.key];
+        return `
+            <path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.width}"
+                  stroke-linejoin="round" stroke-linecap="round"/>
+            <circle cx="${x(rows.length - 1).toFixed(1)}" cy="${y(last).toFixed(1)}" r="3" fill="${s.color}"/>
+        `;
+    }).join("");
+
+    const labelsHtml = labels.map((l) => {
+        // If the label was moved, draw a short leader so it still reads as
+        // belonging to its line.
+        const moved = Math.abs(l.yText - l.yAnchor) > 1;
+        const leader = moved
+            ? `<line x1="${(W - M.right + 3).toFixed(1)}" y1="${l.yAnchor.toFixed(1)}"
+                     x2="${(W - M.right + 7).toFixed(1)}" y2="${l.yText.toFixed(1)}"
+                     stroke="${l.color}" stroke-width="1" opacity="0.5"/>`
+            : "";
+        return `${leader}
+            <text x="${W - M.right + 9}" y="${(l.yText + 3.5).toFixed(1)}"
+                  font-size="10" font-weight="600" fill="${l.color}"
+                  font-family="Inter, sans-serif">${l.value > 0 ? "+" : ""}${l.value.toFixed(1)}%</text>`;
+    }).join("");
+
+    const pathsHtml = linesHtml + labelsHtml;
+
+    wrap.innerHTML = `
+        <svg viewBox="0 0 ${W} ${H}" class="path-svg" role="img"
+             aria-label="Cumulative return since inception: fund versus S&amp;P 500 and Nasdaq 100, weekly">
+            ${gridHtml}${xLabels}${pathsHtml}
+        </svg>
+        <div class="path-key">
+            ${SERIES.map((s) => `<span class="path-key-item"><span class="path-swatch" style="background:${s.color}"></span>${s.label}</span>`).join("")}
+        </div>
+    `;
+}
+
+function initChartToggle() {
+    const toggle = el("chartToggle");
+    const bars = el("benchmarkCompare");
+    const path = el("benchmarkPath");
+    if (!toggle || !bars || !path) return;
+
+    const note = el("perfFootnote");
+    if (note && FOOTNOTES.total) note.textContent = FOOTNOTES.total;
+
+    toggle.querySelectorAll(".legend-item").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            toggle.querySelectorAll(".legend-item").forEach((b) => b.classList.remove("active"));
+            btn.classList.add("active");
+            const view = btn.dataset.view;
+            const showPath = view === "path";
+            bars.hidden = showPath;
+            path.hidden = !showPath;
+            if (note && FOOTNOTES[view]) note.textContent = FOOTNOTES[view];
+        });
+    });
 }
 
 /* ---- Monthly Returns ---- */

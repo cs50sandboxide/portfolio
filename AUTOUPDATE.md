@@ -5,10 +5,14 @@ It is regenerated **every Saturday, while markets are closed**, by a scheduled
 Claude Code routine, which commits and pushes to `main`, triggering a Vercel
 redeploy.
 
-Nothing else on the site reads brokerage data. There is no trade history, no
-running P&L ledger, and no state that grows over time — each refresh fully
-replaces the file, so cost and complexity stay flat regardless of how long
-the fund runs or how many trades are placed.
+Nothing else on the site reads brokerage data. There is no trade history and
+no running P&L ledger, so the cost of a refresh does not scale with how many
+trades are placed.
+
+One thing does accumulate: `history` gains a single row per run (a date and
+three percentages) to draw the weekly return path. That is ~52 rows a year
+and needs no extra API calls, since every value is already fetched for the
+other panels. Everything else in the file is fully replaced each run.
 
 ## Schedule
 
@@ -19,7 +23,7 @@ Saturday is chosen deliberately over a weeknight run. Markets are shut, so
 Friday's close has had many hours to settle in IBKR's PortfolioAnalyst — no
 risk of publishing half-processed figures as final. It also means unchanged
 data between runs is normal, which is exactly why the `generatedAt` heartbeat
-exists (step 7).
+exists (step 8).
 
 ## Keep the pull small
 
@@ -31,7 +35,7 @@ Two standing rules, because every byte pulled costs tokens:
 2. **Never compute what IBKR already reports.** Returns, exposure and
    allocation come straight from IBKR's own endpoints. Only figures IBKR does
    not expose at all (drawdown, volatility, Sharpe, monthly returns) are
-   derived — see step 5.
+   derived — see step 6.
 
 Exactly **four calls per run**, plus three tiny price lookups. Do not call
 `get_account_balances`: everything it offers is already in
@@ -125,7 +129,26 @@ are never published.
      fresh price-history pull; use `null` for the current month, which has no
      month-end close yet.
 
-7. Rewrite `js/fund-data.js` in full, preserving the existing structure and
+7. **Append one row to `history`** — the weekly return path. This costs no
+   extra API calls: every value is already in hand from steps 2 and 4.
+
+   ```js
+   { date: "<Friday of the week just ended, YYYY-MM-DD>",
+     fund: <cumulative TWR % at that Friday's close>,
+     spy:  <(SPY close ÷ baselines.inceptionClose.SPY − 1) × 100>,
+     qqq:  <(QQQ close ÷ baselines.inceptionClose.QQQ − 1) × 100> }
+   ```
+
+   Take `fund` from the `cps` entry for that Friday — **not** the latest mark,
+   which may be a later day. The series is deliberately pinned to Friday
+   closes so the points are evenly spaced.
+
+   **Append only. Never rewrite or recompute earlier rows** — they are settled
+   history, and silently restating them would destroy the one record on the
+   site that cannot be reconstructed from a single snapshot. If a row for that
+   Friday already exists, leave it alone and add nothing.
+
+8. Rewrite `js/fund-data.js` in full, preserving the existing structure and
    the header comment. Round money to 2dp and percentages to 2dp.
 
    Always set `generatedAt` to the current UTC time in ISO-8601
@@ -135,7 +158,7 @@ are never published.
    job that silently never fired — and an unobservable scheduled job is an
    untrustworthy one.
 
-8. Commit and push to `main` **even if the only change is `generatedAt`**.
+9. Commit and push to `main` **even if the only change is `generatedAt`**.
    Do not skip the commit because "nothing meaningful changed" — the heartbeat
    is the point.
 
