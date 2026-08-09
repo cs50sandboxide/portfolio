@@ -2,11 +2,13 @@
    FUND DATA — Live snapshot from Interactive Brokers
    ============================================
    AUTO-GENERATED. Do not hand-edit.
-   Regenerated weekly (Fridays after US market close)
+   Regenerated every Saturday, while markets are closed,
    by the routine described in AUTOUPDATE.md.
 
-   Source: IBKR account summary, balances, positions,
-           and performance endpoints + SPY daily closes.
+   Source: IBKR account summary, positions, performance
+           and allocation endpoints, plus the latest close
+           for each benchmark ETF. Historical closes are
+           cached in `baselines` and never re-fetched.
    ============================================ */
 
 const FUND_DATA = {
