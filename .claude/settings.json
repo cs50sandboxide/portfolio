@@ -10,6 +10,15 @@
       "mcp__Interactive_Brokers_IBKR__get_pa_performance_all_periods",
       "mcp__Interactive_Brokers_IBKR__get_pa_allocation",
       "mcp__Interactive_Brokers_IBKR__get_price_history",
+      "mcp__Interactive_Brokers_IBKR__get_price_snapshot",
+
+      "mcp__Interactive-Brokers--IBKR-__get_account_summary",
+      "mcp__Interactive-Brokers--IBKR-__get_account_positions",
+      "mcp__Interactive-Brokers--IBKR-__get_pa_performance_all_periods",
+      "mcp__Interactive-Brokers--IBKR-__get_pa_allocation",
+      "mcp__Interactive-Brokers--IBKR-__get_price_history",
+      "mcp__Interactive-Brokers--IBKR-__get_price_snapshot",
+
       "Read",
       "Glob",
       "Grep",
@@ -20,6 +29,7 @@
       "Bash(git diff*)",
       "Bash(git rev-parse*)",
       "Bash(git fetch*)",
+      "Bash(git pull*)",
       "Bash(git checkout*)",
       "Bash(git add*)",
       "Bash(git commit*)",
@@ -36,14 +46,25 @@
       "mcp__Interactive_Brokers_IBKR__create_alert",
       "mcp__Interactive_Brokers_IBKR__update_alert",
       "mcp__Interactive_Brokers_IBKR__delete_alert",
-      "mcp__Interactive_Brokers_IBKR__set_alert_status"
+      "mcp__Interactive_Brokers_IBKR__set_alert_status",
+
+      "mcp__Interactive-Brokers--IBKR-__create_order_instruction",
+      "mcp__Interactive-Brokers--IBKR-__get_combo_identifier",
+      "mcp__Interactive-Brokers--IBKR-__get_order_instructions",
+      "mcp__Interactive-Brokers--IBKR-__create_watchlist",
+      "mcp__Interactive-Brokers--IBKR-__edit_watchlist",
+      "mcp__Interactive-Brokers--IBKR-__delete_watchlist",
+      "mcp__Interactive-Brokers--IBKR-__create_alert",
+      "mcp__Interactive-Brokers--IBKR-__update_alert",
+      "mcp__Interactive-Brokers--IBKR-__delete_alert",
+      "mcp__Interactive-Brokers--IBKR-__set_alert_status"
     ]
   },
 
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "mcp__Interactive_Brokers_IBKR__",
+        "matcher": "mcp__",
         "hooks": [
           {
             "type": "command",

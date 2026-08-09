@@ -11,31 +11,49 @@
 # file has never heard of. That is the point — a denylist silently fails open
 # the moment the connector grows a new write tool.
 #
-# Wired up as a PreToolUse hook in .claude/settings.json.
+# SERVER-NAME AGNOSTIC. The same connector surfaces under different names in
+# different sessions — "Interactive_Brokers_IBKR" here, "Interactive-Brokers--IBKR-"
+# in the routine's config. Matching one exact spelling would let the other
+# sail straight through, so this matches any MCP server whose name looks like
+# IBKR and ignores punctuation entirely.
+#
+# Wired up as a PreToolUse hook in .claude/settings.json with matcher "mcp__",
+# so every MCP tool is inspected and non-IBKR ones pass through untouched.
 # ---------------------------------------------------------------------------
 set -uo pipefail
 
-SERVER_PREFIX='mcp__Interactive_Brokers_IBKR__'
-
 ALLOWED_TOOLS='
 get_account_summary
-get_account_balances
 get_account_positions
 get_pa_performance_all_periods
 get_pa_allocation
 get_price_history
+get_price_snapshot
 '
 
 payload=$(cat)
 tool=$(printf '%s' "$payload" | jq -r '.tool_name // empty' 2>/dev/null)
 
-# Govern IBKR tools only; everything else passes through untouched.
+# Only MCP tools are in scope.
 case "$tool" in
-    "${SERVER_PREFIX}"*) ;;
+    mcp__*) ;;
     *) exit 0 ;;
 esac
 
-name="${tool#"$SERVER_PREFIX"}"
+# mcp__<server>__<tool>  — split on the first "__" after the prefix.
+rest="${tool#mcp__}"
+server="${rest%%__*}"
+name="${rest#*__}"
+
+# Normalise: lowercase, strip every non-alphanumeric character. So
+# "Interactive_Brokers_IBKR" and "Interactive-Brokers--IBKR-" both become
+# "interactivebrokersibkr".
+squash=$(printf '%s' "$server" | tr '[:upper:]' '[:lower:]' | tr -cd '[:alnum:]')
+
+case "$squash" in
+    *ibkr*|*interactivebroker*) ;;
+    *) exit 0 ;;                    # some other MCP server — not our business
+esac
 
 for allowed in $ALLOWED_TOOLS; do
     [ "$name" = "$allowed" ] && exit 0
