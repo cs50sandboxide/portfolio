@@ -29,6 +29,7 @@ get_pa_performance_all_periods
 get_pa_allocation
 get_price_history
 get_price_snapshot
+search_contracts
 '
 
 payload=$(cat)

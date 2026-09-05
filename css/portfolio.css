@@ -195,12 +195,15 @@
     color: var(--gray-600);
 }
 
+/* Wide measure: these are explanatory notes, not body copy, and at 760px the
+   longer ones ran to five or six cramped lines while the page had room either
+   side. */
 .perf-footnote {
     font-size: 0.75rem;
     font-weight: 300;
     color: var(--gray-500);
     line-height: 1.75;
-    max-width: 760px;
+    max-width: 1120px;
     margin: 0 auto;
     padding-top: 20px;
     text-align: center;
@@ -629,11 +632,16 @@
     border-collapse: collapse;
 }
 
-/* Three narrow columns stretched across the full container read as sparse,
-   so the holdings tables get a measure of their own and sit centred. */
+/* Wide enough for the company column without stranding space either side. */
 .pos-group .positions-table {
-    max-width: 680px;
+    max-width: 940px;
     margin: 0 auto;
+}
+
+.pos-company {
+    color: var(--gray-500) !important;
+    white-space: normal !important;
+    line-height: 1.4;
 }
 
 .positions-table th {

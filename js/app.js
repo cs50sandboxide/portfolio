@@ -602,6 +602,7 @@ function initPositions() {
         // Position sizes are shown as a share of NAV, never in dollars.
         // Quantity is omitted deliberately: quantity x price reconstructs the
         // dollar value exactly, so printing both would undo the choice.
+        const nameFor = (t) => (FUND_DATA.tickerNames || {})[t] || "";
         const rowsHtml = g.rows.map((r) => {
             const name = isOptions
                 ? `<span class="pos-ticker">${r.ticker}</span><span class="pos-contract">${r.contract}</span>`
@@ -609,6 +610,7 @@ function initPositions() {
             return `
                 <tr>
                     <td class="pos-name">${name}</td>
+                    <td class="pos-company">${nameFor(r.ticker)}</td>
                     <td>${fmtPrice(r.price)}</td>
                     <td class="pos-value">${r.pctNav.toFixed(2)}%</td>
                 </tr>
@@ -626,6 +628,7 @@ function initPositions() {
                     <thead>
                         <tr>
                             <th>${isOptions ? "Contract" : "Ticker"}</th>
+                            <th>Company</th>
                             <th>Price</th>
                             <th>% of NAV</th>
                         </tr>

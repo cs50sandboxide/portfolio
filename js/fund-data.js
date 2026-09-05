@@ -89,6 +89,70 @@ const FUND_DATA = {
         { date: "2026-09-04", fund: 116.74, spy: 7.88, qqq:  8.30 },
     ],
 
+    // --- Ticker to company name ---
+    // Cached so the weekly refresh never re-looks-up a name it already holds;
+    // only a genuinely new ticker costs a lookup. IBKR's positions endpoint
+    // returns no company name, so these come from search_contracts.
+    //
+    // A ticker missing from this map simply renders blank in the holdings
+    // table. Leave it blank rather than guessing — a wrong company name
+    // against a real position is worse than an empty cell.
+    tickerNames: {
+        AMD:     "Advanced Micro Devices",
+        APO:     "Apollo Global Management",
+        ASTS:    "AST SpaceMobile",
+        AVAV:    "AeroVironment",
+        BE:      "Bloom Energy",
+        BX:      "Blackstone",
+        CEG:     "Constellation Energy",
+        COST:    "Costco Wholesale",
+        CRM:     "Salesforce",
+        CRSP:    "CRISPR Therapeutics",
+        CRWD:    "CrowdStrike",
+        DELL:    "Dell Technologies",
+        FSLR:    "First Solar",
+        GOOG:    "Alphabet",
+        HIMS:    "Hims &amp; Hers Health",
+        HOOD:    "Robinhood Markets",
+        IBKR:    "Interactive Brokers Group",
+        INFQ:    "Infleqtion",
+        INTC:    "Intel",
+        IONQ:    "IonQ",
+        JBLU:    "JetBlue Airways",
+        KKR:     "KKR &amp; Co",
+        KTOS:    "Kratos Defense &amp; Security",
+        LHX:     "L3Harris Technologies",
+        LMT:     "Lockheed Martin",
+        LULU:    "Lululemon Athletica",
+        META:    "Meta Platforms",
+        MP:      "MP Materials",
+        MSTR:    "Strategy",
+        MU:      "Micron Technology",
+        NBIS:    "Nebius Group",
+        NET:     "Cloudflare",
+        NOC:     "Northrop Grumman",
+        NOW:     "ServiceNow",
+        NVDA:    "NVIDIA",
+        NVO:     "Novo Nordisk",
+        ORCL:    "Oracle",
+        OSCR:    "Oscar Health",
+        RKLB:    "Rocket Lab",
+        ROKU:    "Roku",
+        SNDK:    "SanDisk",
+        SNOW:    "Snowflake",
+        SPCE:    "Virgin Galactic",
+        SPOT:    "Spotify Technology",
+        TEAM:    "Atlassian",
+        TLN:     "Talen Energy",
+        TWLO:    "Twilio",
+        UBER:    "Uber Technologies",
+        UNH:     "UnitedHealth Group",
+        USAR:    "USA Rare Earth",
+        VST:     "Vistra",
+        WMT:     "Walmart",
+        XE:      "X-Energy",
+    },
+
     // --- Attribution: how the book is positioned right now ---
     // Every figure here comes from get_pa_allocation and get_account_positions,
     // both of which the refresh already calls. No extra API cost.

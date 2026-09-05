@@ -23,7 +23,7 @@ Saturday is chosen deliberately over a weeknight run. Markets are shut, so
 Friday's close has had many hours to settle in IBKR's PortfolioAnalyst — no
 risk of publishing half-processed figures as final. It also means unchanged
 data between runs is normal, which is exactly why the `generatedAt` heartbeat
-exists (step 9).
+exists (step 10).
 
 ## Keep the pull small
 
@@ -37,10 +37,12 @@ Two standing rules, because every byte pulled costs tokens:
    not expose at all (drawdown, volatility, Sharpe, monthly returns) are
    derived — see step 6.
 
-Exactly **four calls per run**, plus three tiny price lookups. Do not call
+Exactly **four calls per run**, plus three tiny price lookups — and a
+`search_contracts` call only when a genuinely new ticker appears. Do not call
 `get_account_balances`: everything it offers is already in
 `get_account_summary`, and its extra fields (`unrealized_pnl`, `realized_pnl`)
-are never published.
+are never published. Do not call `get_account_trades`: seven days alone is
+roughly 200KB and nothing published needs it.
 
 ## What the routine does
 
@@ -192,7 +194,22 @@ are never published.
    says so explicitly in its footnote — do not remove that caveat, and do not
    try to make the numbers agree.
 
-9. Rewrite `js/fund-data.js` in full, preserving the existing structure and
+9. **Fill any gaps in `tickerNames`.** IBKR's positions endpoint returns no
+   company name, so the holdings table reads them from this cached map.
+
+   Carry the existing entries forward untouched. For any ticker in the
+   positions that is NOT already a key, make ONE `search_contracts` call and
+   take the `description` of the row whose `symbol` matches exactly and whose
+   `country_code` is the primary listing. Add it to the map, sorted
+   alphabetically.
+
+   Steady-state cost is zero — only a genuinely new holding triggers a lookup.
+
+   **If the lookup is ambiguous or returns nothing, leave the ticker out of
+   the map.** It renders as an empty cell, which is correct. A wrong company
+   name sitting beside a real position is worse than a blank.
+
+10. Rewrite `js/fund-data.js` in full, preserving the existing structure and
    the header comment. Round money to 2dp and percentages to 2dp.
 
    Always set `generatedAt` to the current UTC time in ISO-8601
@@ -202,7 +219,7 @@ are never published.
    job that silently never fired — and an unobservable scheduled job is an
    untrustworthy one.
 
-10. Commit and push to `main` **even if the only change is `generatedAt`**.
+11. Commit and push to `main` **even if the only change is `generatedAt`**.
    Do not skip the commit because "nothing meaningful changed" — the heartbeat
    is the point.
 
