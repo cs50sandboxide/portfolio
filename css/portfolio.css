@@ -42,6 +42,7 @@
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--gray-500);
+    text-align: center;
     margin-bottom: 28px;
     padding-bottom: 12px;
     border-bottom: 1px solid rgba(245, 240, 235, 0.06);
@@ -202,34 +203,83 @@
     max-width: 760px;
     margin: 0 auto;
     padding-top: 20px;
+    text-align: center;
     border-top: 1px solid rgba(245, 240, 235, 0.05);
 }
 
-/* The monthly-returns and risk footnotes sit in left-aligned blocks */
-.perf-block .positions-table-wrap + .perf-footnote,
-.exposure-bar + .perf-footnote {
-    margin-left: 0;
-}
-
 /* ---- Monthly Returns Table ---- */
+/* Fixed layout so the four columns are equal — with auto layout the month
+   column absorbs the extra width and the numeric columns end up bunched. */
 .monthly-table {
-    max-width: 720px;
+    max-width: 780px;
+    margin: 0 auto;
+    table-layout: fixed;
 }
 
-.monthly-table th.num,
-.monthly-table td.num {
-    text-align: right;
-    padding-right: 32px;
-}
-
-.monthly-table th:last-child,
-.monthly-table td:last-child {
+.monthly-table th,
+.monthly-table td {
+    text-align: center;
     padding-right: 0;
+}
+
+/* Deliberately larger than the other tables — this is the table that shows
+   whether the fund actually beat the index, month by month, so it earns the
+   extra weight. */
+.monthly-table td {
+    font-size: 0.94rem;
+    padding-top: 17px;
+    padding-bottom: 17px;
+}
+
+.monthly-table th {
+    font-size: 0.64rem;
+    padding-bottom: 13px;
 }
 
 .month-cell {
     color: var(--off-white) !important;
     font-weight: 400;
+}
+
+.month-name {
+    display: block;
+}
+
+/* Sits under the month rather than beside it: inline, it made every partial
+   month's name sit off-centre against the others. */
+.monthly-table .month-partial {
+    display: inline-block;
+    margin: 5px 0 0;
+}
+
+/* The versus-benchmark column is the point of the table, so it is filled
+   rather than merely coloured — outperformance and underperformance should be
+   readable at a glance without comparing two other numbers first. */
+.diff-cell {
+    font-weight: 600 !important;
+}
+
+.diff-chip {
+    display: inline-block;
+    min-width: 92px;
+    padding: 5px 12px;
+    border-radius: 2px;
+    font-variant-numeric: tabular-nums;
+}
+
+.diff-chip.positive {
+    background: rgba(74, 222, 128, 0.13);
+    color: #4ade80;
+}
+
+.diff-chip.negative {
+    background: rgba(248, 113, 113, 0.13);
+    color: #f87171;
+}
+
+.diff-chip.muted {
+    background: transparent;
+    color: var(--gray-600);
 }
 
 .month-partial {
@@ -263,6 +313,8 @@
     padding: 28px 24px;
     display: flex;
     flex-direction: column;
+    align-items: center;
+    text-align: center;
     gap: 8px;
 }
 
@@ -291,7 +343,7 @@
 
 /* ---- Exposure Composition Bar ---- */
 .exposure-bar {
-    margin-bottom: 28px;
+    margin: 0 auto 28px;
     max-width: 720px;
 }
 
@@ -309,6 +361,7 @@
 .exposure-key {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 24px;
     margin-top: 14px;
 }
@@ -343,6 +396,7 @@
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--off-white);
+    text-align: center;
     margin-bottom: 4px;
 }
 
@@ -350,6 +404,7 @@
     font-size: 0.62rem;
     font-weight: 300;
     color: var(--gray-600);
+    text-align: center;
     margin-bottom: 18px;
 }
 
@@ -362,6 +417,7 @@
 .attr-donut {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 28px;
     flex-wrap: wrap;
 }
@@ -377,8 +433,7 @@
     display: grid;
     grid-template-columns: 1fr;
     gap: 5px;
-    flex: 1;
-    min-width: 170px;
+    min-width: 190px;
 }
 
 .donut-key li {
@@ -409,6 +464,8 @@
     display: flex;
     flex-direction: column;
     gap: 9px;
+    max-width: 420px;
+    margin: 0 auto;
 }
 
 .tilt-row {
@@ -459,19 +516,13 @@
 }
 
 /* ---- Attribution tables ---- */
+.attr-table th,
+.attr-table td,
 .attr-table th.num,
 .attr-table td.num {
-    text-align: right;
-}
-
-.attr-table td,
-.attr-table th {
-    padding-right: 18px;
-}
-
-.attr-table th:last-child,
-.attr-table td:last-child {
-    padding-right: 0;
+    text-align: center;
+    padding-left: 8px;
+    padding-right: 8px;
 }
 
 .side-tag {
@@ -497,6 +548,7 @@
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
+    justify-content: center;
     margin-bottom: 32px;
 }
 
@@ -542,6 +594,7 @@
 .pos-group-header {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
     margin-bottom: 14px;
 }
@@ -565,7 +618,6 @@
     font-size: 0.65rem;
     font-weight: 400;
     color: var(--gray-500);
-    margin-left: auto;
 }
 
 .positions-table-wrap {
@@ -577,14 +629,21 @@
     border-collapse: collapse;
 }
 
+/* Three narrow columns stretched across the full container read as sparse,
+   so the holdings tables get a measure of their own and sit centred. */
+.pos-group .positions-table {
+    max-width: 680px;
+    margin: 0 auto;
+}
+
 .positions-table th {
     font-size: 0.6rem;
     font-weight: 500;
     letter-spacing: 0.14em;
     text-transform: uppercase;
     color: var(--gray-600);
-    text-align: left;
-    padding: 10px 16px 10px 0;
+    text-align: center;
+    padding: 10px 16px;
     border-bottom: 1px solid rgba(245, 240, 235, 0.08);
     white-space: nowrap;
 }
@@ -593,7 +652,8 @@
     font-size: 0.82rem;
     font-weight: 300;
     color: var(--gray-300);
-    padding: 14px 16px 14px 0;
+    text-align: center;
+    padding: 14px 16px;
     border-bottom: 1px solid rgba(245, 240, 235, 0.04);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
@@ -610,6 +670,7 @@
 .pos-name {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 3px;
 }
 
@@ -697,5 +758,59 @@
     }
     .perf-block {
         margin-top: 56px;
+    }
+}
+
+/* ---- Scope note ----
+   The CV states total assets across two mandates; this page reports only the
+   long/short book. Stating that plainly, above the numbers, is what stops the
+   difference reading as an inconsistency to anyone who checks both. */
+.scope-section {
+    padding: 0 0 8px;
+}
+
+.scope-note {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 26px 32px;
+    border: 1px solid rgba(245, 240, 235, 0.08);
+    border-left: 2px solid rgba(201, 169, 110, 0.45);
+    background: rgba(245, 240, 235, 0.015);
+    text-align: left;
+}
+
+.scope-lead {
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 12px;
+}
+
+.scope-note p:not(.scope-lead) {
+    font-size: 0.8rem;
+    font-weight: 300;
+    color: var(--gray-400);
+    line-height: 1.8;
+}
+
+.scope-note p:not(.scope-lead) + p {
+    margin-top: 12px;
+}
+
+/* ---- Page hero: centred, like the rest of the page ---- */
+.page-hero .container {
+    text-align: center;
+}
+
+.page-hero-sub {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 768px) {
+    .scope-note {
+        padding: 22px 20px;
     }
 }

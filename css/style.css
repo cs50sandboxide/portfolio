@@ -176,6 +176,7 @@ body:has(.mtd-banner) .page-hero {
 
 .internship-ctas {
     display: flex;
+    justify-content: center;
     gap: 16px;
     margin-top: 8px;
 }
@@ -1025,8 +1026,18 @@ body:has(.mtd-banner) .page-hero {
     margin-bottom: 36px;
 }
 
+/* Centred rather than left-hugging: at 800px inside a 1200px container this
+   used to leave ~440px of dead space down the right of three sections. */
 .snippet-content-full {
     max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+/* Long-form prose stays left-aligned — centred multi-line body copy is
+   materially harder to read, and the role cards carry real paragraphs. */
+.snippet-content-wide .role-card {
+    text-align: left;
 }
 
 .snippet-content-full .snippet-text {
@@ -1297,6 +1308,7 @@ body:has(.mtd-banner) .page-hero {
 .cfa-topics {
     display: flex;
     flex-wrap: wrap;
+    justify-content: center;
     gap: 8px;
 }
 
@@ -1521,6 +1533,7 @@ body:has(.mtd-banner) .page-hero {
 /* ---- Models 2-col ---- */
 .snippet-contact {
     max-width: 600px;
+    margin: 0 auto;
 }
 
 .contact-preview-links {

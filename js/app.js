@@ -398,12 +398,14 @@ function initMonthlyReturns() {
         const tr = document.createElement("tr");
         tr.innerHTML = `
             <td class="month-cell">
-                ${MONTHS[mo - 1]} ${y}
+                <span class="month-name">${MONTHS[mo - 1]} ${y}</span>
                 ${m.partial ? '<span class="month-partial">partial</span>' : ""}
             </td>
             <td class="num ${cls(m.fund)}">${fmtPct(m.fund)}</td>
             <td class="num ${hasBench ? cls(m.benchmark) : "muted"}">${hasBench ? fmtPct(m.benchmark) : "—"}</td>
-            <td class="num ${diff === null ? "muted" : cls(diff)}">${diff === null ? "—" : fmtPct(diff)}</td>
+            <td class="num diff-cell">
+                <span class="diff-chip ${diff === null ? "muted" : cls(diff)}">${diff === null ? "—" : fmtPct(diff)}</span>
+            </td>
         `;
         body.appendChild(tr);
     });
