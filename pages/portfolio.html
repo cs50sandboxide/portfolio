@@ -125,6 +125,51 @@
                 <p class="perf-footnote" id="riskFootnote">—</p>
             </div>
 
+            <!-- Attribution -->
+            <div class="perf-block">
+                <div class="tab-section-label">Attribution — How the book is positioned</div>
+
+                <div class="attr-grid">
+                    <div class="attr-panel">
+                        <h4 class="attr-title">Long Book by Sector</h4>
+                        <div class="attr-donut" id="attrDonut"></div>
+                    </div>
+                    <div class="attr-panel">
+                        <h4 class="attr-title">Net Sector Exposure</h4>
+                        <p class="attr-sub">Long less short, in dollars</p>
+                        <div class="attr-tilt" id="attrTilt"></div>
+                    </div>
+                </div>
+
+                <div class="attr-grid">
+                    <div class="attr-panel">
+                        <h4 class="attr-title">Five Largest Positions</h4>
+                        <div class="positions-table-wrap">
+                            <table class="positions-table attr-table">
+                                <thead>
+                                    <tr><th>Ticker</th><th>Side</th><th class="num">% NAV</th><th class="num">vs Entry</th></tr>
+                                </thead>
+                                <tbody id="attrTopBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="attr-panel">
+                        <h4 class="attr-title">Contributors &amp; Detractors</h4>
+                        <p class="attr-sub">Open positions, in percentage points of NAV</p>
+                        <div class="positions-table-wrap">
+                            <table class="positions-table attr-table">
+                                <thead>
+                                    <tr><th>Ticker</th><th>Side</th><th class="num">Contribution</th><th class="num">vs Entry</th></tr>
+                                </thead>
+                                <tbody id="attrContribBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <p class="perf-footnote" id="attrFootnote">—</p>
+            </div>
+
             <!-- Open Positions -->
             <div class="perf-block">
                 <div class="tab-section-label">

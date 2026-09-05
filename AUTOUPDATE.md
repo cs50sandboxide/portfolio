@@ -23,7 +23,7 @@ Saturday is chosen deliberately over a weeknight run. Markets are shut, so
 Friday's close has had many hours to settle in IBKR's PortfolioAnalyst — no
 risk of publishing half-processed figures as final. It also means unchanged
 data between runs is normal, which is exactly why the `generatedAt` heartbeat
-exists (step 8).
+exists (step 9).
 
 ## Keep the pull small
 
@@ -148,7 +148,43 @@ are never published.
    site that cannot be reconstructed from a single snapshot. If a row for that
    Friday already exists, leave it alone and add nothing.
 
-8. Rewrite `js/fund-data.js` in full, preserving the existing structure and
+8. **Rebuild `attribution`** — the positioning panel. No extra API calls:
+   sectors come from the `get_pa_allocation` response in step 5, positions
+   from step 3.
+
+   - `sectorsLong` / `sectorsShort` — from `allocations.SECTOR`. **Drop the
+     `Cash` item and renormalise** so the remaining weights sum to 100. Cash
+     in the short bucket is a margin artefact, not a short position, and
+     leaving it in understates the real sector concentration. Sort descending.
+     Sanity check: the sector totals must equal `exposure.long` and
+     `exposure.short`.
+   - `netTilt` — long minus short per sector, in dollars, sorted descending.
+     This is the actual directional bet and routinely differs in sign from the
+     long-only pie; do not omit it.
+   - `topPositions` — the five largest by **absolute** `market_value`, so a
+     large short is not hidden. `pctNav` is that value ÷ `portfolioValue`.
+     `move` is the percent change against `average_price`, **sign-flipped for
+     shorts** so that a short whose price fell reads positive.
+   - `contributors` / `detractors` — top three each, `asset_class == "STK"`
+     only, ranked by contribution in percentage points:
+     `(market_price − average_price) × position ÷ portfolioValue × 100`.
+     Rank by contribution, not by raw percent move: a 29% loss on a small
+     position matters less than a 5% loss on a large one. Exclude options —
+     they are tiny in dollar terms and would otherwise occupy every slot on
+     percentage alone. Skip any position where `position == 0`.
+   - `openContribTotal` — the sum across all equity positions.
+   - `top5Concentration`, `equityLongCount`, `equityShortCount`.
+
+   **Publish percentages and percentage points only — never dollar unrealized
+   P&L.** That exclusion still stands; contribution expressed as a share of
+   NAV is the standard attribution presentation and is what the panel shows.
+
+   These figures describe **open positions only**. They will not reconcile to
+   `returnSinceInception`, which is driven mostly by closed trades. The page
+   says so explicitly in its footnote — do not remove that caveat, and do not
+   try to make the numbers agree.
+
+9. Rewrite `js/fund-data.js` in full, preserving the existing structure and
    the header comment. Round money to 2dp and percentages to 2dp.
 
    Always set `generatedAt` to the current UTC time in ISO-8601
@@ -158,7 +194,7 @@ are never published.
    job that silently never fired — and an unobservable scheduled job is an
    untrustworthy one.
 
-9. Commit and push to `main` **even if the only change is `generatedAt`**.
+10. Commit and push to `main` **even if the only change is `generatedAt`**.
    Do not skip the commit because "nothing meaningful changed" — the heartbeat
    is the point.
 

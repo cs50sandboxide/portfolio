@@ -89,6 +89,84 @@ const FUND_DATA = {
         { date: "2026-09-04", fund: 116.74, spy: 7.88, qqq:  8.30 },
     ],
 
+    // --- Attribution: how the book is positioned right now ---
+    // Every figure here comes from get_pa_allocation and get_account_positions,
+    // both of which the refresh already calls. No extra API cost.
+    //
+    // IMPORTANT: `contributors` / `detractors` are UNREALIZED moves on
+    // currently-open positions against their average entry price. They sum to
+    // `openContribTotal` and deliberately do NOT reconcile to
+    // returnSinceInception — that return came predominantly from closed
+    // trades, which this panel does not and cannot see. This describes
+    // positioning today, not what drove the return.
+    attribution: {
+        // Long book by sector, % of long equity exposure (cash excluded).
+        sectorsLong: [
+            { name: "Industrial",         pct: 21.26 },
+            { name: "Technology",         pct: 19.77 },
+            { name: "Financials",         pct: 15.00 },
+            { name: "Healthcare",         pct: 10.65 },
+            { name: "Utilities",          pct: 10.39 },
+            { name: "Telecomm",           pct: 6.28  },
+            { name: "Basic Materials",    pct: 5.70  },
+            { name: "Consumer Cyclicals", pct: 5.11  },
+            { name: "Consumer Non-Cyc",   pct: 3.05  },
+            { name: "Energy",             pct: 2.79  },
+        ],
+
+        // Short book by sector, % of short equity exposure.
+        sectorsShort: [
+            { name: "Technology",         pct: 84.01 },
+            { name: "Industrial",         pct: 9.92  },
+            { name: "Consumer Cyclicals", pct: 6.06  },
+        ],
+
+        // Net sector exposure (long minus short), $ — the actual directional
+        // bet. A long-only sector pie hides that this book is materially net
+        // SHORT technology while net long everything else.
+        netTilt: [
+            { name: "Industrial",         net:   678227 },
+            { name: "Financials",         net:   658221 },
+            { name: "Healthcare",         net:   467085 },
+            { name: "Utilities",          net:   455852 },
+            { name: "Telecomm",           net:   275467 },
+            { name: "Basic Materials",    net:   250085 },
+            { name: "Consumer Non-Cyc",   net:   133912 },
+            { name: "Energy",             net:   122574 },
+            { name: "Consumer Cyclicals", net:    68494 },
+            { name: "Technology",         net: -1288513 },
+        ],
+
+        // Five largest positions by absolute market value.
+        topPositions: [
+            { ticker: "DELL", side: "Short", value: 198527, pctNav: 13.3, move: -7.87 },
+            { ticker: "CRM",  side: "Short", value: 181461, pctNav: 12.1, move: -3.41 },
+            { ticker: "CEG",  side: "Long",  value: 179376, pctNav: 12.0, move:  2.16 },
+            { ticker: "UBER", side: "Long",  value: 177895, pctNav: 11.9, move: -0.52 },
+            { ticker: "NVDA", side: "Short", value: 177852, pctNav: 11.9, move: -4.36 },
+        ],
+
+        // Ranked by contribution in percentage points of NAV, not by raw %
+        // move — a 29% loss on a small position matters less than a 5% loss on
+        // a large one. Equities only; the five option positions are tiny in
+        // dollar terms and would otherwise dominate both ends on percentage.
+        contributors: [
+            { ticker: "IONQ", side: "Long",  pp:  0.26, move:  2.78 },
+            { ticker: "CEG",  side: "Long",  pp:  0.25, move:  2.16 },
+            { ticker: "VST",  side: "Long",  pp:  0.18, move:  1.71 },
+        ],
+        detractors: [
+            { ticker: "XE",   side: "Long",  pp: -1.91, move: -28.67 },
+            { ticker: "KTOS", side: "Long",  pp: -1.49, move: -14.97 },
+            { ticker: "MSTR", side: "Short", pp: -1.10, move: -11.22 },
+        ],
+
+        openContribTotal: -13.25,
+        equityLongCount: 34,
+        equityShortCount: 17,
+        top5Concentration: 13.2,   // % of gross exposure
+    },
+
     // --- Cached baselines: fixed history the refresh job must NOT re-fetch ---
     // These are closes on dates already in the past, so they can never change.
     // Caching them means each run pulls only the newest close (one week of

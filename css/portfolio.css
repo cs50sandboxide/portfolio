@@ -323,6 +323,175 @@
     color: var(--gray-400);
 }
 
+/* ============================================
+   Attribution
+   ============================================ */
+.attr-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    margin-bottom: 44px;
+}
+
+.attr-panel {
+    min-width: 0;
+}
+
+.attr-title {
+    font-size: 0.68rem;
+    font-weight: 500;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--off-white);
+    margin-bottom: 4px;
+}
+
+.attr-sub {
+    font-size: 0.62rem;
+    font-weight: 300;
+    color: var(--gray-600);
+    margin-bottom: 18px;
+}
+
+.attr-title + .attr-donut,
+.attr-title + .positions-table-wrap {
+    margin-top: 18px;
+}
+
+/* ---- Sector donut ---- */
+.attr-donut {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+    flex-wrap: wrap;
+}
+
+.donut-svg {
+    width: 168px;
+    height: 168px;
+    flex-shrink: 0;
+}
+
+.donut-key {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 5px;
+    flex: 1;
+    min-width: 170px;
+}
+
+.donut-key li {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.66rem;
+    font-weight: 300;
+    color: var(--gray-400);
+}
+
+.donut-swatch {
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.donut-name { flex: 1; }
+
+.donut-pct {
+    color: var(--gray-300);
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Net sector tilt ---- */
+.attr-tilt {
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.tilt-row {
+    display: grid;
+    grid-template-columns: 118px 1fr 62px;
+    align-items: center;
+    gap: 12px;
+}
+
+.tilt-name {
+    font-size: 0.64rem;
+    font-weight: 300;
+    color: var(--gray-400);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tilt-track {
+    position: relative;
+    height: 12px;
+    background: rgba(245, 240, 235, 0.03);
+}
+
+.tilt-axis {
+    position: absolute;
+    left: 50%;
+    top: -1px;
+    bottom: -1px;
+    width: 1px;
+    background: rgba(245, 240, 235, 0.16);
+}
+
+.tilt-bar {
+    position: absolute;
+    top: 2px;
+    bottom: 2px;
+}
+
+.tilt-pos { background: #4ade80; }
+.tilt-neg { background: #f87171; }
+
+.tilt-val {
+    font-size: 0.64rem;
+    font-weight: 500;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+/* ---- Attribution tables ---- */
+.attr-table th.num,
+.attr-table td.num {
+    text-align: right;
+}
+
+.attr-table td,
+.attr-table th {
+    padding-right: 18px;
+}
+
+.attr-table th:last-child,
+.attr-table td:last-child {
+    padding-right: 0;
+}
+
+.side-tag {
+    display: inline-block;
+    font-size: 0.55rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+}
+
+.side-long  { background: rgba(74, 222, 128, 0.12); color: #4ade80; }
+.side-short { background: rgba(248, 113, 113, 0.12); color: #f87171; }
+
+.attr-divider td {
+    padding: 0 !important;
+    height: 14px;
+    border-bottom: 1px solid rgba(245, 240, 235, 0.10) !important;
+}
+
 /* ---- Position Filters ---- */
 .positions-filter {
     display: flex;
@@ -502,6 +671,25 @@
     }
     .risk-grid {
         grid-template-columns: repeat(2, 1fr);
+    }
+    .attr-grid {
+        grid-template-columns: 1fr;
+        gap: 40px;
+    }
+    .attr-donut {
+        gap: 20px;
+    }
+    .donut-svg {
+        width: 140px;
+        height: 140px;
+    }
+    .tilt-row {
+        grid-template-columns: 96px 1fr 56px;
+        gap: 9px;
+    }
+    .tilt-name,
+    .tilt-val {
+        font-size: 0.58rem;
     }
     .monthly-table th.num,
     .monthly-table td.num {

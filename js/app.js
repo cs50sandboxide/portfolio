@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initBenchmark();
     initMonthlyReturns();
     initRisk();
+    initAttribution();
     initPositions();
     initScrollReveal();
 });
@@ -455,6 +456,113 @@ function initRisk() {
             "window is " + r.annualizedVol.toFixed(0) + "%, reflecting " + FUND_DATA.leverage +
             "x gross leverage. No return figure on this site is annualised or extrapolated.";
     }
+}
+
+/* ---- Attribution ---- */
+const SECTOR_COLORS = [
+    "#c9a96e", "#6495ed", "#4ade80", "#d98b6a", "#9d7fd4",
+    "#5eb8b3", "#b8a05e", "#7f8fa6", "#c47f9c", "#8d8d8d",
+];
+
+function initAttribution() {
+    if (typeof FUND_DATA === "undefined" || !FUND_DATA.attribution) return;
+    const a = FUND_DATA.attribution;
+
+    renderSectorDonut(a.sectorsLong);
+    renderNetTilt(a.netTilt);
+
+    // Five largest positions
+    const topBody = el("attrTopBody");
+    if (topBody) {
+        topBody.innerHTML = a.topPositions.map((p) => `
+            <tr>
+                <td class="pos-name"><span class="pos-ticker">${p.ticker}</span></td>
+                <td><span class="side-tag side-${p.side.toLowerCase()}">${p.side}</span></td>
+                <td class="num">${p.pctNav.toFixed(1)}%</td>
+                <td class="num ${p.move >= 0 ? "positive" : "negative"}">${fmtPct(p.move)}</td>
+            </tr>
+        `).join("");
+    }
+
+    // Contributors then detractors, in one table split by a divider row
+    const cBody = el("attrContribBody");
+    if (cBody) {
+        const row = (p) => `
+            <tr>
+                <td class="pos-name"><span class="pos-ticker">${p.ticker}</span></td>
+                <td><span class="side-tag side-${p.side.toLowerCase()}">${p.side}</span></td>
+                <td class="num ${p.pp >= 0 ? "positive" : "negative"}">${p.pp >= 0 ? "+" : ""}${p.pp.toFixed(2)}pp</td>
+                <td class="num ${p.move >= 0 ? "positive" : "negative"}">${fmtPct(p.move)}</td>
+            </tr>`;
+        cBody.innerHTML =
+            a.contributors.map(row).join("") +
+            `<tr class="attr-divider"><td colspan="4"></td></tr>` +
+            a.detractors.map(row).join("");
+    }
+
+    const note = el("attrFootnote");
+    if (note) {
+        note.textContent =
+            "Sector weights come from Interactive Brokers and are shown as a share of long " +
+            "equity exposure; the short book is a separate " + a.sectorsShort[0].pct.toFixed(0) +
+            "% concentration in " + a.sectorsShort[0].name + ", which is why net sector exposure " +
+            "is shown alongside. Contribution figures are unrealised moves on positions open " +
+            "today, measured against their average entry price, and sum to " +
+            a.openContribTotal.toFixed(1) + "pp. They do not reconcile to the " +
+            fmtPct(FUND_DATA.returnSinceInception) + " since inception, which came predominantly " +
+            "from closed trades this panel cannot see — it describes how the book is positioned " +
+            "now, not what produced the return. Options are excluded from the contribution " +
+            "ranking: they are small in dollar terms and would otherwise dominate on percentage.";
+    }
+}
+
+function renderSectorDonut(sectors) {
+    const wrap = el("attrDonut");
+    if (!wrap || !sectors) return;
+
+    const S = 200, R = 82, r = 50, cx = S / 2, cy = S / 2;
+    let angle = -Math.PI / 2;
+
+    const arcs = sectors.map((s, i) => {
+        const sweep = (s.pct / 100) * Math.PI * 2;
+        const a0 = angle, a1 = angle + sweep;
+        angle = a1;
+        const large = sweep > Math.PI ? 1 : 0;
+        const p = (rad, ang) => `${(cx + rad * Math.cos(ang)).toFixed(2)},${(cy + rad * Math.sin(ang)).toFixed(2)}`;
+        const d = `M${p(R, a0)} A${R},${R} 0 ${large} 1 ${p(R, a1)} L${p(r, a1)} A${r},${r} 0 ${large} 0 ${p(r, a0)} Z`;
+        return `<path d="${d}" fill="${SECTOR_COLORS[i % SECTOR_COLORS.length]}" opacity="0.85"><title>${s.name}: ${s.pct.toFixed(1)}%</title></path>`;
+    }).join("");
+
+    wrap.innerHTML = `
+        <svg viewBox="0 0 ${S} ${S}" class="donut-svg" role="img"
+             aria-label="Long book by sector">${arcs}</svg>
+        <ul class="donut-key">
+            ${sectors.map((s, i) => `
+                <li><span class="donut-swatch" style="background:${SECTOR_COLORS[i % SECTOR_COLORS.length]}"></span>
+                    <span class="donut-name">${s.name}</span>
+                    <span class="donut-pct">${s.pct.toFixed(1)}%</span></li>`).join("")}
+        </ul>`;
+}
+
+function renderNetTilt(tilt) {
+    const wrap = el("attrTilt");
+    if (!wrap || !tilt) return;
+
+    const max = Math.max(...tilt.map((t) => Math.abs(t.net))) || 1;
+    wrap.innerHTML = tilt.map((t) => {
+        const pct = (Math.abs(t.net) / max) * 50;   // half-width each side of centre
+        const neg = t.net < 0;
+        return `
+            <div class="tilt-row">
+                <span class="tilt-name">${t.name}</span>
+                <div class="tilt-track">
+                    <div class="tilt-axis"></div>
+                    <div class="tilt-bar ${neg ? "tilt-neg" : "tilt-pos"}"
+                         style="${neg ? `right:50%` : `left:50%`}; width:${pct.toFixed(1)}%"></div>
+                </div>
+                <span class="tilt-val ${neg ? "negative" : "positive"}">${neg ? "−" : "+"}$${Math.abs(Math.round(t.net / 1000))}K</span>
+            </div>`;
+    }).join("");
 }
 
 /* ---- Open Positions ---- */
