@@ -356,8 +356,17 @@ function initChartToggle() {
     const path = el("benchmarkPath");
     if (!toggle || !bars || !path) return;
 
+    // The weekly path is the default view — it shows the shape of the track
+    // record, not just its endpoint. If there are too few points to draw a
+    // line, renderReturnPath hides the toggle and we fall back to the bars.
     const note = el("perfFootnote");
-    if (note && FOOTNOTES.total) note.textContent = FOOTNOTES.total;
+    const pathUsable = !toggle.hidden;
+    if (!pathUsable) {
+        bars.hidden = false;
+        path.hidden = true;
+    }
+    const startView = pathUsable ? "path" : "total";
+    if (note && FOOTNOTES[startView]) note.textContent = FOOTNOTES[startView];
 
     toggle.querySelectorAll(".legend-item").forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -548,19 +557,19 @@ function renderNetTilt(tilt) {
     const wrap = el("attrTilt");
     if (!wrap || !tilt) return;
 
-    const max = Math.max(...tilt.map((t) => Math.abs(t.net))) || 1;
+    const max = Math.max(...tilt.map((t) => Math.abs(t.pct))) || 1;
     wrap.innerHTML = tilt.map((t) => {
-        const pct = (Math.abs(t.net) / max) * 50;   // half-width each side of centre
-        const neg = t.net < 0;
+        const width = (Math.abs(t.pct) / max) * 50;   // half-width each side of centre
+        const neg = t.pct < 0;
         return `
             <div class="tilt-row">
                 <span class="tilt-name">${t.name}</span>
                 <div class="tilt-track">
                     <div class="tilt-axis"></div>
                     <div class="tilt-bar ${neg ? "tilt-neg" : "tilt-pos"}"
-                         style="${neg ? `right:50%` : `left:50%`}; width:${pct.toFixed(1)}%"></div>
+                         style="${neg ? `right:50%` : `left:50%`}; width:${width.toFixed(1)}%"></div>
                 </div>
-                <span class="tilt-val ${neg ? "negative" : "positive"}">${neg ? "−" : "+"}$${Math.abs(Math.round(t.net / 1000))}K</span>
+                <span class="tilt-val ${neg ? "negative" : "positive"}">${neg ? "−" : "+"}${Math.abs(t.pct).toFixed(0)}%</span>
             </div>`;
     }).join("");
 }
@@ -588,17 +597,18 @@ function initPositions() {
 
         const isOptions = g.key === "options";
 
+        // Position sizes are shown as a share of NAV, never in dollars.
+        // Quantity is omitted deliberately: quantity x price reconstructs the
+        // dollar value exactly, so printing both would undo the choice.
         const rowsHtml = g.rows.map((r) => {
             const name = isOptions
                 ? `<span class="pos-ticker">${r.ticker}</span><span class="pos-contract">${r.contract}</span>`
                 : `<span class="pos-ticker">${r.ticker}</span>`;
-            const qty = r.quantity > 0 ? "+" + r.quantity.toLocaleString() : r.quantity.toLocaleString();
             return `
                 <tr>
                     <td class="pos-name">${name}</td>
-                    <td class="pos-qty">${qty}</td>
                     <td>${fmtPrice(r.price)}</td>
-                    <td class="pos-value">${fmtMoney(r.value)}</td>
+                    <td class="pos-value">${r.pctNav.toFixed(2)}%</td>
                 </tr>
             `;
         }).join("");
@@ -614,9 +624,8 @@ function initPositions() {
                     <thead>
                         <tr>
                             <th>${isOptions ? "Contract" : "Ticker"}</th>
-                            <th>Quantity</th>
                             <th>Price</th>
-                            <th>Market Value</th>
+                            <th>% of NAV</th>
                         </tr>
                     </thead>
                     <tbody>${rowsHtml}</tbody>

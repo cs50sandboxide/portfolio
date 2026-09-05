@@ -67,7 +67,13 @@ are never published.
 
    Sort longs and options by `market_value` descending; sort shorts by
    `market_value` ascending (largest short first). Keep `quantity`, `price`
-   (`market_price`), and `value` (`market_value`).
+   (`market_price`), and **`pctNav`** = |`market_value`| ÷ `portfolioValue`
+   × 100.
+
+   **Store `pctNav`, never `market_value`.** Position sizes are published as a
+   share of NAV, not in dollars, and this file is served to the browser — so a
+   dollar figure left in the data is a dollar figure published, whether or not
+   the page renders it.
 
    **Do not publish `unrealized_pnl` or `daily_pnl`.** Unrealized P&L is
    deliberately excluded from the site.
@@ -158,11 +164,13 @@ are never published.
      leaving it in understates the real sector concentration. Sort descending.
      Sanity check: the sector totals must equal `exposure.long` and
      `exposure.short`.
-   - `netTilt` — long minus short per sector, in dollars, sorted descending.
+   - `netTilt` — long minus short per sector as **% of NAV** (`pct`), sorted
+     descending. Not dollars.
      This is the actual directional bet and routinely differs in sign from the
      long-only pie; do not omit it.
    - `topPositions` — the five largest by **absolute** `market_value`, so a
-     large short is not hidden. `pctNav` is that value ÷ `portfolioValue`.
+     large short is not hidden. Store `pctNav` only — the dollar value is used
+     for ranking and then discarded.
      `move` is the percent change against `average_price`, **sign-flipped for
      shorts** so that a short whose price fell reads positive.
    - `contributors` / `detractors` — top three each, `asset_class == "STK"`
