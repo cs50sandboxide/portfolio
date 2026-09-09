@@ -130,12 +130,10 @@ roughly 200KB and nothing published needs it.
    - `annualizedVol` — `stdev(r) × sqrt(252) × 100`.
    - `sharpe` — `(cagr - rf) / vol` where `cagr = w[-1]^(252/n) - 1` and
      `rf = 0.04`. Record `n` as `risk.tradingDays`.
-   - `monthlyReturns` — for each calendar month, `w[last day of month] ÷
-     w[last day of previous month] - 1`, × 100. First and current months are
-     partial: set `partial: true`. The benchmark column comes from
-     `baselines.spyMonthEnd` (consecutive months divided), **not** from a
-     fresh price-history pull; use `null` for the current month, which has no
-     month-end close yet.
+   `monthlyReturns` is no longer used. The site now shows a **weekly** table
+   derived in the browser from `history` — each week is the step between two
+   consecutive cumulative points — so there is nothing extra to store or
+   maintain, and a row appears automatically with every refresh.
 
 7. **Append one row to `history`** — the weekly return path. This costs no
    extra API calls: every value is already in hand from steps 2 and 4.
@@ -175,14 +173,14 @@ roughly 200KB and nothing published needs it.
      for ranking and then discarded.
      `move` is the percent change against `average_price`, **sign-flipped for
      shorts** so that a short whose price fell reads positive.
-   - `contributors` / `detractors` — top three each, `asset_class == "STK"`
-     only, ranked by contribution in percentage points:
-     `(market_price − average_price) × position ÷ portfolioValue × 100`.
-     Rank by contribution, not by raw percent move: a 29% loss on a small
-     position matters less than a 5% loss on a large one. Exclude options —
-     they are tiny in dollar terms and would otherwise occupy every slot on
-     percentage alone. Skip any position where `position == 0`.
-   - `openContribTotal` — the sum across all equity positions.
+   - `topPositions` — the five largest by **absolute** `market_value`, so a
+     large short is not hidden. Store `pctNav` and `side` only.
+
+   `contributors`, `detractors` and `openContribTotal` are **no longer
+   published** and should not be reintroduced. On a book that takes profit
+   regularly, open winners are small percentages while open losers are large
+   ones, so the panel systematically flattered the losses and understated the
+   gains — it described what had not been sold yet, not what the fund earned.
    - `top5Concentration`, `equityLongCount`, `equityShortCount`.
 
    **Publish percentages and percentage points only — never dollar unrealized

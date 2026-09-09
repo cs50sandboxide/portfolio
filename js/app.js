@@ -5,12 +5,11 @@
 
 document.addEventListener("DOMContentLoaded", () => {
     initLoader();
-    initBanner();
     initNavigation();
     initMobileMenu();
     initSnapshot();
     initBenchmark();
-    initMonthlyReturns();
+    initWeeklyReturns();
     initRisk();
     initAttribution();
     initPositions();
@@ -41,17 +40,6 @@ function fmtDate(iso) {
     const months = ["January", "February", "March", "April", "May", "June",
                     "July", "August", "September", "October", "November", "December"];
     return d + " " + months[m - 1] + " " + y;
-}
-
-/* ---- Top Banner (homepage) ---- */
-function initBanner() {
-    if (typeof FUND_DATA === "undefined") return;
-    if (el("mtdLabel")) el("mtdLabel").textContent = "Return Since Inception";
-    if (el("mtdValue")) el("mtdValue").textContent = fmtPct(FUND_DATA.returnSinceInception);
-    if (el("mtdPct")) {
-        el("mtdPct").textContent =
-            "(S&P 500 " + fmtPct(FUND_DATA.benchmark.sinceInception) + " over the same window)";
-    }
 }
 
 /* ---- Loader ---- */
@@ -214,7 +202,7 @@ function initBenchmark() {
         });
     });
 
-    renderReturnPath();
+    renderGrowth();
 
     // Each view gets its own footnote — they measure different things.
     const window = fmtDate(FUND_DATA.inceptionDate) + " to " + fmtDate(FUND_DATA.asOf);
@@ -224,148 +212,191 @@ function initBenchmark() {
         "which is why the comparison is not run over the calendar year. Indices are " +
         "represented by their tracking ETFs (" + marks.map((m) => m.proxy).join(", ") +
         ") using daily closes.";
-    FOOTNOTES.path =
-        "Cumulative return since inception, marked at each Friday close from " + window +
-        ". The fund's final point can sit slightly below the headline figure above, " +
-        "because this line is pinned to Friday closes while the headline uses the most " +
-        "recent mark. One point is added per weekly refresh — the line grows with the " +
-        "track record rather than being recalculated.";
+    FOOTNOTES.growth =
+        "What $1,000 invested at inception would be worth, marked at each Friday close from " +
+        window + ". The fund line is pinned to Friday closes, so its final point can sit " +
+        "slightly below the headline return above, which uses the most recent mark. One point " +
+        "is added per weekly refresh — the series grows with the track record rather than " +
+        "being recalculated.";
 
     initChartToggle();
 }
 
-/* ---- Weekly Return Path (line chart) ---- */
-const FOOTNOTES = { total: "", path: "" };
+/* ---- Growth of $1,000 (animated) ---- */
+const FOOTNOTES = { total: "", growth: "" };
 
 const SERIES = [
-    { key: "fund", label: "This Fund", color: "#c9a96e", width: 2 },
-    { key: "spy",  label: "S&P 500",   color: "#8d8d8d", width: 1.4 },
-    { key: "qqq",  label: "Nasdaq 100", color: "#6495ed", width: 1.4 },
+    { key: "fund", label: "This Fund", color: "#c9a96e", width: 2.4 },
+    { key: "spy",  label: "S&P 500",   color: "#8d8d8d", width: 1.5 },
+    { key: "qqq",  label: "Nasdaq 100", color: "#6495ed", width: 1.5 },
 ];
 
-function renderReturnPath() {
-    const wrap = el("benchmarkPath");
+const GROWTH_BASE = 1000;
+const GROWTH_MS = 3500;
+
+function renderGrowth() {
+    const wrap = el("benchmarkGrowth");
     if (!wrap || typeof FUND_DATA === "undefined") return;
     const rows = FUND_DATA.history;
     if (!rows || rows.length < 2) {
-        // Not enough points to draw a line — hide the toggle rather than
-        // show a chart with one dot on it.
         const t = el("chartToggle");
         if (t) t.hidden = true;
         return;
     }
 
-    const W = 760, H = 340;
-    const M = { top: 24, right: 56, bottom: 40, left: 52 };
-    const iw = W - M.left - M.right;
-    const ih = H - M.top - M.bottom;
+    const W = 860, H = 380;
+    const M = { top: 30, right: 96, bottom: 44, left: 66 };
+    const iw = W - M.left - M.right, ih = H - M.top - M.bottom;
+    const val = (r, k) => GROWTH_BASE * (1 + r[k] / 100);
 
-    const vals = rows.flatMap((r) => SERIES.map((s) => r[s.key]));
-    let lo = Math.min(...vals, 0);
-    let hi = Math.max(...vals, 0);
+    const all = rows.flatMap((r) => SERIES.map((sr) => val(r, sr.key)));
+    let lo = Math.min(...all), hi = Math.max(...all);
     const pad = (hi - lo) * 0.12 || 1;
     lo -= pad; hi += pad;
 
     const x = (i) => M.left + (i / (rows.length - 1)) * iw;
     const y = (v) => M.top + (1 - (v - lo) / (hi - lo)) * ih;
 
-    // Y gridlines on rounded values
-    const span = hi - lo;
-    const stepRaw = span / 5;
-    const mag = Math.pow(10, Math.floor(Math.log10(stepRaw)));
-    const step = Math.ceil(stepRaw / mag) * mag;
+    // y gridlines on round money values
+    const span = hi - lo, rawStep = span / 4;
+    const mag = Math.pow(10, Math.floor(Math.log10(rawStep)));
+    const step = Math.ceil(rawStep / mag) * mag;
     const ticks = [];
     for (let t = Math.ceil(lo / step) * step; t <= hi; t += step) ticks.push(t);
 
-    const gridHtml = ticks.map((t) => `
+    const grid = ticks.map((t) => `
         <line x1="${M.left}" y1="${y(t).toFixed(1)}" x2="${W - M.right}" y2="${y(t).toFixed(1)}"
-              stroke="${Math.abs(t) < 1e-9 ? "rgba(245,240,235,0.18)" : "rgba(245,240,235,0.05)"}"
-              stroke-width="1"/>
-        <text x="${M.left - 10}" y="${(y(t) + 3.5).toFixed(1)}" text-anchor="end"
-              font-size="9" fill="#666" font-family="Inter, sans-serif">${t > 0 ? "+" : ""}${Math.round(t)}%</text>
-    `).join("");
+              stroke="rgba(245,240,235,0.05)" stroke-width="1"/>
+        <text x="${M.left - 12}" y="${(y(t) + 3.5).toFixed(1)}" text-anchor="end" font-size="9.5"
+              fill="#666" font-family="Inter, sans-serif">$${Math.round(t).toLocaleString()}</text>`).join("");
 
-    // X labels — first, last, and a few between, without crowding
-    const every = Math.max(1, Math.ceil(rows.length / 6));
+    // the $1,000 starting line, called out
+    const baseY = y(GROWTH_BASE);
+    const baseLine = `
+        <line x1="${M.left}" y1="${baseY.toFixed(1)}" x2="${W - M.right}" y2="${baseY.toFixed(1)}"
+              stroke="rgba(245,240,235,0.22)" stroke-width="1" stroke-dasharray="3 3"/>`;
+
+    const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const every = Math.max(1, Math.ceil(rows.length / 7));
     const xLabels = rows.map((r, i) => {
         if (i !== 0 && i !== rows.length - 1 && i % every !== 0) return "";
         const [, m, d] = r.date.split("-");
-        const mon = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][+m - 1];
-        return `<text x="${x(i).toFixed(1)}" y="${H - M.bottom + 20}" text-anchor="middle"
-                 font-size="9" fill="#666" font-family="Inter, sans-serif">${+d} ${mon}</text>`;
+        return `<text class="growth-xlab" data-i="${i}" x="${x(i).toFixed(1)}" y="${H - M.bottom + 22}"
+                 text-anchor="middle" font-size="9.5" fill="#666" opacity="0"
+                 font-family="Inter, sans-serif">${+d} ${MON[+m - 1]}</text>`;
     }).join("");
 
-    // End-of-line value labels. Series that finish close together would print
-    // on top of each other (SPY and QQQ routinely land within a point of one
-    // another), so nudge them apart before drawing.
-    const MIN_GAP = 12;
-    const labels = SERIES.map((s) => {
-        const v = rows[rows.length - 1][s.key];
-        return { color: s.color, value: v, yAnchor: y(v), yText: y(v) };
-    }).sort((a, b) => a.yText - b.yText);
-
-    for (let i = 1; i < labels.length; i++) {
-        const gap = labels[i].yText - labels[i - 1].yText;
-        if (gap < MIN_GAP) labels[i].yText = labels[i - 1].yText + MIN_GAP;
-    }
-    // Keep the nudged stack inside the plot
-    const overflow = labels[labels.length - 1].yText - (H - M.bottom);
-    if (overflow > 0) labels.forEach((l) => { l.yText -= overflow; });
-
-    const linesHtml = SERIES.map((s) => {
-        const d = rows.map((r, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(r[s.key]).toFixed(1)}`).join(" ");
-        const last = rows[rows.length - 1][s.key];
-        return `
-            <path d="${d}" fill="none" stroke="${s.color}" stroke-width="${s.width}"
-                  stroke-linejoin="round" stroke-linecap="round"/>
-            <circle cx="${x(rows.length - 1).toFixed(1)}" cy="${y(last).toFixed(1)}" r="3" fill="${s.color}"/>
-        `;
+    const paths = SERIES.map((sr) => {
+        const d = rows.map((r, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(val(r, sr.key)).toFixed(1)}`).join(" ");
+        return `<path class="growth-line" data-key="${sr.key}" d="${d}" fill="none"
+                      stroke="${sr.color}" stroke-width="${sr.width}"
+                      stroke-linejoin="round" stroke-linecap="round"/>`;
     }).join("");
 
-    const labelsHtml = labels.map((l) => {
-        // If the label was moved, draw a short leader so it still reads as
-        // belonging to its line.
-        const moved = Math.abs(l.yText - l.yAnchor) > 1;
-        const leader = moved
-            ? `<line x1="${(W - M.right + 3).toFixed(1)}" y1="${l.yAnchor.toFixed(1)}"
-                     x2="${(W - M.right + 7).toFixed(1)}" y2="${l.yText.toFixed(1)}"
-                     stroke="${l.color}" stroke-width="1" opacity="0.5"/>`
-            : "";
-        return `${leader}
-            <text x="${W - M.right + 9}" y="${(l.yText + 3.5).toFixed(1)}"
-                  font-size="10" font-weight="600" fill="${l.color}"
-                  font-family="Inter, sans-serif">${l.value > 0 ? "+" : ""}${l.value.toFixed(1)}%</text>`;
-    }).join("");
-
-    const pathsHtml = linesHtml + labelsHtml;
+    const dots = SERIES.map((sr) => `
+        <circle class="growth-dot" data-key="${sr.key}" r="3.5" fill="${sr.color}" opacity="0"/>
+        <text class="growth-val" data-key="${sr.key}" font-size="11" font-weight="600"
+              fill="${sr.color}" font-family="Inter, sans-serif" opacity="0"></text>`).join("");
 
     wrap.innerHTML = `
-        <svg viewBox="0 0 ${W} ${H}" class="path-svg" role="img"
-             aria-label="Cumulative return since inception: fund versus S&amp;P 500 and Nasdaq 100, weekly">
-            ${gridHtml}${xLabels}${pathsHtml}
+        <svg viewBox="0 0 ${W} ${H}" class="growth-svg" role="img"
+             aria-label="Growth of $1,000 since inception: this fund versus the S&amp;P 500 and Nasdaq 100">
+            ${grid}${baseLine}${xLabels}${paths}${dots}
         </svg>
         <div class="path-key">
-            ${SERIES.map((s) => `<span class="path-key-item"><span class="path-swatch" style="background:${s.color}"></span>${s.label}</span>`).join("")}
-        </div>
-    `;
+            ${SERIES.map((sr) => `<span class="path-key-item"><span class="path-swatch" style="background:${sr.color}"></span>${sr.label}</span>`).join("")}
+        </div>`;
+
+    // --- animation ---
+    const svg = wrap.querySelector("svg");
+    const lines = [...svg.querySelectorAll(".growth-line")];
+    const labels = [...svg.querySelectorAll(".growth-xlab")];
+    lines.forEach((p) => {
+        const len = p.getTotalLength();
+        p.style.strokeDasharray = len;
+        p.style.strokeDashoffset = len;
+        p._len = len;
+    });
+
+    const finals = {};
+    SERIES.forEach((sr) => { finals[sr.key] = val(rows[rows.length - 1], sr.key); });
+
+    let started = false;
+    const run = () => {
+        if (started) return;
+        started = true;
+        const t0 = performance.now();
+        const ease = (t) => 1 - Math.pow(1 - t, 3);   // settles rather than stops dead
+
+        const frame = (now) => {
+            const t = Math.min(1, (now - t0) / GROWTH_MS);
+            const e = ease(t);
+
+            lines.forEach((p) => { p.style.strokeDashoffset = p._len * (1 - e); });
+
+            // x labels appear as the line reaches them
+            labels.forEach((lab) => {
+                const frac = +lab.dataset.i / (rows.length - 1);
+                lab.setAttribute("opacity", e >= frac ? "1" : "0");
+            });
+
+            // endpoint markers ride the line and count up
+            SERIES.forEach((sr) => {
+                const p = lines.find((l) => l.dataset.key === sr.key);
+                const pt = p.getPointAtLength(p._len * e);
+                const dot = svg.querySelector(`.growth-dot[data-key="${sr.key}"]`);
+                const lbl = svg.querySelector(`.growth-val[data-key="${sr.key}"]`);
+                dot.setAttribute("cx", pt.x); dot.setAttribute("cy", pt.y);
+                dot.setAttribute("opacity", e > 0.02 ? "1" : "0");
+                lbl.setAttribute("x", W - M.right + 10);
+                lbl.setAttribute("y", pt.y + 3.5);
+                lbl.setAttribute("opacity", e > 0.02 ? "1" : "0");
+                const shown = GROWTH_BASE + (finals[sr.key] - GROWTH_BASE) * e;
+                lbl.textContent = "$" + Math.round(shown).toLocaleString();
+            });
+
+            if (t < 1) requestAnimationFrame(frame);
+            else deCollide(svg, W, M);
+        };
+        requestAnimationFrame(frame);
+    };
+
+    // only play once the chart is actually on screen
+    if ("IntersectionObserver" in window) {
+        new IntersectionObserver((entries, obs) => {
+            entries.forEach((en) => { if (en.isIntersecting) { run(); obs.disconnect(); } });
+        }, { threshold: 0.35 }).observe(wrap);
+    } else {
+        run();
+    }
+    wrap._replayGrowth = () => { started = false; lines.forEach((p) => { p.style.strokeDashoffset = p._len; }); run(); };
+}
+
+/* Two benchmarks routinely finish within a few dollars of each other; nudge
+   their end labels apart so one does not print on top of the other. */
+function deCollide(svg, W, M) {
+    const lbls = [...svg.querySelectorAll(".growth-val")]
+        .map((n) => ({ n, y: parseFloat(n.getAttribute("y")) }))
+        .sort((a, b) => a.y - b.y);
+    const GAP = 13;
+    for (let i = 1; i < lbls.length; i++) {
+        if (lbls[i].y - lbls[i - 1].y < GAP) {
+            lbls[i].y = lbls[i - 1].y + GAP;
+            lbls[i].n.setAttribute("y", lbls[i].y);
+        }
+    }
 }
 
 function initChartToggle() {
     const toggle = el("chartToggle");
     const bars = el("benchmarkCompare");
-    const path = el("benchmarkPath");
-    if (!toggle || !bars || !path) return;
+    const growth = el("benchmarkGrowth");
+    if (!toggle || !bars || !growth) return;
 
-    // The weekly path is the default view — it shows the shape of the track
-    // record, not just its endpoint. If there are too few points to draw a
-    // line, renderReturnPath hides the toggle and we fall back to the bars.
     const note = el("perfFootnote");
-    const pathUsable = !toggle.hidden;
-    if (!pathUsable) {
-        bars.hidden = false;
-        path.hidden = true;
-    }
-    const startView = pathUsable ? "path" : "total";
+    const usable = !toggle.hidden;
+    if (!usable) { bars.hidden = false; growth.hidden = true; }
+    const startView = usable ? "growth" : "total";
     if (note && FOOTNOTES[startView]) note.textContent = FOOTNOTES[startView];
 
     toggle.querySelectorAll(".legend-item").forEach((btn) => {
@@ -373,54 +404,58 @@ function initChartToggle() {
             toggle.querySelectorAll(".legend-item").forEach((b) => b.classList.remove("active"));
             btn.classList.add("active");
             const view = btn.dataset.view;
-            const showPath = view === "path";
-            bars.hidden = showPath;
-            path.hidden = !showPath;
+            const showGrowth = view === "growth";
+            bars.hidden = showGrowth;
+            growth.hidden = !showGrowth;
             if (note && FOOTNOTES[view]) note.textContent = FOOTNOTES[view];
+            if (showGrowth && growth._replayGrowth) growth._replayGrowth();
         });
     });
 }
 
-/* ---- Monthly Returns ---- */
-function initMonthlyReturns() {
-    const body = el("monthlyBody");
-    if (!body || typeof FUND_DATA === "undefined" || !FUND_DATA.monthlyReturns) return;
+/* ---- Weekly Returns ---- */
+/* Derived from `history` rather than stored separately: those are cumulative
+   returns, so each week's figure is the step between consecutive points. Adds
+   a row automatically every refresh, with no extra data to maintain. */
+function initWeeklyReturns() {
+    const body = el("weeklyBody");
+    if (!body || typeof FUND_DATA === "undefined" || !FUND_DATA.history) return;
+    const rows = FUND_DATA.history;
+    if (rows.length < 2) return;
 
-    const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
-                    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    const stepPct = (cur, prev) => ((1 + cur / 100) / (1 + prev / 100) - 1) * 100;
+    const cls = (v) => (v >= 0 ? "positive" : "negative");
 
-    FUND_DATA.monthlyReturns.forEach((m) => {
-        const [y, mo] = m.month.split("-").map(Number);
-        const hasBench = m.benchmark !== null && m.benchmark !== undefined;
-        const diff = hasBench ? m.fund - m.benchmark : null;
+    // newest first — the recent weeks are the ones anyone reads
+    const weeks = [];
+    for (let i = rows.length - 1; i >= 1; i--) {
+        const f = stepPct(rows[i].fund, rows[i - 1].fund);
+        const b = stepPct(rows[i].spy,  rows[i - 1].spy);
+        weeks.push({ date: rows[i].date, fund: f, bench: b, diff: f - b });
+    }
 
-        const cls = (v) => (v >= 0 ? "positive" : "negative");
-        const tr = document.createElement("tr");
-        tr.innerHTML = `
-            <td class="month-cell">
-                <span class="month-name">${MONTHS[mo - 1]} ${y}</span>
-                ${m.partial ? '<span class="month-partial">partial</span>' : ""}
-            </td>
-            <td class="num ${cls(m.fund)}">${fmtPct(m.fund)}</td>
-            <td class="num ${hasBench ? cls(m.benchmark) : "muted"}">${hasBench ? fmtPct(m.benchmark) : "—"}</td>
-            <td class="num diff-cell">
-                <span class="diff-chip ${diff === null ? "muted" : cls(diff)}">${diff === null ? "—" : fmtPct(diff)}</span>
-            </td>
-        `;
-        body.appendChild(tr);
-    });
+    body.innerHTML = weeks.map((w) => {
+        const [y, m, d] = w.date.split("-");
+        return `
+            <tr>
+                <td class="month-cell"><span class="month-name">${+d} ${MON[+m - 1]} ${y}</span></td>
+                <td class="num ${cls(w.fund)}">${fmtPct(w.fund)}</td>
+                <td class="num ${cls(w.bench)}">${fmtPct(w.bench)}</td>
+                <td class="num diff-cell">
+                    <span class="diff-chip ${cls(w.diff)}">${fmtPct(w.diff)}</span>
+                </td>
+            </tr>`;
+    }).join("");
 
-    const note = el("monthlyFootnote");
+    const note = el("weeklyFootnote");
     if (note) {
-        const full = FUND_DATA.monthlyReturns.filter((m) => !m.partial);
-        const down = full.filter((m) => m.fund < 0).length;
+        const ahead = weeks.filter((w) => w.diff > 0).length;
         note.textContent =
-            "Time-weighted monthly returns, net of deposits and withdrawals. " +
-            "April and August are partial periods — the account opened " +
-            fmtDate(FUND_DATA.inceptionDate) + ". Of " + full.length +
-            " complete months, " + down + " were negative; the cumulative return " +
-            "is concentrated in a single month, which the table is here to make visible " +
-            "rather than obscure.";
+            "Time-weighted weekly returns, net of deposits and withdrawals, each measured " +
+            "Friday close to Friday close. The fund finished ahead of the S&P 500 in " +
+            ahead + " of " + weeks.length + " weeks. A new row is added by every refresh, " +
+            "so the record lengthens rather than being restated.";
     }
 }
 
@@ -482,48 +517,27 @@ function initAttribution() {
     renderSectorDonut(a.sectorsLong);
     renderNetTilt(a.netTilt);
 
-    // Five largest positions
+    // Five largest positions — no vs-entry column
     const topBody = el("attrTopBody");
     if (topBody) {
+        const nameFor = (t) => (FUND_DATA.tickerNames || {})[t] || "";
         topBody.innerHTML = a.topPositions.map((p) => `
             <tr>
                 <td class="pos-name"><span class="pos-ticker">${p.ticker}</span></td>
+                <td class="pos-company">${nameFor(p.ticker)}</td>
                 <td><span class="side-tag side-${p.side.toLowerCase()}">${p.side}</span></td>
-                <td class="num">${p.pctNav.toFixed(1)}%</td>
-                <td class="num ${p.move >= 0 ? "positive" : "negative"}">${fmtPct(p.move)}</td>
+                <td>${p.pctNav.toFixed(2)}%</td>
             </tr>
         `).join("");
-    }
-
-    // Contributors then detractors, in one table split by a divider row
-    const cBody = el("attrContribBody");
-    if (cBody) {
-        const row = (p) => `
-            <tr>
-                <td class="pos-name"><span class="pos-ticker">${p.ticker}</span></td>
-                <td><span class="side-tag side-${p.side.toLowerCase()}">${p.side}</span></td>
-                <td class="num ${p.pp >= 0 ? "positive" : "negative"}">${p.pp >= 0 ? "+" : ""}${p.pp.toFixed(2)}pp</td>
-                <td class="num ${p.move >= 0 ? "positive" : "negative"}">${fmtPct(p.move)}</td>
-            </tr>`;
-        cBody.innerHTML =
-            a.contributors.map(row).join("") +
-            `<tr class="attr-divider"><td colspan="4"></td></tr>` +
-            a.detractors.map(row).join("");
     }
 
     const note = el("attrFootnote");
     if (note) {
         note.textContent =
             "Sector weights come from Interactive Brokers and are shown as a share of long " +
-            "equity exposure; the short book is a separate " + a.sectorsShort[0].pct.toFixed(0) +
+            "equity exposure. The short book is a separate " + a.sectorsShort[0].pct.toFixed(0) +
             "% concentration in " + a.sectorsShort[0].name + ", which is why net sector exposure " +
-            "is shown alongside. Contribution figures are unrealised moves on positions open " +
-            "today, measured against their average entry price, and sum to " +
-            a.openContribTotal.toFixed(1) + "pp. They do not reconcile to the " +
-            fmtPct(FUND_DATA.returnSinceInception) + " since inception, which came predominantly " +
-            "from closed trades this panel cannot see — it describes how the book is positioned " +
-            "now, not what produced the return. Options are excluded from the contribution " +
-            "ranking: they are small in dollar terms and would otherwise dominate on percentage.";
+            "is shown alongside — the long book alone would not describe the actual position.";
     }
 }
 
@@ -657,18 +671,31 @@ function initPositions() {
 
 /* ---- Scroll Reveal ---- */
 function initScrollReveal() {
-    const revealElements = document.querySelectorAll(
-        ".section-header, .about-intro-grid, .portfolio-summary, " +
-        ".summary-card, .snippet-grid, .snippet-content-full, .snippet-highlights, " +
-        ".portfolio-preview-stats, .contact-preview-links, " +
-        ".page-intro, .timeline, .edu-cards, .skills-sections, " +
-        ".certs-grid, .awards-list, .about-cta-inner, .key-metrics, " +
-        ".perf-block"
+    const groups = document.querySelectorAll(
+        ".snippet-highlights, .portfolio-preview-stats, .role-grid, .key-metrics, " +
+        ".risk-grid, .certs-grid, .edu-cards, .contact-preview-links, .contact-links-centered"
     );
-    revealElements.forEach((e) => e.classList.add("reveal"));
+    groups.forEach((g) => g.classList.add("reveal-stagger"));
+
+    const singles = document.querySelectorAll(
+        ".section-header, .about-intro-grid, .portfolio-summary, .summary-card, " +
+        ".snippet-grid, .snippet-image, .snippet-content, .snippet-content-full, " +
+        ".page-intro, .timeline-item, .skills-sections, .awards-list, " +
+        ".about-cta-inner, .perf-block, .scope-note, .role-card"
+    );
+    singles.forEach((e) => e.classList.add("reveal"));
+
+    const watched = [...groups, ...singles];
+    watched.forEach((e) => e.classList.add("reveal"));
+
     const observer = new IntersectionObserver(
-        (entries) => entries.forEach((e) => { if (e.isIntersecting) e.target.classList.add("visible"); }),
-        { threshold: 0.1, rootMargin: "0px 0px -60px 0px" }
+        (entries) => entries.forEach((e) => {
+            if (e.isIntersecting) {
+                e.target.classList.add("visible");
+                observer.unobserve(e.target);   // reveal once, then stop watching
+            }
+        }),
+        { threshold: 0.12, rootMargin: "0px 0px -70px 0px" }
     );
-    revealElements.forEach((e) => observer.observe(e));
+    watched.forEach((e) => observer.observe(e));
 }

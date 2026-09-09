@@ -80,66 +80,6 @@ ul {
     list-style: none;
 }
 
-/* ---- MTD Profit Banner ---- */
-.mtd-banner {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 1001;
-    background: linear-gradient(90deg, rgba(10,10,10,0.97) 0%, rgba(20,20,20,0.97) 100%);
-    border-bottom: 1px solid rgba(74, 222, 128, 0.15);
-    backdrop-filter: blur(12px);
-}
-
-.mtd-banner-inner {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 8px 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    font-family: var(--font-sans);
-}
-
-.mtd-banner-label {
-    font-size: 0.65rem;
-    font-weight: 400;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--gray-500);
-}
-
-.mtd-banner-value {
-    font-size: 0.85rem;
-    font-weight: 600;
-    letter-spacing: 0.03em;
-}
-
-.mtd-banner-pct {
-    font-size: 0.75rem;
-    font-weight: 400;
-}
-
-.mtd-banner-value.positive,
-.mtd-banner-pct.positive {
-    color: #4ade80;
-}
-
-.mtd-banner-value.negative,
-.mtd-banner-pct.negative {
-    color: #f87171;
-}
-
-/* Offset navbar when banner is present (homepage only) */
-body:has(.mtd-banner) #navbar {
-    top: 35px;
-}
-body:has(.mtd-banner) .page-hero {
-    padding-top: 215px;
-}
-
 /* ---- Internship Section ---- */
 .internship-text strong {
     color: var(--off-white);
@@ -182,16 +122,6 @@ body:has(.mtd-banner) .page-hero {
 }
 
 @media (max-width: 768px) {
-    .mtd-banner-inner {
-        padding: 6px 20px;
-        gap: 6px;
-    }
-    .mtd-banner-label {
-        font-size: 0.55rem;
-    }
-    .mtd-banner-value {
-        font-size: 0.75rem;
-    }
     .internship-details {
         gap: 24px;
     }
@@ -431,13 +361,57 @@ body:has(.mtd-banner) .page-hero {
 /* ---- Reveal Animation ---- */
 .reveal {
     opacity: 0;
-    transform: translateY(40px);
-    transition: opacity 0.8s var(--ease-out-expo), transform 0.8s var(--ease-out-expo);
+    transform: translateY(26px);
+    transition: opacity 0.75s var(--ease-out-expo), transform 0.75s var(--ease-out-expo);
+    will-change: opacity, transform;
 }
 
 .reveal.visible {
     opacity: 1;
-    transform: translateY(0);
+    transform: none;
+}
+
+/* Children of a revealed group come in one after another rather than all at
+   once — the eye follows the sequence instead of the whole block flashing in. */
+.reveal-stagger > * {
+    opacity: 0;
+    transform: translateY(18px);
+    transition: opacity 0.62s var(--ease-out-expo), transform 0.62s var(--ease-out-expo);
+}
+
+.reveal-stagger.visible > * {
+    opacity: 1;
+    transform: none;
+}
+
+.reveal-stagger.visible > *:nth-child(1) { transition-delay: 0.00s; }
+.reveal-stagger.visible > *:nth-child(2) { transition-delay: 0.09s; }
+.reveal-stagger.visible > *:nth-child(3) { transition-delay: 0.18s; }
+.reveal-stagger.visible > *:nth-child(4) { transition-delay: 0.27s; }
+.reveal-stagger.visible > *:nth-child(5) { transition-delay: 0.36s; }
+.reveal-stagger.visible > *:nth-child(6) { transition-delay: 0.45s; }
+
+/* Section headings rise a little further, so a new section announces itself. */
+.section-header.reveal {
+    transform: translateY(34px);
+}
+
+/* The portrait drifts in from the side to break the uniform upward motion. */
+.snippet-image.reveal {
+    transform: translateY(0) translateX(-30px);
+}
+.snippet-image.reveal.visible {
+    transform: none;
+}
+
+/* Anyone who has asked for less motion gets none of it. */
+@media (prefers-reduced-motion: reduce) {
+    .reveal,
+    .reveal-stagger > * {
+        opacity: 1 !important;
+        transform: none !important;
+        transition: none !important;
+    }
 }
 
 /* ---- Hero ---- */

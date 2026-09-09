@@ -47,11 +47,7 @@
     <!-- Scope -->
     <section class="scope-section">
         <div class="container">
-            <div class="scope-note">
-                <p class="scope-lead">What this page covers</p>
-                <p>Everything reported here relates to a single mandate — the leveraged long/short equity and options book run through Interactive Brokers. Portfolio value, returns, exposure and positions all refer to that book alone.</p>
-                <p>A separate, low-risk long-only portfolio accounts for the remaining assets noted on my CV. It has a different objective and risk profile, is managed independently, and its figures are neither shown here nor combined with those below.</p>
-            </div>
+            <p class="scope-note">Figures cover the leveraged long/short book only. A separate low-risk portfolio holds the balance of assets noted on my CV and is not included here.</p>
         </div>
     </section>
 
@@ -80,31 +76,31 @@
             <div class="perf-block">
                 <div class="tab-section-label">Performance vs Major Indices — Like-for-like window</div>
                 <div class="chart-toggle" id="chartToggle">
-                    <button class="legend-item active" data-view="path">Weekly Path</button>
+                    <button class="legend-item active" data-view="growth">Growth of $1,000</button>
                     <button class="legend-item" data-view="total">Total Return</button>
                 </div>
                 <div class="benchmark-compare" id="benchmarkCompare" hidden></div>
-                <div class="benchmark-path" id="benchmarkPath"></div>
+                <div class="benchmark-growth" id="benchmarkGrowth"></div>
                 <p class="perf-footnote" id="perfFootnote">—</p>
             </div>
 
             <!-- Monthly Returns -->
             <div class="perf-block">
-                <div class="tab-section-label">Monthly Returns — Time-weighted, vs S&amp;P 500</div>
-                <div class="positions-table-wrap">
-                    <table class="positions-table monthly-table">
+                <div class="tab-section-label">Weekly Returns — Time-weighted, vs S&amp;P 500</div>
+                <div class="positions-table-wrap weekly-scroll">
+                    <table class="positions-table weekly-table">
                         <thead>
                             <tr>
-                                <th>Month</th>
+                                <th>Week Ending</th>
                                 <th class="num">Fund</th>
                                 <th class="num">S&amp;P 500</th>
                                 <th class="num">Difference</th>
                             </tr>
                         </thead>
-                        <tbody id="monthlyBody"></tbody>
+                        <tbody id="weeklyBody"></tbody>
                     </table>
                 </div>
-                <p class="perf-footnote" id="monthlyFootnote">—</p>
+                <p class="perf-footnote" id="weeklyFootnote">—</p>
             </div>
 
             <!-- Risk & Exposure -->
@@ -147,34 +143,20 @@
                     </div>
                     <div class="attr-panel">
                         <h4 class="attr-title">Net Sector Exposure</h4>
-                        <p class="attr-sub">Long less short, in dollars</p>
+                        <p class="attr-sub">Long less short, as % of NAV</p>
                         <div class="attr-tilt" id="attrTilt"></div>
                     </div>
                 </div>
 
-                <div class="attr-grid">
-                    <div class="attr-panel">
-                        <h4 class="attr-title">Five Largest Positions</h4>
-                        <div class="positions-table-wrap">
-                            <table class="positions-table attr-table">
-                                <thead>
-                                    <tr><th>Ticker</th><th>Side</th><th class="num">% NAV</th><th class="num">vs Entry</th></tr>
-                                </thead>
-                                <tbody id="attrTopBody"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <div class="attr-panel">
-                        <h4 class="attr-title">Contributors &amp; Detractors</h4>
-                        <p class="attr-sub">Open positions, in percentage points of NAV</p>
-                        <div class="positions-table-wrap">
-                            <table class="positions-table attr-table">
-                                <thead>
-                                    <tr><th>Ticker</th><th>Side</th><th class="num">Contribution</th><th class="num">vs Entry</th></tr>
-                                </thead>
-                                <tbody id="attrContribBody"></tbody>
-                            </table>
-                        </div>
+                <div class="attr-panel attr-panel-wide">
+                    <h4 class="attr-title">Five Largest Positions</h4>
+                    <div class="positions-table-wrap">
+                        <table class="positions-table attr-table">
+                            <thead>
+                                <tr><th>Ticker</th><th>Company</th><th>Side</th><th>% NAV</th></tr>
+                            </thead>
+                            <tbody id="attrTopBody"></tbody>
+                        </table>
                     </div>
                 </div>
 
