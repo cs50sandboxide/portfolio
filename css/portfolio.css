@@ -141,7 +141,7 @@
 
 .bench-chart {
     max-width: 760px;
-    margin: 0;
+    margin: 0 auto;
 }
 
 .bench-plot-row {
@@ -161,6 +161,7 @@
 .bench-cols {
     display: flex;
     align-items: stretch;
+    justify-content: center;
     gap: 44px;
     height: 100%;
 }
