@@ -111,6 +111,39 @@ rather than a stack of cards:
 5. **Numbers are the typography.** Tabular, signed, aligned, and given the largest sizes on the
    page after the name itself.
 
+### Dark
+
+The same pad, seen at night. Ground and ink swap roles rather than the palette being inverted
+channel by channel, so the two modes read as reciprocal rather than merely opposite: the light
+mode's ground `#e4e8de` becomes the dark mode's type, and the dark ground `#171b14` is the pad's
+own green taken down to near-black.
+
+| Token | Light | Dark |
+|---|---|---|
+| `--pad` | `#e4e8de` | `#171b14` |
+| `--pad-deep` | `#d6dbcd` | `#10130e` |
+| `--pad-raised` | `#eef1e9` | `#1f2419` |
+| `--ink` | `#161c17` | `#e4e8de` |
+| `--ink-soft` | `#5c6459` | `#98a18d` |
+| `--plot` | `#1f4a7a` | `#7aa9dd` |
+| `--green` | `#226b3c` | `#6fc98a` |
+| `--red` | `#94272b` | `#e0736f` |
+
+Three states, in the order people expect: no stored choice follows the system, and an explicit
+choice overrides it until changed. The stored value is applied by a short script in the document
+head so the page never paints the wrong theme first. Every colour is defined on bare `:root`,
+redefined under `@media (prefers-color-scheme: dark)` guarded as `:root:not([data-theme="light"])`,
+and again under `:root[data-theme="dark"]` so the toggle wins in both directions.
+
+Charts take their colour from these variables through inline `style="stroke: var(--plot)"` rather
+than through SVG presentation attributes, which do not accept `var()`. That is what lets a theme
+change recolour every chart on the page without anything being re-rendered — worth knowing before
+adding a chart, because a hard-coded hex in a `fill=` or `stroke=` attribute will silently stay
+the wrong colour in one of the two modes.
+
+Contrast was checked against both grounds: body and secondary text clear 4.5:1, and every plotted
+line, sector swatch and signed figure clears 3:1.
+
 ## Review against the generic defaults
 
 Checked before building, against the traits that show up in generated pages regardless of subject:

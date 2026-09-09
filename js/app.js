@@ -4,6 +4,7 @@
    ============================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
+    initTheme();
     initLoader();
     initNavigation();
     initMobileMenu();
@@ -19,21 +20,20 @@ document.addEventListener("DOMContentLoaded", () => {
 /* ---- Helpers ---- */
 const el = (id) => document.getElementById(id);
 
-/* Chart colour comes from the stylesheet, so the palette is defined once.
-   The fund plots in the accent; everything it is measured against plots in
-   soft ink, because only one line on the page is the subject. */
-const CSSVAR = (name, fallback) => {
-    const v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
-    return v || fallback;
-};
+/* Chart colour is named, never resolved. Every value below is a reference to
+   a custom property in the stylesheet, and each is applied through an inline
+   style rather than an SVG presentation attribute — presentation attributes do
+   not accept var(). The upshot is that switching theme recolours every chart
+   on the page without a single thing being re-rendered. */
 const PALETTE = {
-    plot: CSSVAR("--plot", "#1f4a7a"),
-    ink:  CSSVAR("--ink", "#161c17"),
-    soft: CSSVAR("--ink-soft", "#5c6459"),
-    gain: CSSVAR("--green", "#226b3c"),
-    loss: CSSVAR("--red", "#94272b"),
-    grid: "rgba(22,28,23,0.12)",
-    axis: "rgba(22,28,23,0.3)",
+    plot: "var(--plot)",
+    ink:  "var(--ink)",
+    soft: "var(--ink-soft)",
+    gain: "var(--green)",
+    loss: "var(--red)",
+    alt:  "var(--bench-alt)",
+    grid: "var(--chart-grid)",
+    axis: "var(--chart-axis)",
     face: "Archivo, sans-serif",
 };
 
@@ -60,6 +60,39 @@ function fmtDate(iso) {
     const months = ["January", "February", "March", "April", "May", "June",
                     "July", "August", "September", "October", "November", "December"];
     return d + " " + months[m - 1] + " " + y;
+}
+
+/* ---- Theme ----
+   Three states, matching how people actually expect this to work: no stored
+   choice means follow the system, and an explicit choice overrides it until
+   it is changed again. The stored value is applied by a small script in the
+   document head, before first paint, so the page never flashes the wrong
+   theme; this only wires up the control. */
+function initTheme() {
+    const btn = el("themeToggle");
+    if (!btn) return;
+
+    const systemDark = window.matchMedia("(prefers-color-scheme: dark)");
+    const current = () => document.documentElement.dataset.theme
+        || (systemDark.matches ? "dark" : "light");
+
+    const label = () => {
+        btn.setAttribute("aria-label",
+            current() === "dark" ? "Switch to light mode" : "Switch to dark mode");
+    };
+    label();
+
+    btn.addEventListener("click", () => {
+        const next = current() === "dark" ? "light" : "dark";
+        document.documentElement.dataset.theme = next;
+        label();
+        try { localStorage.setItem("theme", next); } catch (e) { /* private mode */ }
+    });
+
+    // Follow the system while no explicit choice has been made.
+    systemDark.addEventListener("change", () => {
+        if (!document.documentElement.dataset.theme) label();
+    });
 }
 
 /* ---- Loader ---- */
@@ -262,7 +295,7 @@ const FOOTNOTES = { total: "", growth: "" };
 const SERIES = [
     { key: "fund", label: "This fund", color: PALETTE.plot, width: 2.6 },
     { key: "spy",  label: "S&P 500",   color: PALETTE.soft, width: 1.4 },
-    { key: "qqq",  label: "Nasdaq 100", color: "#7f8975", width: 1.4 },
+    { key: "qqq",  label: "Nasdaq 100", color: PALETTE.alt, width: 1.4 },
 ];
 
 const GROWTH_BASE = 1000;
@@ -306,15 +339,15 @@ function renderGrowth() {
 
     const grid = ticks.map((t) => `
         <line x1="${M.left}" y1="${y(t).toFixed(1)}" x2="${W - M.right}" y2="${y(t).toFixed(1)}"
-              stroke="${PALETTE.grid}" stroke-width="1"/>
+              style="stroke:${PALETTE.grid}" stroke-width="1"/>
         <text x="${M.left - 12}" y="${(y(t) + 3.5).toFixed(1)}" text-anchor="end" font-size="11"
-              fill="${PALETTE.soft}" font-family="${PALETTE.face}">$${Math.round(t).toLocaleString()}</text>`).join("");
+              style="fill:${PALETTE.soft}" font-family="${PALETTE.face}">$${Math.round(t).toLocaleString()}</text>`).join("");
 
     // the $1,000 starting line, called out
     const baseY = y(GROWTH_BASE);
     const baseLine = `
         <line x1="${M.left}" y1="${baseY.toFixed(1)}" x2="${W - M.right}" y2="${baseY.toFixed(1)}"
-              stroke="${PALETTE.axis}" stroke-width="1" stroke-dasharray="3 3"/>`;
+              style="stroke:${PALETTE.axis}" stroke-width="1" stroke-dasharray="3 3"/>`;
 
     const MON = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
     const every = Math.max(1, Math.ceil(rows.length / (narrow ? 4 : 7)));
@@ -322,21 +355,21 @@ function renderGrowth() {
         if (i !== 0 && i !== rows.length - 1 && i % every !== 0) return "";
         const [, m, d] = r.date.split("-");
         return `<text class="growth-xlab" data-i="${i}" x="${x(i).toFixed(1)}" y="${H - M.bottom + 22}"
-                 text-anchor="middle" font-size="11" fill="${PALETTE.soft}" opacity="0"
+                 text-anchor="middle" font-size="11" style="fill:${PALETTE.soft}" opacity="0"
                  font-family="${PALETTE.face}">${+d} ${MON[+m - 1]}</text>`;
     }).join("");
 
     const paths = SERIES.map((sr) => {
         const d = rows.map((r, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(val(r, sr.key)).toFixed(1)}`).join(" ");
         return `<path class="growth-line" data-key="${sr.key}" d="${d}" fill="none"
-                      stroke="${sr.color}" stroke-width="${sr.width}"
+                      style="stroke:${sr.color}" stroke-width="${sr.width}"
                       stroke-linejoin="round" stroke-linecap="round"/>`;
     }).join("");
 
     const dots = SERIES.map((sr) => `
-        <circle class="growth-dot" data-key="${sr.key}" r="3.5" fill="${sr.color}" opacity="0"/>
+        <circle class="growth-dot" data-key="${sr.key}" r="3.5" style="fill:${sr.color}" opacity="0"/>
         <text class="growth-val" data-key="${sr.key}" font-size="12" font-weight="600"
-              fill="${sr.color}" font-family="${PALETTE.face}" opacity="0"></text>`).join("");
+              style="fill:${sr.color}" font-family="${PALETTE.face}" opacity="0"></text>`).join("");
 
     wrap.innerHTML = `
         <svg viewBox="0 0 ${W} ${H}" class="growth-svg" role="img"
@@ -550,10 +583,9 @@ function initRisk() {
 
 /* ---- Attribution ---- */
 const SECTOR_COLORS = [
-    // A printed sequence: the accent blue stepping towards slate and olive.
-    // Muted on purpose — the donut is a breakdown, not the page's focal point.
-    "#1f4a7a", "#4a6f92", "#7a6a4b", "#3f5c46", "#8a5c5c",
-    "#6d7080", "#a08a63", "#5f7d78", "#8b8f86", "#4c4f58",
+    // Defined in the stylesheet so the sequence has a light and a dark variant.
+    "var(--sector-1)", "var(--sector-2)", "var(--sector-3)", "var(--sector-4)", "var(--sector-5)",
+    "var(--sector-6)", "var(--sector-7)", "var(--sector-8)", "var(--sector-9)", "var(--sector-10)",
 ];
 
 function initAttribution() {
@@ -601,7 +633,7 @@ function renderSectorDonut(sectors) {
         const large = sweep > Math.PI ? 1 : 0;
         const p = (rad, ang) => `${(cx + rad * Math.cos(ang)).toFixed(2)},${(cy + rad * Math.sin(ang)).toFixed(2)}`;
         const d = `M${p(R, a0)} A${R},${R} 0 ${large} 1 ${p(R, a1)} L${p(r, a1)} A${r},${r} 0 ${large} 0 ${p(r, a0)} Z`;
-        return `<path d="${d}" fill="${SECTOR_COLORS[i % SECTOR_COLORS.length]}" opacity="0.85"><title>${s.name}: ${s.pct.toFixed(1)}%</title></path>`;
+        return `<path d="${d}" style="fill:${SECTOR_COLORS[i % SECTOR_COLORS.length]}" opacity="0.85"><title>${s.name}: ${s.pct.toFixed(1)}%</title></path>`;
     }).join("");
 
     wrap.innerHTML = `
@@ -762,7 +794,7 @@ function initFundPlot() {
         const d = rows.map((r, i) =>
             `${i ? "L" : "M"}${x(i).toFixed(1)},${y(r[ln.key]).toFixed(1)}`).join(" ");
         return `<path class="plot-path" data-key="${ln.key}" d="${d}"
-                      stroke="${ln.color}" stroke-width="${ln.width}"/>`;
+                      style="stroke:${ln.color}" stroke-width="${ln.width}"/>`;
     }).join("");
 
     // End labels, nudged apart if the two series finish close together.
@@ -774,11 +806,11 @@ function initFundPlot() {
         ends[1].ly = ends[0].ly + 15;
     }
     const endLabels = ends.map((e) => `
-        <circle cx="${x(rows.length - 1).toFixed(1)}" cy="${y(e.v).toFixed(1)}" r="3" fill="${e.color}"/>
+        <circle cx="${x(rows.length - 1).toFixed(1)}" cy="${y(e.v).toFixed(1)}" r="3" style="fill:${e.color}"/>
         <text x="${(W - M.right + 8).toFixed(1)}" y="${(e.ly + 4).toFixed(1)}" font-size="13"
-              font-weight="600" fill="${e.color}" font-family="${PALETTE.face}">${fmtPct(e.v)}</text>
+              font-weight="600" style="fill:${e.color}" font-family="${PALETTE.face}">${fmtPct(e.v)}</text>
         <text x="${(W - M.right + 8).toFixed(1)}" y="${(e.ly + 18).toFixed(1)}" font-size="11"
-              fill="${PALETTE.soft}" font-family="${PALETTE.face}">${e.label}</text>`).join("");
+              style="fill:${PALETTE.soft}" font-family="${PALETTE.face}">${e.label}</text>`).join("");
 
     const first = rows[0].date, lastDate = last.date;
     const shortDate = (iso) => {
@@ -790,15 +822,15 @@ function initFundPlot() {
         <svg viewBox="0 0 ${W} ${H}" role="img"
              aria-label="Return since inception: this fund ${fmtPct(last.fund)}, S&amp;P 500 ${fmtPct(last.spy)}.">
             <line x1="${M.left}" y1="${zeroY}" x2="${W - M.right}" y2="${zeroY}"
-                  stroke="${PALETTE.axis}" stroke-width="1" stroke-dasharray="3 3"/>
+                  style="stroke:${PALETTE.axis}" stroke-width="1" stroke-dasharray="3 3"/>
             <text x="${M.left}" y="${(+zeroY + 15).toFixed(1)}" font-size="11"
-                  fill="${PALETTE.soft}" font-family="${PALETTE.face}">0%</text>
+                  style="fill:${PALETTE.soft}" font-family="${PALETTE.face}">0%</text>
             ${paths}
             ${endLabels}
-            <text x="${M.left}" y="${H - 4}" font-size="11" fill="${PALETTE.soft}"
+            <text x="${M.left}" y="${H - 4}" font-size="11" style="fill:${PALETTE.soft}"
                   font-family="${PALETTE.face}">${shortDate(first)}</text>
             <text x="${(W - M.right).toFixed(1)}" y="${H - 4}" font-size="11" text-anchor="end"
-                  fill="${PALETTE.soft}" font-family="${PALETTE.face}">${shortDate(lastDate)}</text>
+                  style="fill:${PALETTE.soft}" font-family="${PALETTE.face}">${shortDate(lastDate)}</text>
         </svg>`;
 
     if (!REDUCED_MOTION) {

@@ -40,6 +40,26 @@
     --plot: #1f4a7a;
     --plot-soft: rgba(31, 74, 122, 0.12);
 
+    /* Chart furniture. Charts read these through inline style="var(--x)", so a
+       theme change recolours them without anything being re-rendered. */
+    --chart-grid: rgba(22, 28, 23, 0.12);
+    --chart-axis: rgba(22, 28, 23, 0.30);
+    --bench-alt: #737d69;
+
+    /* A categorical sequence for the sector breakdown: the accent blue
+       stepping towards slate and olive. Muted on purpose — the donut is a
+       breakdown, not a focal point. */
+    --sector-1: #1f4a7a;
+    --sector-2: #4a6f92;
+    --sector-3: #7a6a4b;
+    --sector-4: #3f5c46;
+    --sector-5: #8a5c5c;
+    --sector-6: #6d7080;
+    --sector-7: #a08a63;
+    --sector-8: #5f7d78;
+    --sector-9: #8b8f86;
+    --sector-10: #4c4f58;
+
     --font-sans: 'Archivo', -apple-system, BlinkMacSystemFont, sans-serif;
     --font-serif: 'Newsreader', Georgia, 'Times New Roman', serif;
 
@@ -51,6 +71,108 @@
     --rail-gap: 48px;
 
     color-scheme: light;
+}
+
+/* ---- Dark ----
+   The same pad, seen at night. Ground and ink swap roles rather than the
+   palette being inverted channel by channel, so the two modes are reciprocal
+   instead of merely opposite. The plot line lifts to stay legible; gains and
+   losses lift with it. */
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+        --pad: #171b14;
+        --pad-deep: #10130e;
+        --pad-raised: #1f2419;
+
+        --ink: #e4e8de;
+        --ink-strong: #f5f8f1;
+        --ink-soft: #98a18d;
+
+        --gray-900: #22271c;
+        --gray-800: #2b3125;
+        --gray-700: #3a4133;
+        --gray-600: #5a6252;
+        --gray-500: #7d8674;
+        --gray-400: #9aa392;
+        --gray-300: #c2c9b9;
+
+        --rule: rgba(228, 232, 222, 0.18);
+        --rule-strong: rgba(228, 232, 222, 0.38);
+        --film: rgba(228, 232, 222, 0.06);
+
+        --green: #6fc98a;
+        --green-soft: rgba(111, 201, 138, 0.16);
+        --red: #e0736f;
+        --red-soft: rgba(224, 115, 111, 0.16);
+
+        --plot: #7aa9dd;
+        --plot-soft: rgba(122, 169, 221, 0.16);
+
+        --chart-grid: rgba(228, 232, 222, 0.11);
+        --chart-axis: rgba(228, 232, 222, 0.32);
+        --bench-alt: #9aa48e;
+
+        --sector-1: #7aa9dd;
+        --sector-2: #9fb8cf;
+        --sector-3: #c2a878;
+        --sector-4: #7fae8c;
+        --sector-5: #d4938f;
+        --sector-6: #a3a7bb;
+        --sector-7: #d6bd8f;
+        --sector-8: #8fb8b2;
+        --sector-9: #b6bcaa;
+        --sector-10: #9296a3;
+
+        color-scheme: dark;
+    }
+}
+
+/* The explicit choice wins in both directions. */
+:root[data-theme="dark"] {
+    --pad: #171b14;
+    --pad-deep: #10130e;
+    --pad-raised: #1f2419;
+
+    --ink: #e4e8de;
+    --ink-strong: #f5f8f1;
+    --ink-soft: #98a18d;
+
+    --gray-900: #22271c;
+    --gray-800: #2b3125;
+    --gray-700: #3a4133;
+    --gray-600: #5a6252;
+    --gray-500: #7d8674;
+    --gray-400: #9aa392;
+    --gray-300: #c2c9b9;
+
+    --rule: rgba(228, 232, 222, 0.18);
+    --rule-strong: rgba(228, 232, 222, 0.38);
+    --film: rgba(228, 232, 222, 0.06);
+
+    --green: #6fc98a;
+    --green-soft: rgba(111, 201, 138, 0.16);
+    --red: #e0736f;
+    --red-soft: rgba(224, 115, 111, 0.16);
+
+    --plot: #7aa9dd;
+    --plot-soft: rgba(122, 169, 221, 0.16);
+
+    --chart-grid: rgba(228, 232, 222, 0.11);
+    --chart-axis: rgba(228, 232, 222, 0.32);
+    --bench-alt: #9aa48e;
+
+    --sector-1: #7aa9dd;
+    --sector-2: #9fb8cf;
+    --sector-3: #c2a878;
+    --sector-4: #7fae8c;
+    --sector-5: #d4938f;
+    --sector-6: #a3a7bb;
+    --sector-7: #d6bd8f;
+    --sector-8: #8fb8b2;
+    --sector-9: #b6bcaa;
+    --sector-10: #9296a3;
+
+    color-scheme: dark;
 }
 
 /* ---- Reset & Base ---- */
@@ -81,8 +203,8 @@ body {
 .pad-grid {
     background-color: var(--pad-raised);
     background-image:
-        linear-gradient(to right, rgba(22, 28, 23, 0.07) 1px, transparent 1px),
-        linear-gradient(to bottom, rgba(22, 28, 23, 0.07) 1px, transparent 1px);
+        linear-gradient(to right, var(--chart-grid) 1px, transparent 1px),
+        linear-gradient(to bottom, var(--chart-grid) 1px, transparent 1px);
     background-size: 26px 26px;
     background-position: -1px -1px;
 }
@@ -260,7 +382,7 @@ ul {
 }
 
 #navbar.scrolled {
-    background: rgba(228, 232, 222, 0.88);
+    background: color-mix(in srgb, var(--pad) 88%, transparent);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
 }
@@ -314,6 +436,54 @@ ul {
 .nav-link:hover::after,
 .nav-link.active::after {
     width: 100%;
+}
+
+/* ---- Theme toggle ----
+   Two icons in one button; the stylesheet decides which is showing, so the
+   control is correct on first paint without waiting for script. */
+.theme-toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-left: 28px;
+    color: var(--ink-soft);
+    border: 1px solid transparent;
+    border-radius: 2px;
+    touch-action: manipulation;
+    transition: color 0.2s, border-color 0.2s;
+}
+
+.theme-toggle:hover {
+    color: var(--ink);
+    border-color: var(--rule);
+}
+
+.theme-toggle svg {
+    width: 17px;
+    height: 17px;
+}
+
+/* Show the icon for the mode the button switches TO. */
+.theme-toggle .icon-dark { display: none; }
+.theme-toggle .icon-light { display: block; }
+
+@media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .theme-toggle .icon-dark { display: block; }
+    :root:not([data-theme="light"]) .theme-toggle .icon-light { display: none; }
+}
+
+:root[data-theme="dark"] .theme-toggle .icon-dark { display: block; }
+:root[data-theme="dark"] .theme-toggle .icon-light { display: none; }
+
+.nav-right {
+    display: flex;
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .theme-toggle { margin-left: 0; margin-right: 4px; }
 }
 
 .nav-menu-btn {
