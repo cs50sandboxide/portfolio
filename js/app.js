@@ -13,7 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initRisk();
     initAttribution();
     initPositions();
-    initHeroPlot();
+    initFundPlot();
 });
 
 /* ---- Helpers ---- */
@@ -720,12 +720,13 @@ function initPositions() {
     });
 }
 
-/* ---- Hero plot ----
-   The fund's own return path against the S&P, drawn once as the page loads.
-   This is the only motion on the site that nobody asked for, so it happens
-   in one place and then stops. */
-function initHeroPlot() {
-    const wrap = el("heroPlot");
+/* ---- Fund plot ----
+   The fund's own return path against the S&P. It sits in the one section of
+   the home page that talks about the fund, and draws itself once when that
+   section comes into view. This is the only motion on the site that nobody
+   asked for, so it happens in one place and then stops. */
+function initFundPlot() {
+    const wrap = el("fundPlot");
     if (!wrap || typeof FUND_DATA === "undefined") return;
 
     const rows = FUND_DATA.history;
@@ -734,7 +735,7 @@ function initHeroPlot() {
     // On a phone the wide field would scale the whole plot — labels included —
     // down to about a third, so the shape narrows and the type stays readable.
     const narrow = window.innerWidth < 700;
-    initHeroPlot.narrow = narrow;
+    initFundPlot.narrow = narrow;
 
     const W = narrow ? 400 : 900, H = narrow ? 250 : 260;
     const M = narrow
@@ -801,36 +802,35 @@ function initHeroPlot() {
         </svg>`;
 
     if (!REDUCED_MOTION) {
-        wrap.querySelectorAll(".plot-path").forEach((path, i) => {
+        const draw = () => wrap.querySelectorAll(".plot-path").forEach((path, i) => {
             const len = path.getTotalLength();
             path.style.setProperty("--len", len);
-            path.style.animationDelay = (0.25 + i * 0.18) + "s";
+            path.style.animationDelay = (0.15 + i * 0.18) + "s";
             path.classList.add("animate");
         });
+        if ("IntersectionObserver" in window) {
+            new IntersectionObserver((entries, obs) => {
+                entries.forEach((en) => {
+                    if (en.isIntersecting) { draw(); obs.disconnect(); }
+                });
+            }, { threshold: 0.3 }).observe(wrap);
+        } else {
+            draw();
+        }
     }
 
     // Redraw only when the layout actually crosses the breakpoint, so a phone
     // toolbar sliding away does not restart the animation. The listener is
     // attached once, not once per redraw.
-    if (!initHeroPlot.watching) {
-        initHeroPlot.watching = true;
+    if (!initFundPlot.watching) {
+        initFundPlot.watching = true;
         let resizeTimer;
         window.addEventListener("resize", () => {
             clearTimeout(resizeTimer);
             resizeTimer = setTimeout(() => {
-                if ((window.innerWidth < 700) !== initHeroPlot.narrow) initHeroPlot();
+                if ((window.innerWidth < 700) !== initFundPlot.narrow) initFundPlot();
             }, 200);
         });
     }
 
-    // The figures under the plot.
-    const cap = el("heroPlotCaption");
-    if (cap) {
-        const p = FUND_DATA.positions;
-        const n = p.longs.length + p.shorts.length + p.options.length;
-        cap.innerHTML =
-            `<span><b>${fmtPct(FUND_DATA.returnSinceInception)}</b> since inception</span>` +
-            `<span class="sep">${fmtPct(FUND_DATA.benchmark.sinceInception)} S&amp;P 500, same window</span>` +
-            `<span class="sep">${n} open positions</span>`;
-    }
 }

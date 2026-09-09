@@ -442,14 +442,13 @@ ul {
 }
 
 /* ---- Hero ----
-   The page opens on the thing the site exists to show: the fund's own return
-   path, drawn once on the pad grid. The name sits above it and the margin
-   dates it. This is the only unprompted motion anywhere on the site. */
+   The page opens on the person: the name, what he does, and one sentence. The
+   fund is stated once further down and nowhere else. */
 .hero {
-    min-height: 100svh;
+    min-height: 82svh;
     display: flex;
     align-items: center;
-    padding: 120px 0 72px;
+    padding: 128px 0 88px;
     position: relative;
     background: var(--pad);
     border-bottom: 1px solid var(--rule);
@@ -492,60 +491,47 @@ ul {
 
 .hero-title {
     font-family: var(--font-serif);
-    font-size: clamp(2.4rem, 5.4vw, 3.4rem);
+    font-size: clamp(2.6rem, 6vw, 4rem);
     font-weight: 500;
-    line-height: 1.06;
-    letter-spacing: -0.02em;
+    line-height: 1.04;
+    letter-spacing: -0.022em;
     text-wrap: balance;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .title-line { display: block; }
 
 .hero-subtitle {
     font-family: var(--font-serif);
-    font-size: clamp(1.15rem, 2.2vw, 1.5rem);
+    font-size: clamp(1.2rem, 2.4vw, 1.6rem);
     font-weight: 400;
     font-style: italic;
     color: var(--ink-soft);
-    margin-bottom: 40px;
+    margin-bottom: 26px;
 }
 
-/* The plot itself. */
-.hero-plot {
+.hero-lede {
+    font-family: var(--font-serif);
+    font-size: 1.125rem;
+    font-weight: 400;
+    line-height: 1.62;
+    color: var(--ink);
+    max-width: 58ch;
+    margin-bottom: 38px;
+}
+
+/* The plot. It lives in the fund section, the one place the fund is stated. */
+.fund-plot {
     position: relative;
-    margin-bottom: 24px;
+    margin-bottom: 32px;
     border: 1px solid var(--rule-strong);
     padding: 20px 20px 12px;
 }
 
-.hero-plot svg {
+.fund-plot svg {
     display: block;
     width: 100%;
     height: auto;
-}
-
-.hero-plot-caption {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 28px;
-    align-items: baseline;
-    margin-bottom: 36px;
-    font-size: 0.8125rem;
-    color: var(--ink-soft);
-    font-variant-numeric: tabular-nums;
-}
-
-.hero-plot-caption b {
-    font-size: 1.35rem;
-    font-weight: 600;
-    color: var(--plot);
-    letter-spacing: -0.01em;
-}
-
-.hero-plot-caption .sep {
-    color: var(--ink);
-    font-weight: 500;
 }
 
 /* The line grows from left to right, once, on load. */
@@ -595,8 +581,8 @@ ul {
     }
     .hero-rail {
         display: grid;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-        column-gap: 16px;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        column-gap: 20px;
         order: 2;
         border-top: 1px solid var(--rule);
     }
