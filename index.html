@@ -5,9 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advaith Krishnan Vinod | Portfolio Manager</title>
     <link rel="stylesheet" href="css/style.css">
+    <meta name="theme-color" content="#e4e8de">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -42,20 +43,28 @@
     </div>
 
     <!-- Hero Section -->
-    <section id="hero" class="section hero">
-        <div class="hero-content">
-            <h1 class="hero-title">
-                <span class="title-line">Advaith Krishnan Vinod</span>
-            </h1>
-            <p class="hero-subtitle">Physics, Finance, AI.</p>
-            <div class="hero-ctas">
-                <a href="pages/portfolio.html" class="hero-cta">View Fund Performance</a>
-                <a href="CV - AVK (Summer 27).pdf" class="hero-cta hero-cta-outline" target="_blank">Download CV</a>
+    <section id="hero" class="hero">
+        <div class="hero-frame">
+            <dl class="hero-rail">
+                <dt>Running since</dt>
+                <dd>27 April 2026</dd>
+                <dt>Figures from</dt>
+                <dd>Interactive Brokers</dd>
+                <dt>Refreshed</dt>
+                <dd>Every Saturday</dd>
+            </dl>
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <span class="title-line">Advaith Krishnan Vinod</span>
+                </h1>
+                <p class="hero-subtitle">Physics, finance, AI.</p>
+                <div class="hero-plot pad-grid" id="heroPlot"></div>
+                <p class="hero-plot-caption" id="heroPlotCaption"></p>
+                <div class="hero-ctas">
+                    <a href="pages/portfolio.html" class="hero-cta">Read the fund record</a>
+                    <a href="CV - AVK (Summer 27).pdf" class="hero-cta hero-cta-outline" target="_blank">Download CV</a>
+                </div>
             </div>
-        </div>
-        <div class="hero-scroll-indicator">
-            <span>Scroll</span>
-            <div class="scroll-line"></div>
         </div>
     </section>
 
@@ -63,35 +72,35 @@
     <section id="about-snippet" class="section snippet-section">
         <div class="container">
             <div class="section-header">
-                <span class="section-label">01 / About</span>
+                <span class="section-label">Who is running the book</span>
                 <h2 class="section-title">Profile</h2>
             </div>
             <div class="snippet-grid snippet-about">
                 <div class="snippet-image">
-                    <img src="assets/images/portrait.png" alt="Advaith Krishnan Vinod" loading="lazy">
+                    <img src="assets/images/portrait.png" alt="Advaith Krishnan Vinod" width="800" height="800" loading="lazy" decoding="async">
                 </div>
                 <div class="snippet-content">
                     <h3 class="snippet-name">Advaith Krishnan Vinod</h3>
-                    <p class="snippet-role">Portfolio Manager — Family &amp; Friends Investment Fund</p>
+                    <p class="snippet-role">Portfolio manager of a family and friends investment fund</p>
                     <p class="snippet-text">An investment professional and physics undergraduate combining rigorous macroeconomic research with fundamental equity research. Portfolio Manager of a family &amp; friends investment fund. Summer Intern at Franklin Templeton and Integra Asset Management. Quant Trader at Queen's Tower Exchange.</p>
                     <p class="snippet-text">The fund on display is a leveraged long/short equity and options book run through Interactive Brokers, with positions built on DCF valuations, relative valuation frameworks, technical analysis, and macroeconomic insight. Live figures are published on the <a href="pages/portfolio.html" class="inline-link">fund performance page</a>.</p>
                     <div class="snippet-highlights">
                         <div class="highlight">
                             <span class="highlight-value" data-fund="value">—</span>
-                            <span class="highlight-label">Portfolio Value</span>
+                            <span class="highlight-label">Portfolio value</span>
                         </div>
                         <div class="highlight">
                             <span class="highlight-value" data-fund="return">—</span>
-                            <span class="highlight-label">Return Since Inception</span>
+                            <span class="highlight-label">Return since inception</span>
                         </div>
                         <div class="highlight">
                             <span class="highlight-value" data-fund="positions">—</span>
-                            <span class="highlight-label">Open Positions</span>
+                            <span class="highlight-label">Open positions</span>
                         </div>
                     </div>
                     <a href="pages/about.html" class="read-more">
-                        <span>Read More</span>
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                        <span>More about me</span>
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
                             <line x1="5" y1="12" x2="19" y2="12"/>
                             <polyline points="12 5 19 12 12 19"/>
                         </svg>
@@ -105,8 +114,8 @@
     <section id="internship-snippet" class="section snippet-section">
         <div class="container">
             <div class="section-header">
-                <span class="section-label">Experience</span>
-                <h2 class="section-title">Summer 2026</h2>
+                <span class="section-label">Two internships, summer 2026</span>
+                <h2 class="section-title">Where I have worked</h2>
             </div>
             <div class="snippet-content-full snippet-content-wide">
                 <div class="role-grid">
@@ -114,23 +123,23 @@
                     <article class="role-card">
                         <header class="role-head">
                             <h3 class="role-firm">Integra Asset Management</h3>
-                            <p class="role-title">Investment Intern</p>
-                            <p class="role-meta">24 August – 18 September 2026 &middot; Dubai</p>
+                            <p class="role-title">Investment intern</p>
+                            <p class="role-meta">Dubai, 24 August to 18 September 2026</p>
                         </header>
                         <p class="role-intro">A one-month internship at a MENA-focused equities asset manager, with responsibilities spread across research, technology and operations.</p>
 
                         <div class="role-area">
-                            <h4 class="role-area-title">Research &amp; Analysis</h4>
+                            <h4 class="role-area-title">Research and analysis</h4>
                             <p>Built DCF and comparable-company models for MENA firms including MEPCO and DTC, developing a working understanding of how to forecast and break down line items where disclosure standards are less detailed than in developed markets. Also tracked catalysts and headwinds affecting sectors across the UAE and Saudi Arabia.</p>
                         </div>
 
                         <div class="role-area">
-                            <h4 class="role-area-title">Automation &amp; AI</h4>
+                            <h4 class="role-area-title">Automation and AI</h4>
                             <p>Worked alongside the firm's technology lead on applying AI to investment workflows. Built an attribution interface for portfolio manager review, covering IRR distributions across sectors, geographies and individual holdings alongside portfolio performance against benchmark. Also developed an email ingestion pipeline that consolidates research and market correspondence into a single interface, using open-weight models and API calls to reduce the manual load in the PM's information flow.</p>
                         </div>
 
                         <div class="role-area">
-                            <h4 class="role-area-title">Trade Execution &amp; Compliance</h4>
+                            <h4 class="role-area-title">Trade execution and compliance</h4>
                             <p>Logged each day's executed trades into the firm's compliance system, categorising by broker, custodian, SMA and trade detail — a first-hand lesson in why independent post-trade verification matters in a regulated environment.</p>
                         </div>
                     </article>
@@ -138,23 +147,23 @@
                     <article class="role-card role-card-alt">
                         <header class="role-head">
                             <h3 class="role-firm">Franklin Templeton</h3>
-                            <p class="role-title">HeadStart Programme</p>
-                            <p class="role-meta">27 July – 7 August 2026 &middot; Dubai</p>
+                            <p class="role-title">HeadStart programme</p>
+                            <p class="role-meta">Dubai, 27 July to 7 August 2026</p>
                         </header>
                         <p class="role-intro">A two-week programme at Franklin Templeton's Dubai office, rotating across desks to see how different parts of the asset management business operate through hands-on work.</p>
 
                         <div class="role-area">
-                            <h4 class="role-area-title">Institutional Sales</h4>
+                            <h4 class="role-area-title">Institutional sales</h4>
                             <p>Contributed to pitches for Franklin Templeton funds, including the Gulf Wealth Bond Fund, learning how strategies are positioned and communicated to institutional allocators.</p>
                         </div>
 
                         <div class="role-area">
-                            <h4 class="role-area-title">Private Credit</h4>
+                            <h4 class="role-area-title">Private credit</h4>
                             <p>Forecast cash flows for regional companies not yet EBITDA-positive, as part of assessing whether credit should be extended — and what the structure would need to look like to compensate for that risk.</p>
                         </div>
 
                         <div class="role-area">
-                            <h4 class="role-area-title">MENA Equities</h4>
+                            <h4 class="role-area-title">MENA equities</h4>
                             <p>Studied how GCC and wider emerging markets differ from developed markets, particularly in depth of disclosure, liquidity conditions, and the practical constraints those place on both research and position sizing.</p>
                         </div>
                     </article>
@@ -162,7 +171,7 @@
                 </div>
                 <div class="internship-ctas">
                     <a href="CV - AVK (Summer 27).pdf" class="hero-cta" target="_blank">Download CV</a>
-                    <a href="pages/contact.html" class="hero-cta hero-cta-outline">Get in Touch</a>
+                    <a href="pages/contact.html" class="hero-cta hero-cta-outline">Get in touch</a>
                 </div>
             </div>
         </div>
@@ -172,32 +181,32 @@
     <section id="portfolio-snippet" class="section snippet-section snippet-dark">
         <div class="container">
             <div class="section-header">
-                <span class="section-label">02 / Fund</span>
-                <h2 class="section-title">Fund Performance</h2>
+                <span class="section-label">Updated every Saturday from Interactive Brokers</span>
+                <h2 class="section-title">The fund</h2>
             </div>
             <div class="snippet-content-full">
-                <p class="snippet-text">A long/short equity and options book run through Interactive Brokers. Figures below are pulled directly from the brokerage account and refresh automatically every Friday after the US market close.</p>
+                <p class="snippet-text">A long/short equity and options book run through Interactive Brokers. Figures below are pulled directly from the brokerage account and refresh automatically every Saturday, while markets are closed.</p>
                 <div class="portfolio-preview-stats">
                     <div class="preview-stat">
                         <span class="preview-stat-value" data-fund="value">—</span>
-                        <span class="preview-stat-label">Portfolio Value</span>
+                        <span class="preview-stat-label">Portfolio value</span>
                     </div>
                     <div class="preview-stat">
                         <span class="preview-stat-value positive" data-fund="return">—</span>
-                        <span class="preview-stat-label">Return Since Inception</span>
+                        <span class="preview-stat-label">Return since inception</span>
                     </div>
                     <div class="preview-stat">
                         <span class="preview-stat-value" data-fund="benchmark">—</span>
-                        <span class="preview-stat-label">S&amp;P 500, Same Window</span>
+                        <span class="preview-stat-label">S&amp;P 500, same window</span>
                     </div>
                     <div class="preview-stat">
                         <span class="preview-stat-value" data-fund="positions">—</span>
-                        <span class="preview-stat-label">Open Positions</span>
+                        <span class="preview-stat-label">Open positions</span>
                     </div>
                 </div>
                 <a href="pages/portfolio.html" class="read-more">
-                    <span>Explore Fund</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                    <span>See the full record</span>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
                         <line x1="5" y1="12" x2="19" y2="12"/>
                         <polyline points="12 5 19 12 12 19"/>
                     </svg>
@@ -210,15 +219,15 @@
     <section id="activities-snippet" class="section snippet-section snippet-dark">
         <div class="container">
             <div class="section-header">
-                <span class="section-label">Current / 2026</span>
-                <h2 class="section-title">Present Activities</h2>
+                <span class="section-label">Autumn 2026</span>
+                <h2 class="section-title">What I am doing now</h2>
             </div>
             <div class="snippet-content-full">
                 <div class="cfa-feature-card">
                     <div class="cfa-feature-inner">
                         <div class="cfa-feature-badge">CFA</div>
                         <div class="cfa-feature-content">
-                            <h3>CFA Institute — Level 1 Candidate</h3>
+                            <h3>CFA Level 1 candidate</h3>
                             <p class="cfa-exam-date">Exam Date: <strong>November 14, 2026</strong></p>
                             <div class="cfa-topics">
                                 <span class="cfa-topic">Ethical & Professional Standards</span>
@@ -250,7 +259,7 @@
                     </div>
                     <div class="preview-stat">
                         <span class="preview-stat-value">Imperial Algorithmic Trading Society</span>
-                        <span class="preview-stat-label">Member · 2025–Present</span>
+                        <span class="preview-stat-label">Member since 2025</span>
                     </div>
                 </div>
             </div>
@@ -261,21 +270,21 @@
     <section id="contact-snippet" class="section snippet-section snippet-dark">
         <div class="container">
             <div class="section-header">
-                <span class="section-label">04 / Contact</span>
-                <h2 class="section-title">Get in Touch</h2>
+                <span class="section-label">Dubai and London</span>
+                <h2 class="section-title">Get in touch</h2>
             </div>
             <div class="snippet-content-full snippet-contact">
                 <p class="snippet-text">Interested in discussing investment ideas, collaboration, or research opportunities? Based between Dubai and London — always open to connecting.</p>
                 <div class="contact-preview-links">
                     <a href="mailto:advaithsurya2007@gmail.com" class="contact-preview-link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
                             <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
                             <polyline points="22,6 12,13 2,6"/>
                         </svg>
                         <span>advaithsurya2007@gmail.com</span>
                     </a>
                     <a href="https://www.linkedin.com/in/advaith-krishnan-vinod" target="_blank" rel="noopener" class="contact-preview-link">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="20" height="20">
                             <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
                             <rect x="2" y="9" width="4" height="12"/>
                             <circle cx="4" cy="4" r="2"/>
@@ -284,8 +293,8 @@
                     </a>
                 </div>
                 <a href="pages/contact.html" class="read-more">
-                    <span>Contact Me</span>
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
+                    <span>Get in touch</span>
+                    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="16" height="16">
                         <line x1="5" y1="12" x2="19" y2="12"/>
                         <polyline points="12 5 19 12 12 19"/>
                     </svg>

@@ -6,9 +6,10 @@
     <title>Fund Performance | Advaith Krishnan Vinod</title>
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/portfolio.css">
+    <meta name="theme-color" content="#e4e8de">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
 </head>
 <body>
 
@@ -37,10 +38,10 @@
 
     <section class="page-hero">
         <div class="container">
-            <span class="section-label">02 / Portfolio</span>
-            <h1 class="page-hero-title">Fund Performance</h1>
-            <p class="page-hero-sub">Family &amp; Friends Investment Fund. Figures below are pulled directly from Interactive Brokers and refresh automatically every Saturday, while markets are closed.</p>
-            <p class="data-stamp">Last updated <span id="asOfDate">—</span> &middot; Source: Interactive Brokers</p>
+            <span class="section-label">A family and friends investment fund</span>
+            <h1 class="page-hero-title">The fund record</h1>
+            <p class="page-hero-sub">Every figure on this page is pulled straight from the Interactive Brokers account that holds the book, and refreshes on its own each Saturday while the markets are closed.</p>
+            <p class="data-stamp">Last updated <span id="asOfDate">—</span> from Interactive Brokers</p>
         </div>
     </section>
 
@@ -56,17 +57,17 @@
         <div class="container">
             <div class="portfolio-summary">
                 <div class="summary-card">
-                    <span class="summary-label">Portfolio Value</span>
+                    <span class="summary-label">Portfolio value</span>
                     <span class="summary-value" id="portfolioValue">—</span>
                     <span class="summary-note">Net liquidation value</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Return Since Inception</span>
+                    <span class="summary-label">Return since inception</span>
                     <span class="summary-value positive" id="returnSinceInception">—</span>
                     <span class="summary-note" id="inceptionNote">—</span>
                 </div>
                 <div class="summary-card">
-                    <span class="summary-label">Month to Date</span>
+                    <span class="summary-label">Month to date</span>
                     <span class="summary-value positive" id="mtdReturn">—</span>
                     <span class="summary-note" id="mtdNote">—</span>
                 </div>
@@ -74,24 +75,24 @@
 
             <!-- Performance vs Benchmark -->
             <div class="perf-block">
-                <div class="tab-section-label">Performance vs Major Indices — Like-for-like window</div>
+                <h2 class="tab-section-label"><span class="block-note">Like-for-like window, since 27 April 2026</span><span>Measured against the major indices</span></h2>
                 <div class="chart-toggle" id="chartToggle">
-                    <button class="legend-item active" data-view="growth">Growth of $1,000</button>
-                    <button class="legend-item" data-view="total">Total Return</button>
+                    <button class="legend-item active" data-view="growth" aria-pressed="true">Growth of $1,000</button>
+                    <button class="legend-item" data-view="total" aria-pressed="false">Total return</button>
                 </div>
                 <div class="benchmark-compare" id="benchmarkCompare" hidden></div>
-                <div class="benchmark-growth" id="benchmarkGrowth"></div>
+                <div class="benchmark-growth pad-grid" id="benchmarkGrowth"></div>
                 <p class="perf-footnote" id="perfFootnote">—</p>
             </div>
 
             <!-- Monthly Returns -->
             <div class="perf-block">
-                <div class="tab-section-label">Weekly Returns — Time-weighted, vs S&amp;P 500</div>
+                <h2 class="tab-section-label"><span class="block-note">Time-weighted, one row per week</span><span>Week by week, against the S&amp;P 500</span></h2>
                 <div class="positions-table-wrap weekly-scroll">
                     <table class="positions-table weekly-table">
                         <thead>
                             <tr>
-                                <th>Week Ending</th>
+                                <th>Week ending</th>
                                 <th class="num">Fund</th>
                                 <th class="num">S&amp;P 500</th>
                                 <th class="num">Difference</th>
@@ -105,25 +106,25 @@
 
             <!-- Risk & Exposure -->
             <div class="perf-block">
-                <div class="tab-section-label">Risk &amp; Exposure</div>
+                <h2 class="tab-section-label"><span class="block-note">Daily marks since inception</span><span>Risk and exposure</span></h2>
                 <div class="risk-grid">
                     <div class="risk-card">
-                        <span class="risk-label">Maximum Drawdown</span>
+                        <span class="risk-label">Maximum drawdown</span>
                         <span class="risk-value negative" id="riskDrawdown">—</span>
                         <span class="risk-note">Largest peak-to-trough decline</span>
                     </div>
                     <div class="risk-card">
-                        <span class="risk-label">Sharpe Ratio</span>
+                        <span class="risk-label">Sharpe ratio</span>
                         <span class="risk-value" id="riskSharpe">—</span>
                         <span class="risk-note" id="riskSharpeNote">—</span>
                     </div>
                     <div class="risk-card">
-                        <span class="risk-label">Gross Exposure</span>
+                        <span class="risk-label">Gross exposure</span>
                         <span class="risk-value" id="riskGross">—</span>
                         <span class="risk-note">Long + short notional</span>
                     </div>
                     <div class="risk-card">
-                        <span class="risk-label">Net Exposure</span>
+                        <span class="risk-label">Net exposure</span>
                         <span class="risk-value" id="riskNet">—</span>
                         <span class="risk-note">Long less short</span>
                     </div>
@@ -134,22 +135,22 @@
 
             <!-- Attribution -->
             <div class="perf-block">
-                <div class="tab-section-label">Attribution — How the book is positioned</div>
+                <h2 class="tab-section-label"><span class="block-note">Positions as at the last refresh</span><span>How the book is positioned</span></h2>
 
                 <div class="attr-grid">
                     <div class="attr-panel">
-                        <h4 class="attr-title">Long Book by Sector</h4>
+                        <h4 class="attr-title">The long book, by sector</h4>
                         <div class="attr-donut" id="attrDonut"></div>
                     </div>
                     <div class="attr-panel">
-                        <h4 class="attr-title">Net Sector Exposure</h4>
+                        <h4 class="attr-title">Net sector exposure</h4>
                         <p class="attr-sub">Long less short, as % of NAV</p>
                         <div class="attr-tilt" id="attrTilt"></div>
                     </div>
                 </div>
 
                 <div class="attr-panel attr-panel-wide">
-                    <h4 class="attr-title">Five Largest Positions</h4>
+                    <h4 class="attr-title">The five largest positions</h4>
                     <div class="positions-table-wrap">
                         <table class="positions-table attr-table">
                             <thead>
@@ -165,14 +166,12 @@
 
             <!-- Open Positions -->
             <div class="perf-block">
-                <div class="tab-section-label">
-                    Open Positions — <span id="positionCount">—</span> held
-                </div>
+                <h2 class="tab-section-label"><span class="block-note"><span id="positionCount">—</span> held</span><span>Every open position</span></h2>
                 <div class="positions-filter" id="positionsFilter">
-                    <button class="legend-item active" data-group="all"><span class="legend-dot" style="background:#f5f0eb"></span>All</button>
-                    <button class="legend-item" data-group="longs"><span class="legend-dot" style="background:#4ade80"></span>Long</button>
-                    <button class="legend-item" data-group="shorts"><span class="legend-dot" style="background:#f87171"></span>Short</button>
-                    <button class="legend-item" data-group="options"><span class="legend-dot" style="background:#c9a96e"></span>Options</button>
+                    <button class="legend-item active" data-group="all"><span class="legend-dot" aria-hidden="true" style="background:#161c17"></span>All</button>
+                    <button class="legend-item" data-group="longs"><span class="legend-dot" aria-hidden="true" style="background:#226b3c"></span>Long</button>
+                    <button class="legend-item" data-group="shorts"><span class="legend-dot" aria-hidden="true" style="background:#94272b"></span>Short</button>
+                    <button class="legend-item" data-group="options"><span class="legend-dot" aria-hidden="true" style="background:#1f4a7a"></span>Options</button>
                 </div>
                 <div id="positionsWrap"></div>
             </div>

@@ -3,63 +3,95 @@
    ============================================ */
 
 .page-hero-sub {
-    font-size: 0.9rem;
-    font-weight: 300;
-    color: var(--gray-500);
-    margin-top: 16px;
-    line-height: 1.6;
-    max-width: 720px;
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    font-weight: 400;
+    color: var(--ink);
+    margin-top: 18px;
+    line-height: 1.66;
+    max-width: 64ch;
 }
 
 .data-stamp {
-    font-size: 0.62rem;
+    font-size: 0.875rem;
     font-weight: 400;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--gray-600);
-    margin-top: 20px;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    margin-top: 14px;
+    font-variant-numeric: tabular-nums;
 }
 
 /* ---- Summary Cards ---- */
 .summary-note {
     display: block;
-    font-size: 0.62rem;
+    font-size: 0.8125rem;
     font-weight: 400;
-    letter-spacing: 0.1em;
-    color: var(--gray-600);
-    margin-top: 10px;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    margin-top: 6px;
     line-height: 1.5;
 }
 
-/* ---- Section Blocks ---- */
+/* ---- Section Blocks ----
+   Each block of the report gets a heading on the same rail as the rest of the
+   site: the note in the margin, the heading beside it, one rule underneath. */
 .perf-block {
-    margin-top: 80px;
+    margin-top: 84px;
 }
 
 .tab-section-label {
-    font-size: 0.65rem;
+    display: grid;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    column-gap: var(--rail-gap);
+    align-items: baseline;
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    text-align: left;
+    margin-bottom: 26px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ink);
+}
+
+.tab-section-label > * { grid-column: 2; }
+
+/* The margin note beside a block heading: a count, a window, a source. */
+.block-note {
+    grid-column: 1;
+    font-family: var(--font-sans);
+    font-size: 0.8125rem;
     font-weight: 400;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gray-500);
-    text-align: center;
-    margin-bottom: 28px;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(245, 240, 235, 0.06);
+    line-height: 1.45;
+    color: var(--ink-soft);
+    letter-spacing: 0;
+}
+
+@media (max-width: 860px) {
+    .tab-section-label {
+        grid-template-columns: 1fr;
+        row-gap: 4px;
+    }
+    .tab-section-label > * { grid-column: 1; }
+    .block-note { order: 2; }
 }
 
 /* ---- Chart view toggle ---- */
 .chart-toggle {
     display: flex;
-    gap: 8px;
-    justify-content: center;
-    margin-bottom: 28px;
+    gap: 0;
+    margin-bottom: 26px;
+    border: 1px solid var(--rule-strong);
+    width: fit-content;
 }
 
 /* ---- Growth of $1,000 (animated line chart) ---- */
 .benchmark-growth {
-    max-width: 900px;
-    margin: 0 auto 28px;
+    max-width: none;
+    margin: 0 0 24px;
+    border: 1px solid var(--rule-strong);
+    padding: 22px 24px 14px;
 }
 
 .benchmark-growth[hidden],
@@ -81,17 +113,16 @@
 
 .path-key {
     display: flex;
-    justify-content: center;
     flex-wrap: wrap;
-    gap: 24px;
-    margin-top: 8px;
+    gap: 8px 28px;
+    margin-top: 10px;
 }
 
 .path-key-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.68rem;
+    font-size: 0.8125rem;
     font-weight: 400;
     letter-spacing: 0.08em;
     color: var(--gray-400);
@@ -109,8 +140,8 @@
 }
 
 .bench-chart {
-    max-width: 720px;
-    margin: 0 auto;
+    max-width: 760px;
+    margin: 0;
 }
 
 .bench-plot-row {
@@ -124,13 +155,12 @@
     left: 0;
     right: 0;
     height: 1px;
-    background: rgba(245, 240, 235, 0.14);
+    background: var(--rule);
 }
 
 .bench-cols {
     display: flex;
     align-items: stretch;
-    justify-content: center;
     gap: 44px;
     height: 100%;
 }
@@ -169,7 +199,7 @@
     font-weight: 600;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
-    color: var(--off-white);
+    color: var(--ink);
 }
 
 /* A negative return must never read as visually neutral */
@@ -186,18 +216,17 @@
 }
 
 .bench-col-name {
-    font-size: 0.72rem;
+    font-size: 0.875rem;
     font-weight: 400;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
     color: var(--gray-300);
     text-align: center;
 }
 
 .bench-col-sub {
-    font-size: 0.6rem;
+    font-size: 0.8125rem;
     font-weight: 400;
-    letter-spacing: 0.12em;
+    letter-spacing: 0.01em;
     color: var(--gray-600);
 }
 
@@ -205,37 +234,42 @@
    longer ones ran to five or six cramped lines while the page had room either
    side. */
 .perf-footnote {
-    font-size: 0.75rem;
-    font-weight: 300;
-    color: var(--gray-500);
-    line-height: 1.75;
-    max-width: 1120px;
-    margin: 0 auto;
-    padding-top: 20px;
-    text-align: center;
-    border-top: 1px solid rgba(245, 240, 235, 0.05);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: var(--ink-soft);
+    line-height: 1.7;
+    max-width: 78ch;
+    margin: 0;
+    padding-top: 18px;
+    text-align: left;
+    border-top: 1px solid var(--rule);
 }
 
 /* ---- Monthly Returns Table ---- */
 /* Fixed layout so the four columns are equal — with auto layout the month
    column absorbs the extra width and the numeric columns end up bunched. */
 .weekly-table {
-    max-width: 780px;
-    margin: 0 auto;
+    max-width: 760px;
+    margin: 0;
     table-layout: fixed;
 }
 
 .weekly-table th,
 .weekly-table td {
-    text-align: center;
+    text-align: right;
     padding-right: 0;
+}
+
+.weekly-table th:first-child,
+.weekly-table td:first-child {
+    text-align: left;
 }
 
 /* Deliberately larger than the other tables — this is the table that shows
    whether the fund actually beat the index, month by month, so it earns the
    extra weight. */
 .weekly-table td {
-    font-size: 0.88rem;
+    font-size: 0.9375rem;
     padding-top: 13px;
     padding-bottom: 13px;
 }
@@ -245,24 +279,25 @@
 .weekly-scroll {
     max-height: 430px;
     overflow-y: auto;
-    max-width: 780px;
-    margin: 0 auto;
+    max-width: 760px;
+    margin: 0;
+    overscroll-behavior: contain;
 }
 
 .weekly-scroll thead th {
     position: sticky;
     top: 0;
-    background: var(--black);
+    background: var(--pad);
     z-index: 1;
 }
 
 .weekly-table th {
-    font-size: 0.64rem;
+    font-size: 0.8125rem;
     padding-bottom: 13px;
 }
 
 .month-cell {
-    color: var(--off-white) !important;
+    color: var(--ink) !important;
     font-weight: 400;
 }
 
@@ -289,17 +324,18 @@
     min-width: 92px;
     padding: 5px 12px;
     border-radius: 2px;
+    text-align: right;
     font-variant-numeric: tabular-nums;
 }
 
 .diff-chip.positive {
-    background: rgba(74, 222, 128, 0.13);
-    color: #4ade80;
+    background: rgba(34, 107, 60, 0.13);
+    color: #226b3c;
 }
 
 .diff-chip.negative {
-    background: rgba(248, 113, 113, 0.13);
-    color: #f87171;
+    background: var(--red-soft);
+    color: var(--red);
 }
 
 .diff-chip.muted {
@@ -310,12 +346,11 @@
 .month-partial {
     display: inline-block;
     margin-left: 10px;
-    font-size: 0.55rem;
+    font-size: 0.75rem;
     font-weight: 400;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
     color: var(--gray-600);
-    border: 1px solid rgba(245, 240, 235, 0.1);
+    border: 1px solid var(--rule);
     padding: 2px 7px;
 }
 
@@ -326,57 +361,54 @@
 /* ---- Risk Cards ---- */
 .risk-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1px;
-    background: rgba(245, 240, 235, 0.06);
-    border: 1px solid rgba(245, 240, 235, 0.06);
-    margin-bottom: 40px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    column-gap: 36px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 36px;
 }
 
 .risk-card {
-    background: var(--black);
-    padding: 28px 24px;
+    padding: 4px 0 22px;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 8px;
+    align-items: flex-start;
+    text-align: left;
+    gap: 2px;
+    min-width: 0;
 }
 
 .risk-label {
-    font-size: 0.6rem;
+    font-size: 0.875rem;
     font-weight: 400;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--gray-500);
+    color: var(--ink-soft);
 }
 
 .risk-value {
-    font-size: 1.5rem;
-    font-weight: 500;
-    color: var(--off-white);
+    font-size: 1.9rem;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
 }
 
 .risk-note {
-    font-size: 0.6rem;
+    font-size: 0.8125rem;
     font-weight: 400;
-    letter-spacing: 0.06em;
-    color: var(--gray-600);
-    line-height: 1.5;
+    color: var(--ink-soft);
+    line-height: 1.45;
 }
 
 /* ---- Exposure Composition Bar ---- */
 .exposure-bar {
-    margin: 0 auto 28px;
-    max-width: 720px;
+    margin: 0 0 26px;
+    max-width: 760px;
 }
 
 .exposure-track {
     display: flex;
     height: 12px;
     overflow: hidden;
-    border: 1px solid rgba(245, 240, 235, 0.06);
+    border: 1px solid var(--rule);
 }
 
 .exposure-seg {
@@ -386,8 +418,7 @@
 .exposure-key {
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
-    gap: 24px;
+    gap: 8px 28px;
     margin-top: 14px;
 }
 
@@ -395,7 +426,7 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.68rem;
+    font-size: 0.8125rem;
     font-weight: 400;
     letter-spacing: 0.06em;
     color: var(--gray-400);
@@ -417,25 +448,25 @@
 
 .attr-panel-wide {
     max-width: 760px;
-    margin: 0 auto;
+    margin: 0;
 }
 
 .attr-title {
-    font-size: 0.68rem;
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
     font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--off-white);
-    text-align: center;
-    margin-bottom: 4px;
+    letter-spacing: -0.008em;
+    color: var(--ink);
+    text-align: left;
+    margin-bottom: 2px;
 }
 
 .attr-sub {
-    font-size: 0.62rem;
-    font-weight: 300;
-    color: var(--gray-600);
-    text-align: center;
-    margin-bottom: 18px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: var(--ink-soft);
+    text-align: left;
+    margin-bottom: 16px;
 }
 
 .attr-title + .attr-donut,
@@ -447,7 +478,6 @@
 .attr-donut {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 28px;
     flex-wrap: wrap;
 }
@@ -470,8 +500,8 @@
     display: flex;
     align-items: center;
     gap: 9px;
-    font-size: 0.66rem;
-    font-weight: 300;
+    font-size: 0.8125rem;
+    font-weight: 400;
     color: var(--gray-400);
 }
 
@@ -494,8 +524,8 @@
     display: flex;
     flex-direction: column;
     gap: 9px;
-    max-width: 420px;
-    margin: 0 auto;
+    max-width: 440px;
+    margin: 0;
 }
 
 .tilt-row {
@@ -506,8 +536,8 @@
 }
 
 .tilt-name {
-    font-size: 0.64rem;
-    font-weight: 300;
+    font-size: 0.8125rem;
+    font-weight: 400;
     color: var(--gray-400);
     white-space: nowrap;
     overflow: hidden;
@@ -517,7 +547,7 @@
 .tilt-track {
     position: relative;
     height: 12px;
-    background: rgba(245, 240, 235, 0.03);
+    background: var(--film);
 }
 
 .tilt-axis {
@@ -526,7 +556,7 @@
     top: -1px;
     bottom: -1px;
     width: 1px;
-    background: rgba(245, 240, 235, 0.16);
+    background: var(--rule);
 }
 
 .tilt-bar {
@@ -535,11 +565,11 @@
     bottom: 2px;
 }
 
-.tilt-pos { background: #4ade80; }
-.tilt-neg { background: #f87171; }
+.tilt-pos { background: #226b3c; }
+.tilt-neg { background: #94272b; }
 
 .tilt-val {
-    font-size: 0.64rem;
+    font-size: 0.8125rem;
     font-weight: 500;
     text-align: right;
     font-variant-numeric: tabular-nums;
@@ -547,66 +577,78 @@
 
 /* ---- Attribution tables ---- */
 .attr-table th,
-.attr-table td,
+.attr-table td {
+    text-align: left;
+    padding-left: 0;
+    padding-right: 16px;
+}
+
 .attr-table th.num,
 .attr-table td.num {
-    text-align: center;
-    padding-left: 8px;
-    padding-right: 8px;
+    text-align: right;
+    padding-right: 0;
 }
 
 .side-tag {
     display: inline-block;
-    font-size: 0.55rem;
+    font-size: 0.75rem;
     font-weight: 500;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
+    letter-spacing: 0.01em;
     padding: 2px 8px;
 }
 
-.side-long  { background: rgba(74, 222, 128, 0.12); color: #4ade80; }
-.side-short { background: rgba(248, 113, 113, 0.12); color: #f87171; }
+.side-long  { background: rgba(34, 107, 60, 0.12); color: #226b3c; }
+.side-short { background: var(--red-soft); color: var(--red); }
 
 .attr-divider td {
     padding: 0 !important;
     height: 14px;
-    border-bottom: 1px solid rgba(245, 240, 235, 0.10) !important;
+    border-bottom: 1px solid var(--rule) !important;
 }
 
 /* ---- Position Filters ---- */
 .positions-filter {
     display: flex;
-    gap: 8px;
+    gap: 0;
     flex-wrap: wrap;
-    justify-content: center;
-    margin-bottom: 32px;
+    margin-bottom: 28px;
+    border: 1px solid var(--rule-strong);
+    width: fit-content;
 }
 
+/* A segmented control: one bordered strip, the active segment filled. */
 .legend-item {
     display: flex;
     align-items: center;
     gap: 8px;
     background: transparent;
-    border: 1px solid rgba(245, 240, 235, 0.1);
-    color: var(--gray-400);
+    border: 0;
+    border-left: 1px solid var(--rule-strong);
+    color: var(--ink-soft);
     font-family: var(--font-sans);
-    font-size: 0.7rem;
+    font-size: 0.9375rem;
     font-weight: 400;
-    letter-spacing: 0.08em;
-    padding: 8px 16px;
+    letter-spacing: 0;
+    padding: 9px 18px;
     cursor: pointer;
-    transition: border-color 0.2s, color 0.2s, background 0.2s;
+    touch-action: manipulation;
+    transition: color 0.2s, background 0.2s;
 }
 
+.legend-item:first-child { border-left: 0; }
+
 .legend-item:hover {
-    border-color: rgba(245, 240, 235, 0.2);
-    color: var(--off-white);
+    background: var(--film);
+    color: var(--ink);
 }
 
 .legend-item.active {
-    border-color: rgba(245, 240, 235, 0.25);
-    background: rgba(245, 240, 235, 0.04);
-    color: var(--off-white);
+    background: var(--ink);
+    color: var(--pad-raised);
+}
+
+.legend-item.active .legend-dot {
+    box-shadow: 0 0 0 1px var(--pad-raised);
 }
 
 .legend-dot {
@@ -624,9 +666,8 @@
 .pos-group-header {
     display: flex;
     align-items: center;
-    justify-content: center;
     gap: 10px;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
 .pos-group-dot {
@@ -637,15 +678,14 @@
 }
 
 .pos-group-label {
-    font-size: 0.7rem;
+    font-size: 0.875rem;
     font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--off-white);
+    letter-spacing: 0.01em;
+    color: var(--ink);
 }
 
 .pos-group-count {
-    font-size: 0.65rem;
+    font-size: 0.8125rem;
     font-weight: 400;
     color: var(--gray-500);
 }
@@ -659,10 +699,9 @@
     border-collapse: collapse;
 }
 
-/* Wide enough for the company column without stranding space either side. */
 .pos-group .positions-table {
     max-width: 940px;
-    margin: 0 auto;
+    margin: 0;
 }
 
 .pos-company {
@@ -672,26 +711,31 @@
 }
 
 .positions-table th {
-    font-size: 0.6rem;
+    font-size: 0.875rem;
     font-weight: 500;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--gray-600);
-    text-align: center;
-    padding: 10px 16px;
-    border-bottom: 1px solid rgba(245, 240, 235, 0.08);
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+    text-align: right;
+    padding: 9px 0 9px 16px;
+    border-bottom: 1px solid var(--ink);
     white-space: nowrap;
 }
 
 .positions-table td {
-    font-size: 0.82rem;
-    font-weight: 300;
-    color: var(--gray-300);
-    text-align: center;
-    padding: 14px 16px;
-    border-bottom: 1px solid rgba(245, 240, 235, 0.04);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    color: var(--ink);
+    text-align: right;
+    padding: 12px 0 12px 16px;
+    border-bottom: 1px solid var(--rule);
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
+}
+
+.positions-table th:first-child,
+.positions-table td:first-child {
+    text-align: left;
+    padding-left: 0;
 }
 
 .positions-table tbody tr {
@@ -699,33 +743,33 @@
 }
 
 .positions-table tbody tr:hover {
-    background: rgba(245, 240, 235, 0.02);
+    background: var(--film);
 }
 
 .pos-name {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    gap: 3px;
+    align-items: flex-start;
+    gap: 2px;
 }
 
 .pos-ticker {
-    font-size: 0.9rem;
+    font-size: 1rem;
     font-weight: 600;
-    color: var(--off-white);
+    color: var(--ink);
     letter-spacing: 0.04em;
 }
 
 .pos-contract {
-    font-size: 0.68rem;
-    font-weight: 300;
+    font-size: 0.8125rem;
+    font-weight: 400;
     color: var(--gray-500);
 }
 
 .pos-qty,
 .pos-value {
     font-weight: 400;
-    color: var(--gray-300);
+    color: var(--ink-soft);
 }
 
 /* ---- Responsive ---- */
@@ -742,7 +786,7 @@
         min-width: 0;
     }
     .bench-bar-value {
-        font-size: 0.72rem;
+        font-size: 0.875rem;
     }
     /* Long index names do not fit four-across on a phone. Every benchmark
        already carries its tracking ticker, so show that instead — "IWM" says
@@ -756,13 +800,13 @@
         letter-spacing: 0.06em;
     }
     .bench-col-sub {
-        font-size: 0.66rem;
-        letter-spacing: 0.1em;
+        font-size: 0.8125rem;
+        letter-spacing: 0.01em;
         color: var(--gray-300);
     }
     .positions-table td,
     .positions-table th {
-        font-size: 0.72rem;
+        font-size: 0.875rem;
         padding-right: 12px;
     }
     .risk-grid {
@@ -801,33 +845,32 @@
    long/short book. Stating that plainly, above the numbers, is what stops the
    difference reading as an inconsistency to anyone who checks both. */
 .scope-section {
-    padding: 0 0 8px;
+    padding: 32px 0 0;
 }
 
 .scope-note {
-    max-width: 940px;
-    margin: 0 auto;
-    padding: 12px 22px;
-    border-left: 2px solid rgba(201, 169, 110, 0.4);
-    font-size: 0.72rem;
-    font-weight: 300;
-    line-height: 1.7;
-    color: var(--gray-500);
+    max-width: 82ch;
+    margin: 0;
+    padding: 2px 0 2px 20px;
+    border-left: 2px solid var(--plot);
+    font-size: 0.9375rem;
+    font-weight: 400;
+    line-height: 1.65;
+    color: var(--ink-soft);
     text-align: left;
 }
 
 .scope-lead {
-    font-size: 0.6rem;
+    font-size: 0.8125rem;
     font-weight: 500;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--gold);
+    letter-spacing: 0.01em;
+    color: var(--plot);
     margin-bottom: 12px;
 }
 
 .scope-note p:not(.scope-lead) {
-    font-size: 0.8rem;
-    font-weight: 300;
+    font-size: 0.9375rem;
+    font-weight: 400;
     color: var(--gray-400);
     line-height: 1.8;
 }
@@ -836,18 +879,19 @@
     margin-top: 12px;
 }
 
-/* ---- Page hero: centred, like the rest of the page ---- */
-.page-hero .container {
-    text-align: center;
-}
-
-.page-hero-sub {
-    margin-left: auto;
-    margin-right: auto;
-}
+/* The page hero uses the shared rail grid from style.css. */
 
 @media (max-width: 768px) {
     .scope-note {
         padding: 22px 20px;
     }
+}
+
+/* The company column carries names rather than figures, so both the heading
+   and the cells align left, with the ticker they belong to. */
+.positions-table td.pos-company,
+.positions-table th:nth-child(2),
+.attr-table td:nth-child(2),
+.attr-table td:nth-child(3) {
+    text-align: left;
 }
