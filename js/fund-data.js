@@ -13,45 +13,45 @@
 
 const FUND_DATA = {
     // --- Snapshot metadata ---
-    asOf: "2026-09-26",
-    ibkrLastUpdate: "2026-09-26 10:13:23",
+    asOf: "2026-10-03",
+    ibkrLastUpdate: "2026-10-03 10:13:02",
 
     // Wall-clock time this file was regenerated. Always changes, even when the
     // market data does not — so every refresh leaves a commit and `git log`
     // answers "did the weekly job actually run?". Without it, a healthy run on
     // a quiet week is indistinguishable from a job that never fired.
-    generatedAt: "2026-09-26T10:17:20Z",
+    generatedAt: "2026-10-03T10:14:56Z",
 
     // --- Headline figures ---
-    portfolioValue: 1512948.96,   // net liquidation value
-    cash: -209902.91,
-    grossExposure: 5616620.20,    // long + short notional
-    leverage: 3.71,
+    portfolioValue: 1412151.11,   // net liquidation value
+    cash: 491413.26,
+    grossExposure: 5771541.03,    // long + short notional
+    leverage: 4.09,
 
     // --- Performance (time-weighted return, per IBKR) ---
     // The account's performance history begins at inception below;
     // there is no calendar-YTD figure available before that date.
     inceptionDate: "2026-04-27",
-    returnSinceInception: 92.30,
+    returnSinceInception: 79.49,
 
-    mtdReturn: -3.57,
-    mtdWindow: "31 Aug – 26 Sep 2026",
+    mtdReturn: -3.56,
+    mtdWindow: "30 Sep – 3 Oct 2026",
 
     // --- Primary benchmark (used in the homepage banner and stat blocks) ---
     benchmark: {
         name: "S&P 500",
         proxy: "SPY",
-        sinceInception: 8.04,    // 27 Apr close 713.94 -> 25 Sep 771.35
-        calendarYtd: 13.11,      // 31 Dec close 681.92 -> 771.35
+        sinceInception: 7.80,    // 27 Apr close 713.94 -> 2 Oct 769.64
+        calendarYtd: 12.86,      // 31 Dec close 681.92 -> 769.64
     },
 
     // --- Benchmark panel, all measured over the SAME window as the fund ---
     // ETF closes are used as index proxies. Every figure runs from the
     // account's inception date to `asOf`, so the comparison is like-for-like.
     benchmarks: [
-        { name: "S&P 500",      proxy: "SPY", sinceInception: 8.04 },   // 713.94 -> 771.35
-        { name: "Nasdaq 100",   proxy: "QQQ", sinceInception: 12.14 },  // 663.88 -> 744.50
-        { name: "Russell 2000", proxy: "IWM", sinceInception: 1.92 },   // 276.65 -> 281.97
+        { name: "S&P 500",      proxy: "SPY", sinceInception: 7.80 },   // 713.94 -> 769.64
+        { name: "Nasdaq 100",   proxy: "QQQ", sinceInception: 12.91 },  // 663.88 -> 749.58
+        { name: "Russell 2000", proxy: "IWM", sinceInception: 1.76 },   // 276.65 -> 281.52
     ],
 
     // --- Weekly cumulative return path, fund vs benchmarks ---
@@ -90,6 +90,7 @@ const FUND_DATA = {
         { date: "2026-09-11", fund: 103.72, spy: 7.05, qqq:  7.68 },
         { date: "2026-09-18", fund: 111.29, spy: 6.69, qqq:  8.67 },
         { date: "2026-09-25", fund:  92.41, spy: 8.04, qqq: 12.14 },
+        { date: "2026-10-02", fund:  78.34, spy: 7.80, qqq: 12.91 },
     ],
 
     // --- Ticker to company name ---
@@ -101,6 +102,7 @@ const FUND_DATA = {
     // table. Leave it blank rather than guessing — a wrong company name
     // against a real position is worse than an empty cell.
     tickerNames: {
+        AAOI:    "Applied Optoelectronics",
         ACN:     "Accenture",
         ADBE:    "Adobe",
         ALAB:    "Astera Labs",
@@ -137,6 +139,7 @@ const FUND_DATA = {
         LHX:     "L3Harris Technologies",
         LMT:     "Lockheed Martin",
         LULU:    "Lululemon Athletica",
+        MDB:     "MongoDB",
         META:    "Meta Platforms",
         MP:      "MP Materials",
         MSTR:    "Strategy",
@@ -182,50 +185,50 @@ const FUND_DATA = {
     attribution: {
         // Long book by sector, % of long equity exposure (cash excluded).
         sectorsLong: [
-            { name: "Technology",         pct: 22.45 },
-            { name: "Industrial",         pct: 20.45 },
-            { name: "Financials",         pct: 17.66 },
-            { name: "Utilities",          pct: 12.12 },
-            { name: "Healthcare",         pct: 7.81  },
-            { name: "Energy",             pct: 6.49  },
-            { name: "Basic Materials",    pct: 5.96  },
-            { name: "Consumer Non-Cyc",   pct: 3.67  },
-            { name: "Consumer Cyclicals", pct: 3.39  },
+            { name: "Industrial",          pct: 21.42 },
+            { name: "Technology",          pct: 21.02 },
+            { name: "Financials",          pct: 18.66 },
+            { name: "Utilities",           pct: 9.69 },
+            { name: "Healthcare",          pct: 8.34 },
+            { name: "Energy",              pct: 7.20 },
+            { name: "Basic Materials",     pct: 6.07 },
+            { name: "Consumer Non-Cyc",    pct: 3.89 },
+            { name: "Consumer Cyclicals",  pct: 3.70 },
         ],
 
         // Short book by sector, % of short equity exposure.
         sectorsShort: [
-            { name: "Technology",         pct: 98.47 },
-            { name: "Industrial",         pct: 1.53  },
+            { name: "Technology",          pct: 91.05 },
+            { name: "Industrial",          pct: 8.95 },
         ],
 
         // Net sector exposure (long minus short) as % of NAV — the actual
         // directional bet. A long-only sector pie hides that this book is
         // materially net SHORT technology while net long everything else.
         netTilt: [
-            { name: "Industrial",         pct: 47.67  },
-            { name: "Financials",         pct: 42.86  },
-            { name: "Utilities",          pct: 29.42  },
-            { name: "Healthcare",         pct: 18.96  },
-            { name: "Energy",             pct: 15.76  },
-            { name: "Basic Materials",    pct: 14.46  },
-            { name: "Consumer Non-Cyc",   pct: 8.92   },
-            { name: "Consumer Cyclicals", pct: 8.23   },
-            { name: "Technology",         pct: -72.04 },
+            { name: "Financials",          pct: 44.27 },
+            { name: "Industrial",          pct: 35.45 },
+            { name: "Utilities",           pct: 22.99 },
+            { name: "Healthcare",          pct: 19.78 },
+            { name: "Energy",              pct: 17.08 },
+            { name: "Basic Materials",     pct: 14.41 },
+            { name: "Consumer Non-Cyc",    pct: 9.23 },
+            { name: "Consumer Cyclicals",  pct: 8.79 },
+            { name: "Technology",          pct: -106.31 },
         ],
 
         // Five largest positions by absolute size, as % of NAV.
         topPositions: [
-            { ticker: "NET",  side: "Short", pctNav: 16.15 },
-            { ticker: "AMD",  side: "Short", pctNav: 14.18 },
-            { ticker: "CEG",  side: "Long",  pctNav: 12.18 },
-            { ticker: "ASTS", side: "Long",  pctNav: 11.85 },
-            { ticker: "BX",   side: "Long",  pctNav: 11.35 },
+            { ticker: "NET", side: "Short", pctNav: 17.30 },
+            { ticker: "AMD", side: "Short", pctNav: 15.25 },
+            { ticker: "CEG", side: "Long", pctNav: 12.76 },
+            { ticker: "ASTS", side: "Long", pctNav: 12.01 },
+            { ticker: "MXL", side: "Short", pctNav: 11.99 },
         ],
 
-        equityLongCount: 29,
-        equityShortCount: 12,
-        top5Concentration: 17.70,   // % of gross exposure
+        equityLongCount: 27,
+        equityShortCount: 16,
+        top5Concentration: 16.96,   // % of gross exposure
     },
 
     // --- Cached baselines: fixed history the refresh job must NOT re-fetch ---
@@ -247,21 +250,22 @@ const FUND_DATA = {
             "2026-06": 746.77,
             "2026-07": 747.03,
             "2026-08": 767.05,
+            "2026-09": 762.63,
         },
     },
 
     // --- Exposure, straight from get_pa_allocation (reconciles to NAV) ---
     exposure: {
-        long: 3672517.10,
-        short: -1944103.10,
-        net: 1728414.01,
-        gross: 5616620.20,
-        cash: -215465.05,
-        longPct: 242.74,
-        shortPct: -128.50,
-        netPct: 114.24,
-        grossPct: 371.24,
-        cashPct: -14.24,
+        long: 3349527.90,
+        short: -2422013.13,
+        net: 927514.78,
+        gross: 5771541.03,
+        cash: 484636.33,
+        longPct: 237.19,
+        shortPct: -171.51,
+        netPct: 65.68,
+        grossPct: 408.71,
+        cashPct: 34.32,
     },
 
     // --- Risk, derived from IBKR's own daily time-weighted return series ---
@@ -269,69 +273,70 @@ const FUND_DATA = {
     // computed on the `cps` series that IBKR itself reports. See AUTOUPDATE.md.
     risk: {
         maxDrawdown: -27.14,
-        annualizedVol: 90.43,
-        sharpe: 3.73,
+        annualizedVol: 88.81,
+        sharpe: 2.84,
         sharpeRiskFree: 4.0,
-        tradingDays: 111,
+        tradingDays: 116,
     },
 
-    // --- Open positions (50) ---
+    // --- Open positions (51) ---
     positions: {
         longs: [
-            { ticker: "CEG",  quantity: 700,   price: 263.27, pctNav: 12.18 },
-            { ticker: "ASTS", quantity: 2900,  price: 61.81,  pctNav: 11.85 },
-            { ticker: "BX",   quantity: 1450,  price: 118.42, pctNav: 11.35 },
-            { ticker: "UBER", quantity: 2350,  price: 69.66,  pctNav: 10.82 },
-            { ticker: "SPOT", quantity: 300,   price: 510.01, pctNav: 10.11 },
-            { ticker: "NVO",  quantity: 3750,  price: 38.80,  pctNav: 9.62  },
-            { ticker: "KKR",  quantity: 1500,  price: 96.67,  pctNav: 9.58  },
-            { ticker: "UNH",  quantity: 375,   price: 377.17, pctNav: 9.35  },
-            { ticker: "VST",  quantity: 1000,  price: 138.76, pctNav: 9.17  },
-            { ticker: "NOC",  quantity: 265,   price: 510.52, pctNav: 8.94  },
-            { ticker: "WMT",  quantity: 1250,  price: 107.98, pctNav: 8.92  },
-            { ticker: "LMT",  quantity: 245,   price: 519.56, pctNav: 8.41  },
-            { ticker: "FSLR", quantity: 700,   price: 178.01, pctNav: 8.24  },
-            { ticker: "COST", quantity: 135,   price: 922.77, pctNav: 8.23  },
-            { ticker: "TLN",  quantity: 400,   price: 304.43, pctNav: 8.05  },
-            { ticker: "APO",  quantity: 1000,  price: 121.69, pctNav: 8.04  },
-            { ticker: "KTOS", quantity: 2650,  price: 45.72,  pctNav: 8.01  },
-            { ticker: "LHX",  quantity: 500,   price: 237.69, pctNav: 7.86  },
-            { ticker: "CRCL", quantity: 1300,  price: 87.38,  pctNav: 7.51  },
-            { ticker: "VG",   quantity: 9000,  price: 12.62,  pctNav: 7.51  },
-            { ticker: "MP",   quantity: 2300,  price: 48.83,  pctNav: 7.42  },
-            { ticker: "OSCR", quantity: 3750,  price: 29.60,  pctNav: 7.34  },
-            { ticker: "JBLU", quantity: 25000, price: 4.40,   pctNav: 7.27  },
-            { ticker: "USAR", quantity: 7000,  price: 15.19,  pctNav: 7.03  },
-            { ticker: "ADBE", quantity: 450,   price: 235.50, pctNav: 7.00  },
-            { ticker: "ACN",  quantity: 600,   price: 176.11, pctNav: 6.98  },
-            { ticker: "IBKR", quantity: 1100,  price: 89.24,  pctNav: 6.49  },
-            { ticker: "AVAV", quantity: 500,   price: 153.04, pctNav: 5.06  },
-            { ticker: "XE",   quantity: 4010,  price: 15.13,  pctNav: 4.01  },
+            { ticker: "CEG", quantity: 700, price: 257.49, pctNav: 12.76 },
+            { ticker: "ASTS", quantity: 2900, price: 58.46, pctNav: 12.01 },
+            { ticker: "BX", quantity: 1450, price: 111.75, pctNav: 11.47 },
+            { ticker: "UBER", quantity: 2350, price: 68.01, pctNav: 11.32 },
+            { ticker: "SPOT", quantity: 300, price: 472.89, pctNav: 10.05 },
+            { ticker: "VST", quantity: 1000, price: 140.02, pctNav: 9.92 },
+            { ticker: "NVO", quantity: 3750, price: 37.32, pctNav: 9.91 },
+            { ticker: "UNH", quantity: 375, price: 371.90, pctNav: 9.88 },
+            { ticker: "KKR", quantity: 1500, price: 90.29, pctNav: 9.59 },
+            { ticker: "WMT", quantity: 1250, price: 104.26, pctNav: 9.23 },
+            { ticker: "NOC", quantity: 265, price: 479.69, pctNav: 9.00 },
+            { ticker: "COST", quantity: 135, price: 920.65, pctNav: 8.80 },
+            { ticker: "LMT", quantity: 245, price: 505.41, pctNav: 8.77 },
+            { ticker: "FSLR", quantity: 700, price: 174.92, pctNav: 8.67 },
+            { ticker: "VG", quantity: 9000, price: 13.19, pctNav: 8.41 },
+            { ticker: "LHX", quantity: 500, price: 236.60, pctNav: 8.38 },
+            { ticker: "OSCR", quantity: 3750, price: 30.94, pctNav: 8.22 },
+            { ticker: "KTOS", quantity: 2650, price: 43.13, pctNav: 8.09 },
+            { ticker: "APO", quantity: 1000, price: 114.02, pctNav: 8.07 },
+            { ticker: "MP", quantity: 2300, price: 46.97, pctNav: 7.65 },
+            { ticker: "ADBE", quantity: 450, price: 237.69, pctNav: 7.57 },
+            { ticker: "CRCL", quantity: 1300, price: 81.71, pctNav: 7.52 },
+            { ticker: "JBLU", quantity: 25000, price: 4.15, pctNav: 7.35 },
+            { ticker: "IBKR", quantity: 1100, price: 88.20, pctNav: 6.87 },
+            { ticker: "USAR", quantity: 7000, price: 13.59, pctNav: 6.74 },
+            { ticker: "AVAV", quantity: 500, price: 140.90, pctNav: 4.99 },
+            { ticker: "XE", quantity: 4010, price: 14.45, pctNav: 4.10 },
         ],
         shorts: [
-            { ticker: "NET",  quantity: -700,  price: 349.02,  pctNav: 16.15 },
-            { ticker: "AMD",  quantity: -340,  price: 630.92,  pctNav: 14.18 },
-            { ticker: "OKTA", quantity: -800,  price: 196.50,  pctNav: 10.39 },
-            { ticker: "DELL", quantity: -270,  price: 563.23,  pctNav: 10.05 },
-            { ticker: "CRWD", quantity: -600,  price: 252.13,  pctNav: 10.00 },
-            { ticker: "SNDK", quantity: -85,   price: 1772.04, pctNav: 9.96  },
-            { ticker: "MXL",  quantity: -1600, price: 93.84,   pctNav: 9.92  },
-            { ticker: "ARM",  quantity: -400,  price: 310.85,  pctNav: 8.22  },
-            { ticker: "ALAB", quantity: -300,  price: 364.62,  pctNav: 7.23  },
-            { ticker: "MU",   quantity: -100,  price: 1085.02, pctNav: 7.17  },
-            { ticker: "DDOG", quantity: -400,  price: 268.40,  pctNav: 7.10  },
-            { ticker: "HPE",  quantity: -1500, price: 62.94,   pctNav: 6.24  },
+            { ticker: "NET", quantity: -700, price: 349.07, pctNav: 17.30 },
+            { ticker: "AMD", quantity: -340, price: 633.25, pctNav: 15.25 },
+            { ticker: "MXL", quantity: -1600, price: 105.86, pctNav: 11.99 },
+            { ticker: "OKTA", quantity: -800, price: 211.49, pctNav: 11.98 },
+            { ticker: "CRWD", quantity: -600, price: 269.90, pctNav: 11.47 },
+            { ticker: "DELL", quantity: -270, price: 562.52, pctNav: 10.76 },
+            { ticker: "SNDK", quantity: -85, price: 1717.30, pctNav: 10.34 },
+            { ticker: "COHR", quantity: -400, price: 337.04, pctNav: 9.55 },
+            { ticker: "HPE", quantity: -1800, price: 69.67, pctNav: 8.88 },
+            { ticker: "SNOW", quantity: -350, price: 341.04, pctNav: 8.45 },
+            { ticker: "TWLO", quantity: -400, price: 294.58, pctNav: 8.34 },
+            { ticker: "AAOI", quantity: -1000, price: 115.01, pctNav: 8.14 },
+            { ticker: "DDOG", quantity: -400, price: 276.23, pctNav: 7.82 },
+            { ticker: "MU", quantity: -100, price: 1069.18, pctNav: 7.57 },
+            { ticker: "BE", quantity: -350, price: 289.15, pctNav: 7.17 },
+            { ticker: "NBIS", quantity: -350, price: 242.98, pctNav: 6.02 },
         ],
         options: [
-            { ticker: "MU",   contract: "Dec 18 '26 · 850 Put",  quantity: 1,   price: 27.13, pctNav: 0.18 },
-            { ticker: "SPCE", contract: "Oct 16 '26 · 3 Put",    quantity: 100, price: 0.13,  pctNav: 0.08 },
-            { ticker: "DELL", contract: "Dec 18 '26 · 320 Put",  quantity: 1,   price: 2.78,  pctNav: 0.02 },
-            { ticker: "INTC", contract: "Nov 20 '26 · 140 Call", quantity: -20, price: 8.33,  pctNav: 1.10 },
-            { ticker: "ARM",  contract: "Nov 20 '26 · 350 Call", quantity: -10, price: 23.68, pctNav: 1.57 },
-            { ticker: "XE",   contract: "Oct 16 '26 · 30 Put",   quantity: -20, price: 14.92, pctNav: 1.97 },
-            { ticker: "AMD",  contract: "Nov 20 '26 · 700 Call", quantity: -10, price: 33.44, pctNav: 2.21 },
-            { ticker: "DELL", contract: "Jan 15 '27 · 600 Call", quantity: -5,  price: 68.50, pctNav: 2.26 },
-            { ticker: "CRWD", contract: "Nov 20 '26 · 275 Call", quantity: -30, price: 13.60, pctNav: 2.70 },
+            { ticker: "MDB", contract: "Nov 6 '26 · 340 Call", quantity: 5, price: 35.50, pctNav: 1.26 },
+            { ticker: "MU", contract: "Dec 18 '26 · 850 Put", quantity: 1, price: 16.53, pctNav: 0.12 },
+            { ticker: "SPCE", contract: "Oct 16 '26 · 3 Put", quantity: 100, price: 0.15, pctNav: 0.10 },
+            { ticker: "DELL", contract: "Dec 18 '26 · 320 Put", quantity: 1, price: 2.13, pctNav: 0.02 },
+            { ticker: "AMD", contract: "Nov 20 '26 · 700 Call", quantity: -10, price: 27.10, pctNav: 1.92 },
+            { ticker: "XE", contract: "Oct 16 '26 · 30 Put", quantity: -20, price: 15.62, pctNav: 2.21 },
+            { ticker: "DELL", contract: "Jan 15 '27 · 600 Call", quantity: -5, price: 62.56, pctNav: 2.22 },
+            { ticker: "CRWD", contract: "Nov 20 '26 · 275 Call", quantity: -30, price: 19.16, pctNav: 4.07 },
         ],
     },
 };
