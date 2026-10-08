@@ -207,7 +207,44 @@ roughly 200KB and nothing published needs it.
    the map.** It renders as an empty cell, which is correct. A wrong company
    name sitting beside a real position is worse than a blank.
 
-10. Rewrite `js/fund-data.js` in full, preserving the existing structure and
+10. **Write the week's commentary into `weeklyNotes`, then refresh
+   `priorPrices`.** This is the "What happened" column on the weekly table.
+   It costs no extra API calls: the position pull from step 3 is compared
+   against the closing prices the previous run stored in `priorPrices`.
+
+   For every ticker present in both the current positions and `priorPrices`,
+   the move is `(price - priorPrices[ticker]) / priorPrices[ticker] * 100`.
+   Weight it by the position's `pctNav`, signed by side — a short that rose
+   detracted. Rank by that contribution and take the two or three names at
+   each end.
+
+   Write one or two sentences against the key of the week-ending date just
+   appended to `history`. Name the direction, the sizeable movers, and
+   whether the long or short book drove it. Keep it to the same register as
+   the rest of the page.
+
+   > `"2026-10-02": "Down 7.3% against a flat S&P. The long book did the
+   > damage — defence names gave back the prior week's gain, with LMT and NOC
+   > both off around 9% — while the shorts in semiconductors added a little
+   > back."`
+
+   **Say what moved, never why.** The account holds positions and prices; it
+   holds no news. Writing "as funding concerns weighed on defence" states a
+   cause that nothing in the data supports, and a fabricated cause on a page
+   whose whole claim is that the figures are real does more damage than a
+   plain sentence. If a week's move has no clear driver in the position data,
+   say that plainly or leave the key out.
+
+   Carry forward every existing key in `weeklyNotes` untouched — notes are
+   never recomputed once written. Then set `priorPrices` to `{ticker: price}`
+   for every current position, so next week has something to measure against.
+
+   **Never touch `js/notes.js`.** That file is hand-written through the editor
+   on the site and holds the investment theses and any hand-written weekly
+   note. A hand-written note overrides the generated one at render time; the
+   two files have one writer each and must stay that way.
+
+11. Rewrite `js/fund-data.js` in full, preserving the existing structure and
    the header comment. Round money to 2dp and percentages to 2dp.
 
    Always set `generatedAt` to the current UTC time in ISO-8601
@@ -217,7 +254,7 @@ roughly 200KB and nothing published needs it.
    job that silently never fired — and an unobservable scheduled job is an
    untrustworthy one.
 
-11. Commit and push to `main` **even if the only change is `generatedAt`**.
+12. Commit and push to `main` **even if the only change is `generatedAt`**.
    Do not skip the commit because "nothing meaningful changed" — the heartbeat
    is the point.
 
@@ -306,6 +343,8 @@ Critical correctness rules (also in AUTOUPDATE.md):
 - Take the LAST element of each `cps` array.
 - Do NOT publish `unrealized_pnl` or `daily_pnl` from positions. Unrealized P&L is intentionally excluded from this site.
 - Do NOT try to compute or publish realized P&L. IBKR exposes no cumulative figure and the site does not show one.
+- Write the week's note into `weeklyNotes` by comparing current position prices against `priorPrices` (see step 10). Say WHAT moved, never WHY — the account holds prices, not news, and a fabricated cause on this page is worse than a plain sentence. Then refresh `priorPrices` from the current positions.
+- NEVER edit `js/notes.js`. It is hand-written through the editor on the site. This job writes `js/fund-data.js` and nothing else.
 - Benchmark must be measured over the SAME window as the fund (from the account's inception date), not calendar YTD. Keep `benchmark.calendarYtd` as a separate reference field only.
 
 If any IBKR call fails, do NOT guess, interpolate, or leave stale numbers while changing the `asOf` date. Leave the file untouched and report the failure.

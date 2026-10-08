@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initRisk();
     initAttribution();
     initPositions();
+    initTheses();
     initFundPlot();
 });
 
@@ -522,8 +523,11 @@ function initWeeklyReturns() {
                 <td class="num diff-cell">
                     <span class="diff-chip ${cls(w.diff)}">${fmtPct(w.diff)}</span>
                 </td>
+                <td class="week-note" data-week="${w.date}"></td>
             </tr>`;
     }).join("");
+
+    renderWeeklyNotes(notesWeekly(), false);
 
     const note = el("weeklyFootnote");
     if (note) {
@@ -532,7 +536,9 @@ function initWeeklyReturns() {
             "Time-weighted weekly returns, net of deposits and withdrawals, each measured " +
             "Friday close to Friday close. The fund finished ahead of the S&P 500 in " +
             ahead + " of " + weeks.length + " weeks. A new row is added by every refresh, " +
-            "so the record lengthens rather than being restated.";
+            "so the record lengthens rather than being restated. What happened is drawn " +
+            "from the week's own position moves, and says what moved rather than why; " +
+            "where a week reads differently, the note is written by hand.";
     }
 }
 
@@ -866,3 +872,158 @@ function initFundPlot() {
     }
 
 }
+
+/* ============================================
+   Investment theses, and the weekly commentary
+
+   Both are rendered from whatever the editor is holding when it is open, and
+   from the published js/notes.js otherwise, so an edit shows on the page the
+   moment it is typed.
+   ============================================ */
+
+const notesData = () =>
+    window.AKV_NOTES || (typeof NOTES !== "undefined" ? NOTES : { theses: [], weekly: {} });
+
+const notesWeekly = () => notesData().weekly || {};
+
+const esc = (s) => String(s)
+    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+
+/* Paragraph breaks survive; nothing else in the body is markup. */
+function asParagraphs(text) {
+    return String(text || "").split(/\n{2,}/).map((p) => p.trim()).filter(Boolean)
+        .map((p) => `<p>${esc(p).replace(/\n/g, "<br>")}</p>`).join("");
+}
+
+const STANCES = ["long", "short", "watch"];
+const KINDS = ["sector", "stock"];
+
+function initTheses() {
+    const wrap = el("thesesList");
+    if (!wrap) return;
+    renderTheses(notesData().theses || [], false);
+    initThesesFilter();
+}
+
+/* Exposed on window so the editor can re-render after every keystroke. */
+window.renderTheses = function (theses, editing) {
+    const wrap = el("thesesList");
+    if (!wrap) return;
+
+    if (!theses.length) {
+        wrap.innerHTML = editing
+            ? `<p class="theses-empty">No theses yet. Use “Add thesis” above.</p>`
+            : `<p class="theses-empty">Theses are published here as positions are built.</p>`;
+        syncThesesCount(0);
+        return;
+    }
+
+    wrap.innerHTML = theses.map((t) => {
+        const ed = editing ? ' contenteditable="plaintext-only" spellcheck="true"' : "";
+        const stance = STANCES.includes(t.stance) ? t.stance : "watch";
+        return `
+        <article class="thesis" data-id="${esc(t.id)}" data-kind="${esc(t.kind)}">
+            <header class="thesis-head">
+                <h4 class="thesis-title"${ed} data-field="title">${esc(t.title)}</h4>
+                <p class="thesis-meta">
+                    <span class="thesis-subject"${ed} data-field="subject">${esc(t.subject)}</span>
+                    <span class="thesis-stance thesis-stance-${stance}">${esc(stance)}</span>
+                    <time datetime="${esc(t.updated)}">${esc(t.updated)}</time>
+                </p>
+            </header>
+            <div class="thesis-body"${ed} data-field="body">${
+                editing ? esc(t.body) : (asParagraphs(t.body) || '<p class="thesis-stub">No detail written yet.</p>')
+            }</div>
+            ${editing ? `
+            <div class="thesis-tools">
+                <label>Kind
+                    <select data-field="kind">${KINDS.map((k) =>
+                        `<option value="${k}"${k === t.kind ? " selected" : ""}>${k}</option>`).join("")}</select>
+                </label>
+                <label>Stance
+                    <select data-field="stance">${STANCES.map((v) =>
+                        `<option value="${v}"${v === stance ? " selected" : ""}>${v}</option>`).join("")}</select>
+                </label>
+                <button type="button" class="edit-btn edit-btn-danger" data-act="delete">Delete</button>
+            </div>` : ""}
+        </article>`;
+    }).join("");
+
+    syncThesesCount(theses.length);
+    if (editing) wireThesisEditing(wrap);
+    applyThesesFilter();
+};
+
+function syncThesesCount(n) {
+    const c = el("thesesCount");
+    if (c) c.textContent = String(n);
+}
+
+function wireThesisEditing(wrap) {
+    const E = window.AKV_EDIT;
+    if (!E) return;
+    wrap.querySelectorAll("[contenteditable]").forEach((node) => {
+        node.addEventListener("blur", () => {
+            const id = node.closest(".thesis").dataset.id;
+            E.fieldEdited(id, node.dataset.field, node.innerText.trim());
+        });
+    });
+    wrap.querySelectorAll("select[data-field]").forEach((sel) => {
+        sel.addEventListener("change", () => {
+            const id = sel.closest(".thesis").dataset.id;
+            E.fieldEdited(id, sel.dataset.field, sel.value);
+        });
+    });
+    wrap.querySelectorAll('[data-act="delete"]').forEach((btn) => {
+        btn.addEventListener("click", () => E.deleteThesis(btn.closest(".thesis").dataset.id));
+    });
+}
+
+function initThesesFilter() {
+    const bar = el("thesesFilter");
+    if (!bar) return;
+    bar.querySelectorAll(".legend-item").forEach((btn) => {
+        btn.addEventListener("click", () => {
+            bar.querySelectorAll(".legend-item").forEach((b) => {
+                b.classList.remove("active");
+                b.setAttribute("aria-pressed", "false");
+            });
+            btn.classList.add("active");
+            btn.setAttribute("aria-pressed", "true");
+            applyThesesFilter();
+        });
+    });
+}
+
+function applyThesesFilter() {
+    const active = document.querySelector("#thesesFilter .legend-item.active");
+    const want = active ? active.dataset.kind : "all";
+    document.querySelectorAll("#thesesList .thesis").forEach((card) => {
+        card.hidden = !(want === "all" || card.dataset.kind === want);
+    });
+}
+
+/* ---- The week's commentary ----
+   The generated note says what moved; an entry in notes.js replaces it with
+   whatever was written by hand. */
+window.renderWeeklyNotes = function (weekly, editing) {
+    const auto = (typeof FUND_DATA !== "undefined" && FUND_DATA.weeklyNotes) || {};
+    document.querySelectorAll("#weeklyBody .week-note").forEach((cell) => {
+        const date = cell.dataset.week;
+        const written = (weekly && weekly[date]) || "";
+        const text = written || auto[date] || "";
+
+        if (editing) {
+            cell.innerHTML = `<textarea class="week-note-input" rows="2"
+                placeholder="What happened this week?">${esc(text)}</textarea>`;
+            const ta = cell.firstElementChild;
+            ta.addEventListener("blur", () => window.AKV_EDIT.weeklyEdited(date, ta.value));
+            return;
+        }
+
+        cell.textContent = text || "—";
+        cell.classList.toggle("is-empty", !text);
+        cell.classList.toggle("is-written", !!written);
+    });
+};

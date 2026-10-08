@@ -113,6 +113,7 @@
                                 <th class="num">Fund</th>
                                 <th class="num">S&amp;P 500</th>
                                 <th class="num">Difference</th>
+                                <th class="week-note-head">What happened</th>
                             </tr>
                         </thead>
                         <tbody id="weeklyBody"></tbody>
@@ -181,6 +182,18 @@
                 <p class="perf-footnote" id="attrFootnote">—</p>
             </div>
 
+            <!-- Investment theses -->
+            <div class="perf-block" id="theses">
+                <h2 class="tab-section-label"><span class="block-note"><span id="thesesCount">0</span> written</span><span>Investment theses</span></h2>
+                <div class="positions-filter" id="thesesFilter">
+                    <button class="legend-item active" type="button" data-kind="all" aria-pressed="true">All</button>
+                    <button class="legend-item" type="button" data-kind="sector" aria-pressed="false">Sectors</button>
+                    <button class="legend-item" type="button" data-kind="stock" aria-pressed="false">Stocks</button>
+                </div>
+                <div class="theses-list" id="thesesList"></div>
+                <p class="perf-footnote">Written by hand rather than generated, and kept separate from the figures above. A thesis is the reasoning a position was taken on; it is not a recommendation, and it is not revised when the position moves against it.</p>
+            </div>
+
             <!-- Open Positions -->
             <div class="perf-block">
                 <h2 class="tab-section-label"><span class="block-note"><span id="positionCount">—</span> held</span><span>Every open position</span></h2>
@@ -207,6 +220,8 @@
     </footer>
 
     <script src="../js/fund-data.js"></script>
+    <script src="../js/notes.js"></script>
     <script src="../js/app.js"></script>
+    <script src="../js/editor.js"></script>
 </body>
 </html>
