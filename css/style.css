@@ -228,6 +228,10 @@ h1, h2, h3, h4 {
     text-wrap: balance;
 }
 
+/* The hidden attribute has to beat a display rule set by a class, or an
+   element told to hide stays on screen. */
+[hidden] { display: none !important; }
+
 /* A visible focus ring everywhere, keyed to the accent so it reads as
    deliberate rather than as the browser default. */
 :focus-visible {

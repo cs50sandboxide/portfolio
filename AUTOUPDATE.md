@@ -218,31 +218,32 @@ roughly 200KB and nothing published needs it.
    detracted. Rank by that contribution and take the two or three names at
    each end.
 
-   Write one or two sentences against the key of the week-ending date just
-   appended to `history`. Name the direction, the sizeable movers, and
-   whether the long or short book drove it. Keep it to the same register as
-   the rest of the page.
+   **Tickers and numbers only.** One or two short sentences against the key of
+   the week-ending date just appended to `history`. Name the fund's move, the
+   benchmark's move, and the tickers that drove it with their percentage
+   moves. Nothing else.
 
-   > `"2026-10-02": "Down 7.3% against a flat S&P. The long book did the
-   > damage — defence names gave back the prior week's gain, with LMT and NOC
-   > both off around 9% — while the shorts in semiconductors added a little
-   > back."`
+   > `"2026-10-02": "Down 7.3%, S&P flat. LMT −9.4% and NOC −8.8% led the
+   > drag; the MU and AMD shorts added back around a point."`
 
-   **Say what moved, never why.** The account holds positions and prices; it
-   holds no news. Writing "as funding concerns weighed on defence" states a
-   cause that nothing in the data supports, and a fabricated cause on a page
-   whose whole claim is that the figures are real does more damage than a
-   plain sentence. If a week's move has no clear driver in the position data,
-   say that plainly or leave the key out.
+   Write no causes. The account holds positions and prices; it holds no news.
+   "as funding concerns weighed on defence" states a cause that nothing in the
+   data supports, and a fabricated cause on a page whose whole claim is that
+   the figures are real does more damage than a plain sentence. No sector
+   narrative, no market commentary, no reason — the move and the tickers.
+
+   If no position moved enough to explain the week, say so in those terms
+   ("Down 1.1% on no single driver; nothing moved more than 3%.") rather than
+   reaching for one.
 
    Carry forward every existing key in `weeklyNotes` untouched — notes are
    never recomputed once written. Then set `priorPrices` to `{ticker: price}`
    for every current position, so next week has something to measure against.
 
-   **Never touch `js/notes.js`.** That file is hand-written through the editor
-   on the site and holds the investment theses and any hand-written weekly
-   note. A hand-written note overrides the generated one at render time; the
-   two files have one writer each and must stay that way.
+   **Never touch `js/notes.js`.** That file is hand-written and holds the
+   investment theses plus any hand-written weekly note, which overrides the
+   generated one at render time. The two files have one writer each and must
+   stay that way.
 
 11. Rewrite `js/fund-data.js` in full, preserving the existing structure and
    the header comment. Round money to 2dp and percentages to 2dp.
