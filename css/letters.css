@@ -1,0 +1,325 @@
+/* ============================================
+   Investor letters
+
+   A letter is a document, not a landing page: one column, a long measure,
+   and nothing in the margin competing with the prose. The index is a
+   publication list — date, title, standfirst — the way a research page reads.
+   ============================================ */
+
+/* ---- Index ---- */
+.letters-index-section {
+    padding-top: 72px;
+}
+
+.letter-index {
+    list-style: none;
+    max-width: 820px;
+    margin: 0 0 48px;
+    border-top: 1px solid var(--ink);
+}
+
+.letter-card {
+    padding: 28px 0 32px;
+    border-bottom: 1px solid var(--rule);
+}
+
+.letter-card-date {
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    margin-bottom: 6px;
+}
+
+.letter-card-title {
+    font-family: var(--font-serif);
+    font-size: 1.6rem;
+    font-weight: 500;
+    letter-spacing: -0.014em;
+    line-height: 1.22;
+    margin-bottom: 10px;
+}
+
+.letter-card-title a {
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 4px;
+    text-decoration-color: var(--rule-strong);
+    transition: text-decoration-color 0.2s, color 0.2s;
+}
+
+.letter-card-title a:hover {
+    color: var(--plot);
+    text-decoration-color: currentColor;
+}
+
+.letter-card-standfirst {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.66;
+    color: var(--ink);
+    max-width: 68ch;
+    margin-bottom: 14px;
+}
+
+.letter-card-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 18px;
+    margin-bottom: 16px;
+    font-size: 0.875rem;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+}
+
+.letter-card-meta span + span::before {
+    content: "";
+    display: inline-block;
+    width: 1px;
+    height: 0.85em;
+    margin-right: 18px;
+    vertical-align: -0.05em;
+    background: var(--rule-strong);
+}
+
+/* ---- The letter ---- */
+.letter-hero .page-hero-sub {
+    font-size: 1.15rem;
+}
+
+.letter-section-wrap {
+    padding-top: 56px;
+}
+
+.letter-contents {
+    max-width: 760px;
+    margin: 0 0 64px;
+    padding: 22px 0 24px 24px;
+    border-left: 2px solid var(--plot);
+}
+
+.letter-contents h2 {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin-bottom: 12px;
+}
+
+.letter-contents ol {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 9px;
+}
+
+.letter-contents a {
+    font-family: var(--font-serif);
+    font-size: 1rem;
+    line-height: 1.55;
+    color: var(--ink-soft);
+    transition: color 0.2s;
+}
+
+.letter-contents a:hover { color: var(--plot); }
+.letter-contents strong { color: var(--ink); font-weight: 600; }
+
+/* The prose column. A letter is read, so the measure is the priority. */
+.letter-body {
+    max-width: 72ch;
+}
+
+.letter-body p {
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.72;
+    color: var(--ink);
+    margin-bottom: 1.1em;
+}
+
+.letter-body h2.letter-section {
+    font-family: var(--font-serif);
+    font-size: clamp(1.7rem, 3vw, 2.1rem);
+    font-weight: 500;
+    letter-spacing: -0.016em;
+    line-height: 1.2;
+    color: var(--ink);
+    margin: 72px 0 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--ink);
+}
+
+.letter-body h2.letter-section:first-child { margin-top: 0; }
+
+.letter-body h3 {
+    font-family: var(--font-serif);
+    font-size: 1.42rem;
+    font-weight: 500;
+    letter-spacing: -0.012em;
+    color: var(--ink);
+    margin: 48px 0 14px;
+}
+
+.letter-body h4 {
+    font-family: var(--font-sans);
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 32px 0 10px;
+}
+
+.letter-list {
+    list-style: none;
+    margin: 0 0 1.3em;
+    padding: 0;
+}
+
+.letter-list li {
+    position: relative;
+    font-family: var(--font-serif);
+    font-size: 1.0625rem;
+    line-height: 1.68;
+    color: var(--ink);
+    padding-left: 22px;
+    margin-bottom: 0.7em;
+}
+
+.letter-list li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 0.72em;
+    width: 5px;
+    height: 1px;
+    background: var(--rule-strong);
+}
+
+/* ---- Exhibits ----
+   Tables break out of the prose measure: a letter's exhibits are wider than
+   its text, as they are on paper. */
+.exhibit-caption {
+    font-family: var(--font-sans) !important;
+    font-size: 0.9375rem !important;
+    font-weight: 600;
+    color: var(--ink);
+    margin: 36px 0 10px !important;
+}
+
+.exhibit-wrap {
+    width: min(1100px, calc(100vw - 80px));
+    overflow-x: auto;
+    margin-bottom: 10px;
+    border-top: 1px solid var(--ink);
+}
+
+.exhibit-table {
+    width: 100%;
+    min-width: 580px;
+    border-collapse: collapse;
+}
+
+.exhibit-table th {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    text-align: left;
+    padding: 10px 20px 10px 0;
+    border-bottom: 1px solid var(--rule);
+    white-space: nowrap;
+}
+
+.exhibit-table td {
+    font-family: var(--font-sans);
+    font-size: 0.9375rem;
+    color: var(--ink);
+    text-align: left;
+    padding: 11px 20px 11px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: top;
+}
+
+.exhibit-table th.num,
+.exhibit-table td.num {
+    text-align: right;
+    padding-right: 28px;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+}
+
+.exhibit-table tr > *:last-child { padding-right: 0; }
+
+.exhibit-source {
+    font-family: var(--font-sans) !important;
+    font-size: 0.8125rem !important;
+    line-height: 1.5 !important;
+    color: var(--ink-soft);
+    margin: 0 0 2.2em !important;
+    max-width: 90ch;
+}
+
+/* ---- Footnotes ---- */
+.fnref {
+    font-size: 0.68em;
+    line-height: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.fnref a {
+    color: var(--plot);
+    padding: 0 1px;
+    text-decoration: none;
+}
+
+.fnref a:hover { text-decoration: underline; }
+
+.footnotes {
+    max-width: 92ch;
+    margin: 0;
+    padding-left: 2.4em;
+    counter-reset: none;
+}
+
+.footnotes li {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--ink-soft);
+    margin-bottom: 0.65em;
+    padding-left: 0.4em;
+    overflow-wrap: anywhere;
+}
+
+.footnotes li:target {
+    color: var(--ink);
+}
+
+.fnback {
+    color: var(--plot);
+    text-decoration: none;
+    padding-left: 2px;
+}
+
+.fnback:hover { text-decoration: underline; }
+
+/* A footnote jumped to from the text has to clear the fixed navigation. */
+.footnotes li,
+.letter-body [id] { scroll-margin-top: 104px; }
+
+@media (max-width: 860px) {
+    .letter-body { max-width: none; }
+    .exhibit-wrap { width: 100%; }
+    .letter-contents { padding-left: 18px; }
+    .letter-body h2.letter-section { margin-top: 56px; }
+    .footnotes { padding-left: 1.6em; }
+}
+
+/* ---- Print ----
+   Investors print letters. Give them a clean page rather than the website. */
+@media print {
+    #navbar, .mobile-menu, .footer, #loader, .theme-toggle { display: none !important; }
+    .letter-body, .exhibit-wrap { max-width: none; width: auto; }
+    .letter-body p, .letter-list li { font-size: 10.5pt; line-height: 1.5; }
+    .letter-body h2.letter-section { break-after: avoid; }
+    .exhibit-wrap, .exhibit-table { break-inside: avoid; }
+    .section, .page-hero { padding: 0 0 18pt; }
+    a { text-decoration: none; color: inherit; }
+}
