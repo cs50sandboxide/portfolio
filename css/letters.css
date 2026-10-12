@@ -90,6 +90,30 @@
     padding-top: 56px;
 }
 
+/* The précis. It runs first and is set larger than the body, so its position
+   and its size say what it is without a label standing over it. */
+.letter-abstract {
+    max-width: 68ch;
+    margin: 0 0 40px;
+    padding-bottom: 32px;
+    border-bottom: 1px solid var(--rule);
+}
+
+.letter-abstract p {
+    font-family: var(--font-serif);
+    font-size: 1.22rem;
+    line-height: 1.6;
+    color: var(--ink);
+    margin-bottom: 0.8em;
+}
+
+.letter-abstract p:last-child { margin-bottom: 0; }
+
+@media (max-width: 860px) {
+    .letter-abstract { max-width: none; }
+    .letter-abstract p { font-size: 1.125rem; }
+}
+
 .letter-contents {
     max-width: 760px;
     margin: 0 0 64px;
