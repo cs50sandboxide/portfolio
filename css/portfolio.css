@@ -1025,34 +1025,3 @@
 .weekly-table td:nth-child(4) { width: 15%; }
 .weekly-table th:nth-child(5),
 .weekly-table td:nth-child(5) { width: 50%; }
-
-/* ---- Peer hedge fund levels on the growth chart ----
-   Faint until this fund's line passes them, then drawn in, with a ring where
-   it crossed. Transitions only on opacity, so passing reads as a change of
-   state rather than as movement. */
-.peer .peer-line { opacity: 0.28; transition: opacity 0.5s; }
-.peer .peer-lbl  { opacity: 0.45; transition: opacity 0.5s; }
-.peer .peer-dot  { opacity: 0;    transition: opacity 0.35s; }
-
-.peer.is-passed .peer-line { opacity: 0.7; }
-.peer.is-passed .peer-lbl  { opacity: 1; }
-.peer.is-passed .peer-dot  { opacity: 1; }
-
-.peer-key {
-    margin-top: 4px;
-}
-
-.peer-swatch {
-    width: 14px;
-    height: 0;
-    border-top: 1.5px dotted var(--ink-soft);
-    flex-shrink: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .peer .peer-line, .peer .peer-lbl, .peer .peer-dot { transition: none; }
-}
-
-/* Leaders follow their label's state: faint until its level is passed. */
-.peer .peer-leader { opacity: 0.45; transition: opacity 0.5s; }
-.peer.is-passed .peer-leader { opacity: 1; }

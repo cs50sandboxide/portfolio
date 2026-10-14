@@ -28,7 +28,6 @@ const el = (id) => document.getElementById(id);
    on the page without a single thing being re-rendered. */
 const PALETTE = {
     plot: "var(--plot)",
-    pad:  "var(--pad-raised)",
     ink:  "var(--ink)",
     soft: "var(--ink-soft)",
     gain: "var(--green)",
@@ -95,11 +94,6 @@ function initTheme() {
     systemDark.addEventListener("change", () => {
         if (!document.documentElement.dataset.theme) label();
     });
-}
-
-function fmtShortDate(iso) {
-    const [, m, d] = iso.split("-").map(Number);
-    return d + " " + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1];
 }
 
 /* ---- Loader ---- */
@@ -291,15 +285,7 @@ function initBenchmark() {
         dateRange + ". The fund line is pinned to Friday closes, so its final point can sit " +
         "slightly below the headline return above, which uses the most recent mark. One point " +
         "is added per weekly refresh — the series grows with the track record rather than " +
-        "being recalculated." +
-        (peerFunds().length
-            ? " The dotted levels show what $1,000 would be on each peer fund\u2019s 2026 return " +
-              "from 1 January, not over this fund\u2019s window from 24 April: none of them " +
-              "publishes returns for that period, so they are there for scale rather than as a " +
-              "like-for-like comparison, and a ring marks where this fund last rose above each. " +
-              "Pershing Square Holdings\u2019 figure is its own published NAV; the others are as " +
-              "reported in the press by people familiar with each fund, and are not official."
-            : "");
+        "being recalculated.";
 
     initChartToggle();
 }
@@ -314,10 +300,7 @@ const SERIES = [
 ];
 
 const GROWTH_BASE = 1000;
-// Long enough to watch the line pass each peer level rather than flash past it.
-const GROWTH_MS = 6500;
-
-const peerFunds = () => (typeof PEERS !== "undefined" && PEERS.funds) ? PEERS.funds : [];
+const GROWTH_MS = 3500;
 
 function renderGrowth() {
     const wrap = el("benchmarkGrowth");
@@ -333,19 +316,14 @@ function renderGrowth() {
     // so the axis labels survive the scale-down.
     const narrow = window.innerWidth < 700;
     renderGrowth.narrow = narrow;
-    const peers = peerFunds();
-    // The right margin carries the peer names on a laptop; on a phone it
-    // carries only their returns, and the key underneath names them.
     const W = narrow ? 400 : 860, H = narrow ? 330 : 380;
     const M = narrow
-        ? { top: 22, right: peers.length ? 70 : 62, bottom: 38, left: 52 }
-        : { top: 30, right: peers.length ? 156 : 96, bottom: 44, left: 66 };
+        ? { top: 22, right: 62, bottom: 38, left: 52 }
+        : { top: 30, right: 96, bottom: 44, left: 66 };
     const iw = W - M.left - M.right, ih = H - M.top - M.bottom;
     const val = (r, k) => GROWTH_BASE * (1 + r[k] / 100);
-    const level = (pf) => GROWTH_BASE * (1 + pf.ytd / 100);
 
-    const all = rows.flatMap((r) => SERIES.map((sr) => val(r, sr.key)))
-        .concat(peers.map(level));
+    const all = rows.flatMap((r) => SERIES.map((sr) => val(r, sr.key)));
     let lo = Math.min(...all), hi = Math.max(...all);
     const pad = (hi - lo) * 0.12 || 1;
     lo -= pad; hi += pad;
@@ -389,36 +367,6 @@ function renderGrowth() {
                       stroke-linejoin="round" stroke-linecap="round"/>`;
     }).join("");
 
-    // --- Peer levels ---
-    // Each is a faint dotted line at what $1,000 would be on that fund's 2026
-    // return. The milestone is the point the fund last moved above it and
-    // stayed: found from the weekly data, so the animation knows where along
-    // the line to mark it.
-    const fundVals = rows.map((r) => val(r, "fund"));
-    const crossingX = (L) => {
-        let idx = -1;
-        for (let i = 1; i < fundVals.length; i++) {
-            if (fundVals[i - 1] < L && fundVals[i] >= L) idx = i;
-        }
-        if (idx === -1) return fundVals.every((v) => v >= L) ? x(0) : null;
-        const a = fundVals[idx - 1], b = fundVals[idx];
-        return x(idx - 1) + ((L - a) / (b - a)) * (x(idx) - x(idx - 1));
-    };
-    const peerSvg = peers.map((pf, k) => {
-        const L = level(pf), ly = y(L), cx = crossingX(L);
-        const pct = (pf.ytd >= 0 ? "+" : "\u2212") + Math.abs(pf.ytd).toFixed(1) + "%";
-        const text = narrow ? pct : `${pf.short} ${pct}`;
-        return `
-        <g class="peer" data-k="${k}" data-cross="${cx == null ? "" : cx.toFixed(1)}">
-            <line class="peer-line" x1="${M.left}" y1="${ly.toFixed(1)}" x2="${W - M.right}" y2="${ly.toFixed(1)}"
-                  style="stroke:${PALETTE.soft}" stroke-width="1" stroke-dasharray="1.5 3"/>
-            ${cx == null ? "" : `<circle class="peer-dot" cx="${cx.toFixed(1)}" cy="${ly.toFixed(1)}" r="3"
-                  style="fill:${PALETTE.pad};stroke:${PALETTE.plot}" stroke-width="1.6"/>`}
-            <text class="peer-lbl" x="${W - M.right + 10}" y="${(ly + 3.5).toFixed(1)}" data-y0="${(ly + 3.5).toFixed(1)}" font-size="11"
-                  style="fill:${PALETTE.soft}" font-family="${PALETTE.face}">${text}</text>
-        </g>`;
-    }).join("");
-
     const dots = SERIES.map((sr) => `
         <circle class="growth-dot" data-key="${sr.key}" r="3.5" style="fill:${sr.color}" opacity="0"/>
         <text class="growth-val" data-key="${sr.key}" font-size="12" font-weight="600"
@@ -426,21 +374,15 @@ function renderGrowth() {
 
     wrap.innerHTML = `
         <svg viewBox="0 0 ${W} ${H}" class="growth-svg" role="img"
-             aria-label="Growth of $1,000 since inception: this fund versus the S&amp;P 500 and Nasdaq 100, with peer hedge funds\u2019 2026 year-to-date returns marked as reference levels">
-            ${grid}${baseLine}${peerSvg}${xLabels}${paths}${dots}
+             aria-label="Growth of $1,000 since inception: this fund versus the S&amp;P 500 and Nasdaq 100">
+            ${grid}${baseLine}${xLabels}${paths}${dots}
         </svg>
         <div class="path-key">
             ${SERIES.map((sr) => `<span class="path-key-item"><span class="path-swatch" aria-hidden="true" style="background:${sr.color};height:${sr.width}px"></span>${sr.label}</span>`).join("")}
-        </div>
-        ${peers.length ? `<div class="path-key peer-key">
-            ${peers.map((pf) => `<span class="path-key-item"><span class="peer-swatch" aria-hidden="true"></span>${pf.name} ${pf.ytd >= 0 ? "+" : "\u2212"}${Math.abs(pf.ytd).toFixed(1)}%, 2026 to ${fmtShortDate(pf.asOf)}</span>`).join("")}
-        </div>` : ""}`;
+        </div>`;
 
     // --- animation ---
     const svg = wrap.querySelector("svg");
-    const peerGroups = [...svg.querySelectorAll(".peer")];
-    deCollide(svg, W, M);   // peer names are spaced before the line starts drawing
-    const setPassed = (g, on) => g.classList.toggle("is-passed", on);
     const lines = [...svg.querySelectorAll(".growth-line")];
     const labels = [...svg.querySelectorAll(".growth-xlab")];
     lines.forEach((p) => {
@@ -458,9 +400,7 @@ function renderGrowth() {
         if (started) return;
         started = true;
         const t0 = performance.now();
-        // Even through the middle, easing only at either end, so the line
-        // keeps a steady pace past the milestones instead of rushing early.
-        const ease = (t) => t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        const ease = (t) => 1 - Math.pow(1 - t, 3);   // settles rather than stops dead
 
         const frame = (now) => {
             const t = Math.min(1, (now - t0) / GROWTH_MS);
@@ -487,15 +427,6 @@ function renderGrowth() {
                 lbl.setAttribute("opacity", e > 0.02 ? "1" : "0");
                 const shown = GROWTH_BASE + (finals[sr.key] - GROWTH_BASE) * e;
                 lbl.textContent = "$" + Math.round(shown).toLocaleString();
-
-                // A peer level is passed once the tip of the fund's own line
-                // reaches the point where it last rose through that level.
-                if (sr.key === "fund") {
-                    peerGroups.forEach((g) => {
-                        const c = g.dataset.cross;
-                        setPassed(g, c !== "" && pt.x >= +c - 0.5);
-                    });
-                }
             });
 
             if (t < 1) requestAnimationFrame(frame);
@@ -512,73 +443,22 @@ function renderGrowth() {
     } else {
         run();
     }
-    wrap._replayGrowth = () => {
-        started = false;
-        lines.forEach((p) => { p.style.strokeDashoffset = p._len; });
-        peerGroups.forEach((g) => setPassed(g, false));
-        // Back to the opening state: the end-value labels are hidden again, so
-        // the peer names are re-spaced against each other alone, and the leaders
-        // drawn for the finished chart are cleared rather than left pointing at
-        // labels that are about to move.
-        svg.querySelectorAll(".growth-val, .growth-dot").forEach((n) => n.setAttribute("opacity", "0"));
-        deCollide(svg, W, M);
-        run();
-    };
+    wrap._replayGrowth = () => { started = false; lines.forEach((p) => { p.style.strokeDashoffset = p._len; }); run(); };
 }
 
-/* The right margin carries the end value of each line and the name of each
-   peer level, and on this book they bunch: six labels inside about fifty
-   pixels. Overlapping labels are merged into groups and each group is centred
-   on where its members want to be, so a label moves as little as it can in
-   either direction rather than the whole stack being pushed downwards. Any
-   label that had to move gets a short leader back to its own line, so it can
-   never be read against the wrong level. */
+/* Two benchmarks routinely finish within a few dollars of each other; nudge
+   their end labels apart so one does not print on top of the other. */
 function deCollide(svg, W, M) {
-    const GAP = 14;
-    svg.querySelectorAll(".lbl-leader").forEach((n) => n.remove());
-
-    const items = [...svg.querySelectorAll(".growth-val, .peer-lbl")]
-        .filter((n) => n.getAttribute("opacity") !== "0" || n.classList.contains("peer-lbl"))
-        .map((n) => {
-            const want = n.dataset.y0 ? +n.dataset.y0 : parseFloat(n.getAttribute("y"));
-            return { n, want };
-        })
-        .sort((a, b) => a.want - b.want);
-    if (!items.length) return;
-
-    let groups = items.map((it) => ({ members: [it], top: it.want }));
-    const place = (g) => {
-        const mean = g.members.reduce((s, m) => s + m.want, 0) / g.members.length;
-        g.top = mean - (GAP * (g.members.length - 1)) / 2;
-    };
-    for (let merged = true; merged; ) {
-        merged = false;
-        groups.forEach(place);
-        for (let i = 1; i < groups.length; i++) {
-            const prev = groups[i - 1], cur = groups[i];
-            if (cur.top < prev.top + GAP * prev.members.length) {
-                prev.members.push(...cur.members);
-                groups.splice(i, 1);
-                merged = true;
-                break;
-            }
+    const lbls = [...svg.querySelectorAll(".growth-val")]
+        .map((n) => ({ n, y: parseFloat(n.getAttribute("y")) }))
+        .sort((a, b) => a.y - b.y);
+    const GAP = 15;
+    for (let i = 1; i < lbls.length; i++) {
+        if (lbls[i].y - lbls[i - 1].y < GAP) {
+            lbls[i].y = lbls[i - 1].y + GAP;
+            lbls[i].n.setAttribute("y", lbls[i].y);
         }
     }
-
-    const lx = W - M.right;
-    groups.forEach((g) => g.members.forEach((m, k) => {
-        const at = g.top + GAP * k;
-        m.n.setAttribute("y", at.toFixed(1));
-        if (Math.abs(at - m.want) > 1.5) {
-            const ln = document.createElementNS("http://www.w3.org/2000/svg", "line");
-            ln.setAttribute("class", "lbl-leader" + (m.n.closest(".peer") ? " peer-leader" : ""));
-            ln.setAttribute("x1", lx + 1);  ln.setAttribute("y1", (m.want - 3.5).toFixed(1));
-            ln.setAttribute("x2", lx + 7);  ln.setAttribute("y2", (at - 3.5).toFixed(1));
-            ln.setAttribute("stroke-width", "1");
-            ln.style.stroke = "var(--ink-soft)";
-            (m.n.closest(".peer") || svg).appendChild(ln);
-        }
-    }));
 }
 
 function initChartToggle() {
