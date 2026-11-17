@@ -32,6 +32,9 @@ HEADER = """/* ============================================
    contributions are each position's share of the book's volatility and sum
    to 100%, with hedges negative. Correlations are pairwise on overlapping
    days, shrunk 25% toward the average and repaired to a valid matrix.
+
+   `history` holds one point per published week: that Saturday's book,
+   measured on prices up to that Saturday only.
    ============================================ */
 
 """
@@ -51,10 +54,29 @@ def read_book():
     return d["asOf"], book
 
 
+def read_existing():
+    """The current js/risk-data.js as a dict, or None. Carries the history
+    forward from one week to the next."""
+    if not os.path.exists(OUT):
+        return None
+    js = ("const fs=require('fs'),vm=require('vm');const c={};vm.createContext(c);"
+          "vm.runInContext(fs.readFileSync(process.argv[1],'utf8')+';globalThis.__R=RISK_DATA;',c);"
+          "process.stdout.write(JSON.stringify(c.__R));")
+    r = subprocess.run(["node", "-e", js, OUT], capture_output=True, text=True)
+    return json.loads(r.stdout) if r.returncode == 0 and r.stdout else None
+
+
+def write(data):
+    with open(OUT, "w", encoding="utf-8") as fh:
+        fh.write(HEADER + "const RISK_DATA = " + json.dumps(data, indent=4) + ";\n")
+
+
 def main():
     as_of, book = read_book()
     try:
-        risk = risk_engine.analyse_book(book)
+        # Measured as at the book's own date, the same way every history point
+        # is, so the headline and the chart's latest point always agree.
+        risk = risk_engine.analyse_book(book, end=as_of)
     except RuntimeError as e:
         print(f"risk refresh failed, js/risk-data.js left unchanged: {e}", file=sys.stderr)
         return 1
@@ -63,11 +85,17 @@ def main():
               file=sys.stderr)
         return 1
 
+    # History: one point per published week, carried forward and never
+    # recomputed. A re-run in the same week replaces that week's point.
+    prev = read_existing() or {}
+    history = [h for h in prev.get("history", []) if h["date"] != as_of]
+    history.append(risk_engine.history_point(as_of, book, risk))
+    history.sort(key=lambda h: h["date"])
+
     risk = {"bookAsOf": as_of,
             "generatedAt": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-            **risk}
-    with open(OUT, "w", encoding="utf-8") as fh:
-        fh.write(HEADER + "const RISK_DATA = " + json.dumps(risk, indent=4) + ";\n")
+            **risk, "history": history}
+    write(risk)
 
     p = risk["portfolio"]
     print(f"book {as_of}: {p['positions']} positions, vol {p['vol']}%, "

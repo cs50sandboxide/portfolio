@@ -267,6 +267,8 @@ roughly 200KB and nothing published needs it.
    `js/risk-data.js`: portfolio volatility, each position's share of risk,
    diversification, beta and the most correlated pairs. It makes no IBKR
    calls and costs nothing in tokens — the prices never pass through you.
+   It also adds this week's point to the risk history in the same file,
+   carrying every earlier week forward untouched.
 
    **Never edit `js/risk-data.js` by hand.** It is generated. If the script
    exits non-zero it has left the file unchanged; carry on, commit

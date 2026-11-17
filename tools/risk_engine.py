@@ -225,8 +225,10 @@ def portfolio_risk(weights, vols, R):
     return {"sigma": sigma, "S": S, "rc": rc, "corr_book": corr_book}
 
 
-def analyse_book(positions, benchmark="SPY", fetch=fetch_daily, window=WINDOW):
-    """positions: [{ticker, side: 'long'|'short', pctNav}]. Returns the risk block."""
+def build_model(positions, benchmark="SPY", fetch=fetch_daily, window=WINDOW, end=None):
+    """Fetch prices and build vols and the correlation matrix for a set of
+    positions. Shared by the weekly book model and the pre-trade calculator,
+    so both measure risk the same way."""
     tickers = [p["ticker"] for p in positions]
     bars, failed = {}, []
     for t in sorted(set(tickers + [benchmark])):
@@ -237,6 +239,11 @@ def analyse_book(positions, benchmark="SPY", fetch=fetch_daily, window=WINDOW):
     if benchmark not in bars:
         raise RuntimeError(f"benchmark {benchmark} unavailable: {failed}")
 
+    # end: measure as at that date, using only prices up to it. Used to rebuild
+    # past weeks without hindsight.
+    if end:
+        bars = {t: [x for x in b if x["date"] <= end] for t, b in bars.items()}
+        bars = {t: b for t, b in bars.items() if len(b) >= 2}
     rets = {t: log_returns(b) for t, b in bars.items()}
     cal = sorted(rets[benchmark])[-window:]
     use = [p for p in positions if p["ticker"] in bars]
@@ -256,7 +263,22 @@ def analyse_book(positions, benchmark="SPY", fetch=fetch_daily, window=WINDOW):
     vols = [v if v is not None else med for v in vols]
 
     R, raw, avg_corr = correlation_matrix(names, rets, cal)
-    w = [(p["pctNav"] if p["side"] == "long" else -p["pctNav"]) / 100 for p in use]
+    return {"bars": bars, "rets": rets, "cal": cal, "use": use, "names": names,
+            "vols": vols, "atrs": atrs, "obs": obs, "R": R, "raw": raw,
+            "avg_corr": avg_corr, "failed": failed, "benchmark": benchmark}
+
+
+def signed_weight(p):
+    return (p["pctNav"] if p["side"] == "long" else -p["pctNav"]) / 100
+
+
+def analyse_book(positions, benchmark="SPY", fetch=fetch_daily, window=WINDOW, end=None):
+    """positions: [{ticker, side: 'long'|'short', pctNav}]. Returns the risk block."""
+    m = build_model(positions, benchmark, fetch, window, end)
+    bars, rets, cal, use, names = m["bars"], m["rets"], m["cal"], m["use"], m["names"]
+    vols, atrs, obs, R, raw, avg_corr, failed = (m["vols"], m["atrs"], m["obs"], m["R"],
+                                                 m["raw"], m["avg_corr"], m["failed"])
+    w = [signed_weight(p) for p in use]
     risk = portfolio_risk(w, vols, R)
     sigma = risk["sigma"]
 
@@ -316,3 +338,158 @@ def analyse_book(positions, benchmark="SPY", fetch=fetch_daily, window=WINDOW):
         "lowHistory": [r["ticker"] for r in rows if r["obs"] < MIN_OVERLAP],
         "unpriced": failed,
     }
+
+
+# ---------------------------------------------------------------- pre-trade
+
+LONG_CAP = 12.0       # % of NAV at conviction 10
+SHORT_CAP = 10.0
+ATR_MULT = 2.5        # stop sits this many ATRs from entry
+MIN_REWARD_RISK = 3.0 # the owner's rule: expect ~10% for every ~3.3% risked
+
+
+def phi(x):
+    return 0.5 * (1 + math.erf(x / math.sqrt(2)))
+
+
+def analyse_candidate(book, ticker, side, conviction, target_pct, nav,
+                      entry=None, atr_mult=ATR_MULT, horizon=20, p_win=None,
+                      benchmark="SPY", fetch=fetch_daily, window=WINDOW):
+    """Everything needed to decide on one trade, before it is placed.
+
+    book        current positions [{ticker, side, pctNav}]
+    side        'long' or 'short'
+    conviction  1-10; size = conviction/10 x the cap for that side
+    target_pct  expected move in the trade's favour, in % (positive)
+    nav         net liquidation value, for share counts and dollar risk
+    horizon     trading days the trade is expected to need (20 conviction,
+                5 tactical) -- only used for the stop-out odds
+    p_win       optional: your probability the target is hit first
+    """
+    ticker = ticker.upper()
+    side = side.lower()
+    if side not in ("long", "short"):
+        raise ValueError("side must be long or short")
+    if not 1 <= conviction <= 10:
+        raise ValueError("conviction is 1-10")
+
+    cap = LONG_CAP if side == "long" else SHORT_CAP
+    size_pct = conviction / 10 * cap
+
+    # Model the book with the candidate in it at zero weight first, so the
+    # before and after are measured on exactly the same matrix.
+    held = [p for p in book if p["ticker"] != ticker]
+    existing = next((p for p in book if p["ticker"] == ticker), None)
+    m = build_model(held + [{"ticker": ticker, "side": side, "pctNav": 0.0}],
+                    benchmark, fetch, window)
+    if ticker not in m["names"]:
+        raise RuntimeError(f"{ticker}: no price history")
+    names, vols, R = m["names"], m["vols"], m["R"]
+    k = names.index(ticker)
+    w_before = [signed_weight(p) for p in m["use"]]
+    if existing:
+        w_before[k] = signed_weight(existing)
+    w_after = w_before[:]
+    w_after[k] += (size_pct if side == "long" else -size_pct) / 100
+
+    before = portfolio_risk(w_before, vols, R)
+    after = portfolio_risk(w_after, vols, R)
+
+    bars = m["bars"][ticker]
+    px = entry or bars[-1]["close"]
+    atr = m["atrs"][k]
+    vol = vols[k]
+    stop_dist = atr_mult * atr                      # fraction of price
+    stop_px = px * (1 - stop_dist) if side == "long" else px * (1 + stop_dist)
+    target_px = (px * (1 + target_pct / 100) if side == "long"
+                 else px * (1 - target_pct / 100))
+    rr = (target_pct / 100) / stop_dist if stop_dist else None
+
+    # How often normal movement alone would hit the stop: the probability a
+    # driftless random walk touches the stop within the horizon.
+    sd_daily = vol / math.sqrt(TRADING_DAYS)
+    b = abs(math.log(1 - stop_dist)) if side == "long" else math.log(1 + stop_dist)
+    noise = {f"{h}d": round(2 * phi(-b / (sd_daily * math.sqrt(h))) * 100, 0)
+             for h in (1, 5, horizon) if sd_daily > 0}
+
+    # With no edge, the target is hit first this often; a trade only makes
+    # money if you are right more often than this.
+    a_ = math.log(1 + target_pct / 100) if side == "long" else abs(math.log(1 - target_pct / 100))
+    breakeven = b / (a_ + b) if (a_ + b) else None
+    ev = None
+    if p_win is not None:
+        ev = (p_win * target_pct - (1 - p_win) * stop_dist * 100) * size_pct / 100
+
+    # Holdings it moves with, signed by direction: same-direction and
+    # correlated means doubling a risk already held; opposite means a hedge.
+    rel = []
+    for j, t in enumerate(names):
+        if j == k or w_before[j] == 0:
+            continue
+        c, _ = pair_corr(m["rets"][ticker], m["rets"][t], m["cal"])
+        if c is None:
+            continue
+        same = (w_before[j] > 0) == (side == "long")
+        rel.append({"ticker": t, "corr": round(c, 2),
+                    "relation": "doubles up" if same else "offsets",
+                    "effect": c if same else -c})
+    rel.sort(key=lambda r: -abs(r["effect"]))
+
+    c_spy, _ = pair_corr(m["rets"][ticker], m["rets"][benchmark], m["cal"])
+    spy_vol = stdev([m["rets"][benchmark][d] for d in m["cal"]]) * math.sqrt(TRADING_DAYS)
+
+    flags = []
+    if rr is not None and rr < MIN_REWARD_RISK:
+        need = MIN_REWARD_RISK * stop_dist * 100
+        flags.append(f"fails 3:1 — at this volatility the target needs to be {need:.0f}% or more")
+    if noise.get(f"{horizon}d", 0) >= 60:
+        flags.append(f"{noise[f'{horizon}d']:.0f}% chance normal movement hits the stop within "
+                     f"{horizon} days")
+    top_double = [r for r in rel if r["relation"] == "doubles up" and r["corr"] >= 0.7]
+    if top_double:
+        flags.append("concentration: moves with " +
+                     ", ".join(f"{r['ticker']} ({r['corr']:.2f})" for r in top_double[:3]))
+    d_vol = (after["sigma"] - before["sigma"]) * 100
+    sigma_after = after["sigma"]
+    share_after = after["rc"][k] / sigma_after * 100 if sigma_after else 0.0
+    if share_after > 12:
+        flags.append(f"would be {share_after:.0f}% of the book's risk on its own")
+
+    shares = int(size_pct / 100 * nav / px)
+    return {
+        "ticker": ticker, "side": side, "conviction": conviction,
+        "price": round(px, 2), "vol": round(vol * 100, 1), "atrPct": round(atr * 100, 2),
+        "beta": round(c_spy * vol / spy_vol, 2) if c_spy is not None else None,
+        "stop": {"price": round(stop_px, 2), "distancePct": round(stop_dist * 100, 1),
+                 "atrMultiple": atr_mult},
+        "target": {"price": round(target_px, 2), "pct": target_pct},
+        "rewardRisk": round(rr, 2) if rr else None,
+        "noiseStopOdds": noise,
+        "breakevenWinRate": round(breakeven * 100, 0) if breakeven else None,
+        "size": {"pctNav": round(size_pct, 2), "cap": cap, "shares": shares,
+                 "dollars": round(shares * px, 0)},
+        "lossAtStop": {"pctNav": round(size_pct * stop_dist, 2),
+                       "dollars": round(shares * px * stop_dist, 0)},
+        "expectedValuePctNav": round(ev, 2) if ev is not None else None,
+        "book": {"volBefore": round(before["sigma"] * 100, 1),
+                 "volAfter": round(sigma_after * 100, 1),
+                 "volChange": round(d_vol, 2),
+                 "standaloneVolContribution": round(size_pct / 100 * vol * 100, 1),
+                 "shareOfRisk": round(share_after, 1)},
+        "related": [{k2: v for k2, v in r.items() if k2 != "effect"} for r in rel[:6]],
+        "flags": flags,
+        "window": {"days": len(m["cal"]), "to": m["cal"][-1]},
+        "existing": existing,
+    }
+
+
+def history_point(as_of, positions, risk):
+    """One week's entry in the risk history: the book as published that
+    Saturday, measured on prices up to it."""
+    p = risk["portfolio"]
+    longs = sum(x["pctNav"] for x in positions if x["side"] == "long")
+    shorts = sum(x["pctNav"] for x in positions if x["side"] == "short")
+    return {"date": as_of, "vol": p["vol"], "diversificationRatio": p["diversificationRatio"],
+            "avgPairCorr": p["avgPairCorr"], "betaToSPY": p["betaToSPY"],
+            "gross": round(longs + shorts, 1), "net": round(longs - shorts, 1),
+            "positions": p["positions"]}

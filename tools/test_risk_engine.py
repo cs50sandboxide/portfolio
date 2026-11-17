@@ -106,5 +106,72 @@ class SeriesMaths(unittest.TestCase):
         self.assertEqual(out["hedges"][0]["kind"], "offsetting")
 
 
+class AsOfDate(unittest.TestCase):
+    def test_no_prices_after_the_cutoff_are_used(self):
+        a, _ = synthetic_bars(0.02, seed=21)
+        spy, _ = synthetic_bars(0.01, seed=22)
+        # Poison everything after the cutoff: a 1000x move would dominate the
+        # volatility if a single later day leaked in.
+        cut = spy[200]["date"]
+        a = [dict(x) for x in a]
+        for x in a:
+            if x["date"] > cut:
+                x["adj"] = x["close"] = x["adj"] * 1000
+        out = re_.analyse_book([{"ticker": "AAA", "side": "long", "pctNav": 10}],
+                               fetch=lambda t: {"AAA": a, "SPY": spy}[t], window=120, end=cut)
+        self.assertLessEqual(out["window"]["to"], cut)
+        self.assertLess(out["positions"][0]["vol"], 100)
+
+
+class PreTrade(unittest.TestCase):
+    """The calculator, on synthetic prices where the right answer is known."""
+
+    def setUp(self):
+        self.a, za = synthetic_bars(0.03, seed=11)                       # held long
+        self.twin, _ = synthetic_bars(0.03, seed=12, rho_with=za, rho=0.95)
+        self.free, _ = synthetic_bars(0.03, seed=13)                     # unrelated
+        self.spy, _ = synthetic_bars(0.01, seed=14)
+        data = {"AAA": self.a, "TWIN": self.twin, "FREE": self.free, "SPY": self.spy}
+        self.fetch = lambda t: data[t]
+        self.book = [{"ticker": "AAA", "side": "long", "pctNav": 10}]
+
+    def run_(self, ticker, side, conviction=10, target=60):
+        return re_.analyse_candidate(self.book, ticker, side, conviction, target,
+                                     nav=1_000_000, fetch=self.fetch, window=250)
+
+    def test_size_scales_with_conviction_to_the_cap(self):
+        self.assertAlmostEqual(self.run_("FREE", "long", 5)["size"]["pctNav"], 6.0)
+        self.assertAlmostEqual(self.run_("FREE", "short", 5)["size"]["pctNav"], 5.0)
+        self.assertAlmostEqual(self.run_("FREE", "long", 10)["size"]["pctNav"], 12.0)
+
+    def test_short_stop_sits_above_entry(self):
+        out = self.run_("FREE", "short")
+        self.assertGreater(out["stop"]["price"], out["price"])
+        self.assertLess(out["target"]["price"], out["price"])
+
+    def test_loss_at_stop_is_size_times_distance(self):
+        out = self.run_("FREE", "long", 10)
+        self.assertAlmostEqual(out["lossAtStop"]["pctNav"],
+                               12 * out["stop"]["distancePct"] / 100, places=1)
+
+    def test_three_to_one_rule_flags_a_small_target(self):
+        out = self.run_("FREE", "long", target=1)
+        self.assertTrue(any("fails 3:1" in f for f in out["flags"]))
+
+    def test_correlated_long_adds_more_risk_than_an_unrelated_one(self):
+        twin = self.run_("TWIN", "long")["book"]["volChange"]
+        free = self.run_("FREE", "long")["book"]["volChange"]
+        self.assertGreater(twin, free)
+
+    def test_shorting_the_twin_hedges(self):
+        self.assertLess(self.run_("TWIN", "short", 8)["book"]["volChange"], 0)
+
+    def test_related_names_say_which_way(self):
+        rel = self.run_("TWIN", "long")["related"][0]
+        self.assertEqual((rel["ticker"], rel["relation"]), ("AAA", "doubles up"))
+        rel = self.run_("TWIN", "short")["related"][0]
+        self.assertEqual(rel["relation"], "offsets")
+
+
 if __name__ == "__main__":
     unittest.main(verbosity=2)

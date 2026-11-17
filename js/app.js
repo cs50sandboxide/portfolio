@@ -14,6 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initRisk();
     initAttribution();
     initRiskModel();
+    initRiskHistory();
     initPositions();
     initTheses();
     initFundPlot();
@@ -1063,10 +1064,105 @@ function initRiskModel() {
         "Diversification is the sum of each position\u2019s own risk divided by the book\u2019s: " +
         "the larger it is, the more the positions cancel. Correlations are measured on overlapping " +
         "days and shrunk a quarter of the way toward the average, which keeps a few unusual weeks " +
-        "from dominating." +
+        "from dominating. In the history, each point is the book as published that Saturday, " +
+        "measured on prices up to that Saturday only; books before 5 September stored dollar " +
+        "values rather than weights, and those are converted to a share of that week\u2019s NAV." +
         (realised
             ? " This is the risk of the book as it stands today, which is why it differs from the " +
               "realised " + realised.toFixed(0) + "% above: that figure covers the fund\u2019s whole " +
               "history, when it ran with more gross exposure and with options."
             : "");
+}
+
+/* ---- How the book's risk has changed ----
+   One point per published week: that Saturday's book, measured on prices up
+   to that Saturday only, so no point benefits from hindsight. */
+const RISK_METRICS = {
+    vol:                  { label: "Volatility of the book", fmt: (v) => v.toFixed(0) + "%" },
+    gross:                { label: "Gross exposure, % of NAV", fmt: (v) => v.toFixed(0) + "%" },
+    avgPairCorr:          { label: "Average correlation between positions", fmt: (v) => v.toFixed(2) },
+    diversificationRatio: { label: "Diversification ratio", fmt: (v) => v.toFixed(1) + "×" },
+    betaToSPY:            { label: "Beta to the S&P 500", fmt: (v) => v.toFixed(1), zero: true },
+};
+
+function initRiskHistory() {
+    const wrap = el("rmHistoryWrap");
+    if (!wrap || typeof RISK_DATA === "undefined" || !RISK_DATA.history) return;
+    if (typeof FUND_DATA === "undefined" || RISK_DATA.bookAsOf !== FUND_DATA.asOf) return;
+    const hist = RISK_DATA.history;
+    if (hist.length < 3) return;
+    wrap.hidden = false;
+
+    const draw = (key) => {
+        const def = RISK_METRICS[key];
+        const pts = hist.filter((h) => typeof h[key] === "number");
+        const narrow = window.innerWidth < 700;
+        const W = narrow ? 400 : 860, H = narrow ? 260 : 280;
+        const M = narrow ? { t: 18, r: 54, b: 32, l: 44 } : { t: 20, r: 70, b: 34, l: 56 };
+        const iw = W - M.l - M.r, ih = H - M.t - M.b;
+        const vals = pts.map((p) => p[key]);
+        let lo = Math.min(...vals, def.zero ? 0 : Infinity), hi = Math.max(...vals, def.zero ? 0 : -Infinity);
+        const pad = (hi - lo) * 0.15 || Math.abs(hi) * 0.1 || 1;
+        lo -= pad; hi += pad;
+        if (!def.zero && Math.min(...vals) >= 0) lo = Math.max(0, lo);
+        const x = (i) => M.l + (pts.length === 1 ? iw / 2 : (i / (pts.length - 1)) * iw);
+        const y = (v) => M.t + (1 - (v - lo) / (hi - lo)) * ih;
+
+        const ticks = [];
+        const span = hi - lo, raw = span / 4, mag = Math.pow(10, Math.floor(Math.log10(raw)));
+        const step = Math.ceil(raw / mag) * mag;
+        for (let t = Math.ceil(lo / step) * step; t <= hi; t += step) ticks.push(+t.toFixed(6));
+        const grid = ticks.map((t) => `
+            <line x1="${M.l}" x2="${W - M.r}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}"
+                  style="stroke:${t === 0 && def.zero ? PALETTE.axis : PALETTE.grid}" stroke-width="1"
+                  ${t === 0 && def.zero ? 'stroke-dasharray="3 3"' : ""}/>
+            <text x="${M.l - 8}" y="${(y(t) + 3.5).toFixed(1)}" text-anchor="end" font-size="11"
+                  style="fill:${PALETTE.soft}" font-family="${PALETTE.face}">${def.fmt(t)}</text>`).join("");
+
+        const every = Math.max(1, Math.ceil(pts.length / (narrow ? 4 : 8)));
+        const xl = pts.map((p, i) => (i % every && i !== pts.length - 1) ? "" : `
+            <text x="${x(i).toFixed(1)}" y="${H - 10}" text-anchor="middle" font-size="11"
+                  style="fill:${PALETTE.soft}" font-family="${PALETTE.face}">${fmtShortDate(p.date)}</text>`).join("");
+
+        const d = pts.map((p, i) => `${i ? "L" : "M"}${x(i).toFixed(1)},${y(p[key]).toFixed(1)}`).join(" ");
+        const dots = pts.map((p, i) => `<circle cx="${x(i).toFixed(1)}" cy="${y(p[key]).toFixed(1)}" r="2.6"
+            style="fill:${PALETTE.plot}"><title>${fmtShortDate(p.date)}: ${def.fmt(p[key])}</title></circle>`).join("");
+        const last = pts[pts.length - 1];
+
+        el("rmHist").innerHTML = `
+            <svg viewBox="0 0 ${W} ${H}" role="img"
+                 aria-label="${def.label} each week from ${fmtShortDate(pts[0].date)} to ${fmtShortDate(last.date)}: from ${def.fmt(pts[0][key])} to ${def.fmt(last[key])}">
+                ${grid}${xl}
+                <path d="${d}" fill="none" style="stroke:${PALETTE.plot}" stroke-width="2.2"
+                      stroke-linejoin="round" stroke-linecap="round"/>
+                ${dots}
+                <text x="${(x(pts.length - 1) + 10).toFixed(1)}" y="${(y(last[key]) + 4).toFixed(1)}"
+                      font-size="13" font-weight="600" style="fill:${PALETTE.plot}"
+                      font-family="${PALETTE.face}">${def.fmt(last[key])}</text>
+            </svg>`;
+        el("rmHistSub").textContent = def.label + ", each week’s book from " +
+            fmtShortDate(pts[0].date) + " to " + fmtShortDate(last.date);
+    };
+
+    const bar = el("rmHistToggle");
+    bar.querySelectorAll(".legend-item").forEach((btn) => btn.addEventListener("click", () => {
+        bar.querySelectorAll(".legend-item").forEach((b) => {
+            b.classList.toggle("active", b === btn);
+            b.setAttribute("aria-pressed", String(b === btn));
+        });
+        draw(btn.dataset.metric);
+    }));
+    draw("vol");
+
+    let narrowNow = window.innerWidth < 700, t;
+    window.addEventListener("resize", () => {
+        clearTimeout(t);
+        t = setTimeout(() => {
+            if ((window.innerWidth < 700) !== narrowNow) {
+                narrowNow = !narrowNow;
+                const a = bar.querySelector(".legend-item.active");
+                draw(a ? a.dataset.metric : "vol");
+            }
+        }, 200);
+    });
 }

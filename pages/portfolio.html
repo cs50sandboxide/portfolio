@@ -190,6 +190,18 @@
                         <div class="rm-pairs" id="rmPairs"></div>
                     </div>
                 </div>
+                <div class="rm-history" id="rmHistoryWrap" hidden>
+                    <h4 class="attr-title">How the book&rsquo;s risk has changed</h4>
+                    <p class="attr-sub" id="rmHistSub">Each point is that week&rsquo;s book</p>
+                    <div class="chart-toggle" id="rmHistToggle">
+                        <button class="legend-item active" type="button" data-metric="vol" aria-pressed="true">Volatility</button>
+                        <button class="legend-item" type="button" data-metric="gross" aria-pressed="false">Gross exposure</button>
+                        <button class="legend-item" type="button" data-metric="avgPairCorr" aria-pressed="false">Correlation</button>
+                        <button class="legend-item" type="button" data-metric="diversificationRatio" aria-pressed="false">Diversification</button>
+                        <button class="legend-item" type="button" data-metric="betaToSPY" aria-pressed="false">Beta</button>
+                    </div>
+                    <div class="rm-hist-plot pad-grid" id="rmHist"></div>
+                </div>
                 <p class="perf-footnote" id="rmFootnote">—</p>
             </div>
 
