@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
     initWeeklyReturns();
     initRisk();
     initAttribution();
+    initRiskModel();
     initPositions();
     initTheses();
     initFundPlot();
@@ -94,6 +95,11 @@ function initTheme() {
     systemDark.addEventListener("change", () => {
         if (!document.documentElement.dataset.theme) label();
     });
+}
+
+function fmtShortDate(iso) {
+    const [, m, d] = iso.split("-").map(Number);
+    return d + " " + ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][m - 1];
 }
 
 /* ---- Loader ---- */
@@ -701,6 +707,13 @@ function initPositions() {
         // Quantity is omitted deliberately: quantity x price reconstructs the
         // dollar value exactly, so printing both would undo the choice.
         const nameFor = (t) => (FUND_DATA.tickerNames || {})[t] || "";
+        // Risk figures come from js/risk-data.js; options are not modelled.
+        // Only when the risk file describes this same week's book; after a
+        // failed price fetch it would otherwise show last week's figures.
+        const riskRows = (typeof RISK_DATA !== "undefined" && RISK_DATA.bookAsOf === FUND_DATA.asOf
+            && RISK_DATA.positions) || [];
+        const riskFor = (t) => riskRows.find((x) => x.ticker === t);
+        const showRisk = !isOptions && riskRows.length > 0;
         const rowsHtml = g.rows.map((r) => {
             const name = isOptions
                 ? `<span class="pos-ticker">${r.ticker}</span><span class="pos-contract">${r.contract}</span>`
@@ -711,6 +724,13 @@ function initPositions() {
                     <td class="pos-company">${nameFor(r.ticker)}</td>
                     <td>${fmtPrice(r.price)}</td>
                     <td class="pos-value">${r.pctNav.toFixed(2)}%</td>
+                    ${showRisk ? (() => {
+                        const k = riskFor(r.ticker);
+                        if (!k) return `<td class="pos-qty">—</td><td class="pos-qty">—</td>`;
+                        const rc = k.riskContribPct;
+                        return `<td class="pos-qty">${k.vol.toFixed(0)}%</td>
+                                <td class="pos-value">${rc < 0 ? "\u2212" : ""}${Math.abs(rc).toFixed(1)}%</td>`;
+                    })() : ""}
                 </tr>
             `;
         }).join("");
@@ -729,6 +749,7 @@ function initPositions() {
                             <th>Company</th>
                             <th>Price</th>
                             <th>% of NAV</th>
+                            ${showRisk ? `<th>Volatility</th><th>Share of risk</th>` : ""}
                         </tr>
                     </thead>
                     <tbody>${rowsHtml}</tbody>
@@ -965,4 +986,87 @@ function renderWeeklyNotes() {
         cell.textContent = text || "—";
         cell.classList.toggle("is-empty", !text);
     });
+}
+
+
+/* ============================================
+   Where the risk comes from
+
+   Rendered from js/risk-data.js, which tools/refresh_risk.py writes from the
+   same book as js/fund-data.js. The block stays hidden if that file is absent
+   or describes a different week, so a stale model is never shown beside
+   fresh positions.
+   ============================================ */
+function initRiskModel() {
+    const box = el("riskModel");
+    if (!box || typeof RISK_DATA === "undefined" || typeof FUND_DATA === "undefined") return;
+    if (RISK_DATA.bookAsOf !== FUND_DATA.asOf) return;
+    box.hidden = false;
+
+    const P = RISK_DATA.portfolio;
+    const win = RISK_DATA.window;
+    el("rmVol").textContent = P.vol.toFixed(1) + "%";
+    el("rmDiv").textContent = P.diversificationRatio.toFixed(1) + "\u00d7";
+    el("rmDivNote").textContent =
+        "Sum of each position\u2019s own risk is " + P.sumOfStandaloneVol.toFixed(0) + "%";
+    el("rmBeta").textContent = P.betaToSPY.toFixed(2);
+    el("rmCorr").textContent = P.avgPairCorr.toFixed(2);
+    el("riskModelWindow").textContent =
+        "Today\u2019s book, " + win.days + " trading days of prices to " + fmtShortDate(win.to);
+
+    // Biggest contributors either way; the rest summed, so the bars still
+    // account for the whole 100%.
+    const rows = [...RISK_DATA.positions].sort((a, b) => Math.abs(b.riskContribPct) - Math.abs(a.riskContribPct));
+    const top = rows.slice(0, 12);
+    const rest = rows.slice(12);
+    const items = top.map((r) => ({ name: r.ticker + (r.side === "short" ? " (short)" : ""), pct: r.riskContribPct }));
+    if (rest.length) {
+        items.push({ name: rest.length + " others", pct: rest.reduce((s, r) => s + r.riskContribPct, 0), other: true });
+    }
+    items.sort((a, b) => (a.other ? 1 : b.other ? -1 : b.pct - a.pct));
+    // The "others" row is many positions summed, so it is shown as a figure
+    // without a bar; scaling to it would flatten every named position.
+    const max = Math.max(...items.filter((t) => !t.other).map((t) => Math.abs(t.pct))) || 1;
+    el("rmShare").innerHTML = items.map((t) => {
+        const width = t.other ? 0 : (Math.abs(t.pct) / max) * 50;
+        const neg = t.pct < 0;
+        return `
+            <div class="tilt-row">
+                <span class="tilt-name">${t.name}</span>
+                <div class="tilt-track">
+                    <div class="tilt-axis"></div>
+                    <div class="tilt-bar ${neg ? "rm-cut" : "rm-add"}"
+                         style="${neg ? "right:50%" : "left:50%"}; width:${width.toFixed(1)}%"></div>
+                </div>
+                <span class="tilt-val">${neg ? "\u2212" : ""}${Math.abs(t.pct).toFixed(1)}%</span>
+            </div>`;
+    }).join("");
+
+    const pairRow = (p) => `
+        <div class="rm-pair">
+            <span class="rm-pair-names">${p.a} &amp; ${p.b}</span>
+            <span class="rm-pair-corr">${p.corr.toFixed(2)}</span>
+        </div>`;
+    el("rmPairs").innerHTML =
+        `<p class="rm-pairs-head">Same direction, so the risk adds up</p>` +
+        RISK_DATA.doubledUp.map(pairRow).join("") +
+        (RISK_DATA.hedges.length
+            ? `<p class="rm-pairs-head">Opposite directions, so they offset</p>` + RISK_DATA.hedges.map(pairRow).join("")
+            : "");
+
+    const realised = FUND_DATA.risk && FUND_DATA.risk.annualizedVol;
+    el("rmFootnote").textContent =
+        "Built from the stock positions above at their current weights, using daily prices over the " +
+        win.days + " trading days to " + fmtShortDate(win.to) + "; options are not modelled. " +
+        "Each position\u2019s share of risk is its weight times its covariance with the whole book, " +
+        "so the shares sum to 100% and a position that offsets the rest shows below zero. " +
+        "Diversification is the sum of each position\u2019s own risk divided by the book\u2019s: " +
+        "the larger it is, the more the positions cancel. Correlations are measured on overlapping " +
+        "days and shrunk a quarter of the way toward the average, which keeps a few unusual weeks " +
+        "from dominating." +
+        (realised
+            ? " This is the risk of the book as it stands today, which is why it differs from the " +
+              "realised " + realised.toFixed(0) + "% above: that figure covers the fund\u2019s whole " +
+              "history, when it ran with more gross exposure and with options."
+            : "");
 }

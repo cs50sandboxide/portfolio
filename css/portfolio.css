@@ -1025,3 +1025,26 @@
 .weekly-table td:nth-child(4) { width: 15%; }
 .weekly-table th:nth-child(5),
 .weekly-table td:nth-child(5) { width: 50%; }
+
+/* ---- Where the risk comes from ----
+   Risk contribution is not a gain or a loss, so its bars stay out of the
+   green and red that mean those things on this page. */
+.rm-add { background: var(--ink-soft); }
+.rm-cut { background: var(--rule-strong); }
+
+.rm-pairs { display: flex; flex-direction: column; gap: 6px; max-width: 440px; }
+.rm-pairs-head {
+    font-size: 0.8125rem;
+    color: var(--ink-soft);
+    margin: 10px 0 2px;
+}
+.rm-pairs-head:first-child { margin-top: 0; }
+.rm-pair {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 5px 0;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.9375rem;
+}
+.rm-pair-corr { font-variant-numeric: tabular-nums; color: var(--ink-soft); }

@@ -255,7 +255,29 @@ roughly 200KB and nothing published needs it.
    job that silently never fired — and an unobservable scheduled job is an
    untrustworthy one.
 
-12. Commit and push to `main` **even if the only change is `generatedAt`**.
+12. **Rebuild the risk model.** Once `js/fund-data.js` is written, run
+
+   ```
+   python3 tools/test_risk_engine.py && python3 tools/refresh_risk.py
+   ```
+
+   The tests check the maths against cases with known answers; if any fail,
+   do not run the refresh. The refresh reads the positions you just wrote,
+   fetches six months of daily prices from Yahoo, and writes
+   `js/risk-data.js`: portfolio volatility, each position's share of risk,
+   diversification, beta and the most correlated pairs. It makes no IBKR
+   calls and costs nothing in tokens — the prices never pass through you.
+
+   **Never edit `js/risk-data.js` by hand.** It is generated. If the script
+   exits non-zero it has left the file unchanged; carry on, commit
+   `js/fund-data.js` as normal, and say in the report that the risk model
+   did not update. The page hides the risk block and the risk columns
+   whenever `js/risk-data.js` describes a different week from
+   `js/fund-data.js`, so a failed fetch never shows last week's risk
+   against this week's positions.
+
+13. Commit `js/fund-data.js` and `js/risk-data.js` and push to `main`
+   **even if the only change is `generatedAt`**.
    Do not skip the commit because "nothing meaningful changed" — the heartbeat
    is the point.
 
@@ -264,9 +286,17 @@ roughly 200KB and nothing published needs it.
 - **Annualised or extrapolated return.** The CAGR term is used only inside the
   Sharpe calculation. As a headline it is indefensible on a short sample — at
   the time of writing it computes to +266% from 71 days.
-- **Beta or correlation vs the benchmark.** Over this sample it computes to
+- **Beta or correlation of the fund's own return history vs the benchmark**,
+  including any such figure IBKR reports. Over this sample it computes to
   −1.04 with correlation −0.13 while the book is net *long* 76%. The estimate
   is noise dominated by one outlier day and contradicts the actual positioning.
+
+  This does not cover the risk model in `js/risk-data.js`, which is a
+  different measurement: a bottom-up beta of today's holdings, each stock's
+  beta taken from six months of its own daily prices and weighted by its
+  position. That one reconciles with the book — a 157% net-long stock book of
+  high-beta names gives 2.78 — and it is the only beta or correlation the
+  site publishes.
 - **Unrealized P&L** and **realized P&L** (see below).
 
 ## Why realized P&L is not shown

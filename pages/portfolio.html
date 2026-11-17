@@ -153,6 +153,46 @@
                 <p class="perf-footnote" id="riskFootnote">—</p>
             </div>
 
+            <!-- Risk model -->
+            <div class="perf-block" id="riskModel" hidden>
+                <h2 class="tab-section-label"><span class="block-note" id="riskModelWindow">Today&rsquo;s book</span><span>Where the risk comes from</span></h2>
+                <div class="risk-grid">
+                    <div class="risk-card">
+                        <span class="risk-label">Volatility of today&rsquo;s book</span>
+                        <span class="risk-value" id="rmVol">—</span>
+                        <span class="risk-note">Annualised, from current weights</span>
+                    </div>
+                    <div class="risk-card">
+                        <span class="risk-label">Diversification</span>
+                        <span class="risk-value" id="rmDiv">—</span>
+                        <span class="risk-note" id="rmDivNote">—</span>
+                    </div>
+                    <div class="risk-card">
+                        <span class="risk-label">Beta to the S&amp;P 500</span>
+                        <span class="risk-value" id="rmBeta">—</span>
+                        <span class="risk-note">Book moves per 1% in the index</span>
+                    </div>
+                    <div class="risk-card">
+                        <span class="risk-label">Average correlation</span>
+                        <span class="risk-value" id="rmCorr">—</span>
+                        <span class="risk-note">Between any two positions</span>
+                    </div>
+                </div>
+                <div class="attr-grid">
+                    <div class="attr-panel">
+                        <h4 class="attr-title">Share of the book&rsquo;s risk</h4>
+                        <p class="attr-sub">Sums to 100%. Below zero means the position reduces risk.</p>
+                        <div class="attr-tilt" id="rmShare"></div>
+                    </div>
+                    <div class="attr-panel">
+                        <h4 class="attr-title">Positions that move together</h4>
+                        <p class="attr-sub">Correlation of daily returns</p>
+                        <div class="rm-pairs" id="rmPairs"></div>
+                    </div>
+                </div>
+                <p class="perf-footnote" id="rmFootnote">—</p>
+            </div>
+
             <!-- Attribution -->
             <div class="perf-block">
                 <h2 class="tab-section-label"><span class="block-note">Positions as at the last refresh</span><span>How the book is positioned</span></h2>
@@ -229,6 +269,7 @@
     </footer>
 
     <script src="../js/fund-data.js"></script>
+    <script src="../js/risk-data.js"></script>
     <script src="../js/notes.js"></script>
     <script src="../js/app.js"></script>
 </body>

@@ -33,7 +33,9 @@
       "Bash(git checkout*)",
       "Bash(git add*)",
       "Bash(git commit*)",
-      "Bash(git push*)"
+      "Bash(git push*)",
+      "Bash(python3 tools/test_risk_engine.py)",
+      "Bash(python3 tools/refresh_risk.py)"
     ],
     "deny": [
       "mcp__Interactive_Brokers_IBKR__create_order_instruction",
