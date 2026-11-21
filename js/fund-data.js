@@ -13,45 +13,45 @@
 
 const FUND_DATA = {
     // --- Snapshot metadata ---
-    asOf: "2026-11-14",
-    ibkrLastUpdate: "2026-11-14 11:12:52",
+    asOf: "2026-11-21",
+    ibkrLastUpdate: "2026-11-21 11:13:01",
 
     // Wall-clock time this file was regenerated. Always changes, even when the
     // market data does not — so every refresh leaves a commit and `git log`
     // answers "did the weekly job actually run?". Without it, a healthy run on
     // a quiet week is indistinguishable from a job that never fired.
-    generatedAt: "2026-11-14T11:14:21Z",
+    generatedAt: "2026-11-21T11:14:37Z",
 
     // --- Headline figures ---
-    portfolioValue: 1300225.71,   // net liquidation value
-    cash: -566403.39,
-    grossExposure: 3480588.07,    // long + short notional
-    leverage: 2.68,
+    portfolioValue: 772290.17,   // net liquidation value
+    cash: -1809733.30,
+    grossExposure: 3333294.86,    // long + short notional
+    leverage: 4.32,
 
     // --- Performance (time-weighted return, per IBKR) ---
     // The account's performance history begins at inception below;
     // there is no calendar-YTD figure available before that date.
     inceptionDate: "2026-04-27",
-    returnSinceInception: 65.26,
+    returnSinceInception: -1.84,
 
-    mtdReturn: -13.16,
-    mtdWindow: "30 Oct – 14 Nov 2026",
+    mtdReturn: -48.42,
+    mtdWindow: "30 Oct – 21 Nov 2026",
 
     // --- Primary benchmark (used in the homepage banner and stat blocks) ---
     benchmark: {
         name: "S&P 500",
         proxy: "SPY",
-        sinceInception: 5.66,    // 27 Apr close 713.94 -> 13 Nov 754.37
-        calendarYtd: 10.62,     // 31 Dec close 681.92 -> 754.37
+        sinceInception: -3.38,    // 27 Apr close 713.94 -> 20 Nov 689.81
+        calendarYtd: 1.16,     // 31 Dec close 681.92 -> 689.81
     },
 
     // --- Benchmark panel, all measured over the SAME window as the fund ---
     // ETF closes are used as index proxies. Every figure runs from the
     // account's inception date to `asOf`, so the comparison is like-for-like.
     benchmarks: [
-        { name: "S&P 500",      proxy: "SPY", sinceInception: 5.66 },   // 713.94 -> 754.37
-        { name: "Nasdaq 100",   proxy: "QQQ", sinceInception: 2.41 },   // 663.88 -> 679.89
-        { name: "Russell 2000", proxy: "IWM", sinceInception: 0.32 },   // 276.65 -> 277.54
+        { name: "S&P 500",      proxy: "SPY", sinceInception: -3.38 },   // 713.94 -> 689.81
+        { name: "Nasdaq 100",   proxy: "QQQ", sinceInception: -8.35 },   // 663.88 -> 608.45
+        { name: "Russell 2000", proxy: "IWM", sinceInception: -7.24 },   // 276.65 -> 256.61
     ],
 
     // --- Weekly cumulative return path, fund vs benchmarks ---
@@ -97,6 +97,7 @@ history: [
         { date: "2026-10-30", fund:  90.31, spy: 5.85, qqq:  4.01 },
         { date: "2026-11-06", fund:   35.16, spy: 2.99, qqq: -1.17 },
         { date: "2026-11-13", fund:  68.95, spy: 5.66, qqq:  2.41 },
+        { date: "2026-11-20", fund: -10.01, spy: -3.38, qqq: -8.35 },
     ],
 
     // --- Ticker to company name ---
@@ -140,6 +141,7 @@ history: [
         HIMS:    "Hims &amp; Hers Health",
         HOOD:    "Robinhood Markets",
         HPE:     "Hewlett Packard Enterprise",
+        IBIT:    "iShares Bitcoin Trust ETF",
         IBKR:    "Interactive Brokers Group",
         INFQ:    "Infleqtion",
         INTC:    "Intel",
@@ -203,43 +205,49 @@ history: [
     attribution: {
         // Long book by sector, % of long equity exposure (cash excluded).
         sectorsLong: [
-            { name: "Technology", pct: 47.99 },
-            { name: "Financials", pct: 19.88 },
-            { name: "Industrial", pct: 15.80 },
-            { name: "Healthcare", pct: 5.81 },
-            { name: "Basic Materials", pct: 5.42 },
-            { name: "Utilities", pct: 5.10 },
+            { name: "Technology", pct: 49.41 },
+            { name: "Financials", pct: 16.44 },
+            { name: "Industrial", pct: 9.95 },
+            { name: "Utilities", pct: 4.86 },
+            { name: "Healthcare", pct: 4.79 },
+            { name: "Basic Materials", pct: 4.19 },
+            { name: "Consumer Cyclicals", pct: 3.91 },
+            { name: "Telecomm", pct: 3.63 },
+            { name: "Broad", pct: 2.82 },
         ],
 
         // Short book by sector, % of short equity exposure.
         sectorsShort: [
-            { name: "Technology", pct: 82.48 },
-            { name: "Healthcare", pct: 17.52 },
+            { name: "Technology", pct: 62.76 },
+            { name: "Healthcare", pct: 37.24 },
         ],
 
         // Net sector exposure (long minus short) as % of NAV — the actual
         // directional bet. A long-only sector pie hides any offsetting shorts.
         netTilt: [
-            { name: "Technology", pct: 47.58 },
-            { name: "Financials", pct: 40.89 },
-            { name: "Industrial", pct: 32.51 },
-            { name: "Basic Materials", pct: 11.15 },
-            { name: "Utilities", pct: 10.48 },
-            { name: "Healthcare", pct: 1.09 },
+            { name: "Technology", pct: 158.86 },
+            { name: "Financials", pct: 63.00 },
+            { name: "Industrial", pct: 38.10 },
+            { name: "Utilities", pct: 18.63 },
+            { name: "Basic Materials", pct: 16.04 },
+            { name: "Consumer Cyclicals", pct: 14.97 },
+            { name: "Telecomm", pct: 13.91 },
+            { name: "Broad", pct: 10.79 },
+            { name: "Healthcare", pct: 0.30 },
         ],
 
         // Five largest positions by absolute size, as % of NAV.
         topPositions: [
-            { ticker: "BX", side: "Long", pctNav: 13.28 },
-            { ticker: "UBER", side: "Long", pctNav: 12.52 },
-            { ticker: "NVO", side: "Long", pctNav: 11.95 },
-            { ticker: "AMD", side: "Short", pctNav: 11.62 },
-            { ticker: "KKR", side: "Long", pctNav: 11.31 },
+            { ticker: "BX", side: "Long", pctNav: 20.80 },
+            { ticker: "UBER", side: "Long", pctNav: 19.60 },
+            { ticker: "NVO", side: "Long", pctNav: 18.36 },
+            { ticker: "MRNA", side: "Short", pctNav: 18.06 },
+            { ticker: "KKR", side: "Long", pctNav: 17.20 },
         ],
 
-        equityLongCount: 27,
-        equityShortCount: 5,
-        top5Concentration: 22.67,   // % of gross exposure
+        equityLongCount: 34,
+        equityShortCount: 1,
+        top5Concentration: 21.79,   // % of gross exposure
     },
 
     // --- Cached baselines: fixed history the refresh job must NOT re-fetch ---
@@ -268,27 +276,27 @@ history: [
 
     // --- Exposure, straight from get_pa_allocation (reconciles to NAV) ---
     exposure: {
-        long: 2674483.68,
-        short: -806104.40,
-        net: 1868379.28,
-        gross: 3480588.07,
-        cash: -568153.57,
-        longPct: 205.69,
-        shortPct: -62.00,
-        netPct: 143.70,
-        grossPct: 267.69,
-        cashPct: -43.70,
+        long: 2958678.80,
+        short: -374616.06,
+        net: 2584062.75,
+        gross: 3333294.86,
+        cash: -1811772.58,
+        longPct: 383.10,
+        shortPct: -48.51,
+        netPct: 334.60,
+        grossPct: 431.61,
+        cashPct: -234.60,
     },
 
     // --- Risk, derived from IBKR's own daily time-weighted return series ---
     // IBKR exposes no risk-analytics endpoint; these are standard statistics
     // computed on the `cps` series that IBKR itself reports. See AUTOUPDATE.md.
     risk: {
-        maxDrawdown: -48.76,
-        annualizedVol: 106.80,
-        sharpe: 1.25,
+        maxDrawdown: -60.16,
+        annualizedVol: 113.87,
+        sharpe: -0.06,
         sharpeRiskFree: 4.0,
-        tradingDays: 146,
+        tradingDays: 151,
     },
 
     // --- The week's commentary, keyed by week-ending date ---
@@ -303,88 +311,95 @@ history: [
         "2026-10-30": "Up 0.9%, S&P down 0.6%. JBLU +9.0% and KTOS +6.3% led the gains, with ASTS +3.6% helping; INTC -25.1%, CRCL -14.9% and HOOD -10.0% led the drag.",
         "2026-11-06": "Down 29.0%, S&P down 2.7%. MRNA short +16.0% and ASTS -20.7% led the drag, with AAOI -27.8% and NBIS -15.9% also lower; JBLU +29.0% and IONQ +7.0% helped.",
         "2026-11-13": "Up 25.0%, S&P up 2.6%. The MRNA short (-15.1%) and CBRS +17.8% led the gains, with CEG +11.2% and CRWV +11.2% helping; NBIS -13.8%, IONQ -11.6% and IREN -18.9% led the drag.",
+        "2026-11-20": "Down 46.7%, S&P down 8.6%. NVDA -19.3%, ASTS -23.9% and COIN -18.9% led the drag, with all 27 longs held through the week lower; the MRNA short (-8.6%) added back about 1.6 points.",
     },
 
     // Last refresh's close for each held ticker, so next week has something to
     // measure against. Written every run; read only by the run after it.
     priorPrices: {
-        AAOI: 48.62,
-        ALAB: 216.35,
-        AMD: 521.20,
-        APO: 123.47,
-        ASTS: 31.70,
-        AVAV: 117.00,
-        BX: 119.08,
-        CBRS: 106.00,
-        CEG: 278.20,
-        COIN: 126.08,
-        CRCL: 61.39,
-        CRWV: 51.75,
-        DOCN: 85.99,
-        HOOD: 76.62,
-        IBKR: 81.20,
-        INTC: 58.65,
-        IONQ: 28.52,
-        IREN: 17.68,
-        JBLU: 3.65,
-        KKR: 98.05,
-        KTOS: 33.92,
-        MP: 38.72,
-        MRNA: 218.00,
-        NBIS: 112.80,
-        NOW: 101.67,
-        NVDA: 161.01,
-        NVO: 41.44,
-        ORCL: 123.45,
-        UBER: 69.28,
-        USAR: 8.01,
-        VST: 131.00,
-        XE: 10.91,
+        AAOI: 33.83,
+        ADBE: 217.71,
+        APO: 111.16,
+        ASTS: 24.11,
+        AVAV: 86.79,
+        BX: 110.80,
+        CBRS: 85.51,
+        CEG: 237.41,
+        COIN: 102.30,
+        CRCL: 48.95,
+        CRWV: 40.95,
+        GOOG: 268.50,
+        HOOD: 64.20,
+        HPE: 41.97,
+        IBIT: 33.35,
+        IBKR: 72.06,
+        INTC: 53.03,
+        IONQ: 21.59,
+        IREN: 12.34,
+        JBLU: 3.34,
+        KKR: 88.54,
+        KTOS: 27.78,
+        MP: 34.29,
+        MRNA: 199.30,
+        MU: 610.60,
+        NBIS: 84.53,
+        NKE: 33.04,
+        NOW: 88.82,
+        NVDA: 130.01,
+        NVO: 37.82,
+        SNDK: 81.40,
+        UBER: 64.41,
+        USAR: 6.46,
+        VST: 117.00,
+        XE: 9.01,
+
     },
 
-    // --- Open positions (36) ---
+    // --- Open positions (38) ---
     positions: {
         longs: [
-            { ticker: "BX", quantity: 1450, price: 119.08, pctNav: 13.28 },
-            { ticker: "UBER", quantity: 2350, price: 69.28, pctNav: 12.52 },
-            { ticker: "NVO", quantity: 3750, price: 41.44, pctNav: 11.95 },
-            { ticker: "KKR", quantity: 1500, price: 98.05, pctNav: 11.31 },
-            { ticker: "NVDA", quantity: 800, price: 161.01, pctNav: 9.91 },
-            { ticker: "JBLU", quantity: 35000, price: 3.65, pctNav: 9.83 },
-            { ticker: "ASTS", quantity: 3900, price: 31.70, pctNav: 9.51 },
-            { ticker: "APO", quantity: 1000, price: 123.47, pctNav: 9.50 },
-            { ticker: "NOW", quantity: 1100, price: 101.67, pctNav: 8.60 },
-            { ticker: "COIN", quantity: 850, price: 126.08, pctNav: 8.24 },
-            { ticker: "INTC", quantity: 1700, price: 58.65, pctNav: 7.67 },
-            { ticker: "CBRS", quantity: 900, price: 106.00, pctNav: 7.34 },
-            { ticker: "CRCL", quantity: 1500, price: 61.39, pctNav: 7.08 },
-            { ticker: "KTOS", quantity: 2650, price: 33.92, pctNav: 6.91 },
-            { ticker: "IBKR", quantity: 1100, price: 81.20, pctNav: 6.87 },
-            { ticker: "MP", quantity: 2300, price: 38.72, pctNav: 6.85 },
-            { ticker: "IONQ", quantity: 3100, price: 28.52, pctNav: 6.80 },
-            { ticker: "CEG", quantity: 300, price: 278.20, pctNav: 6.42 },
-            { ticker: "AVAV", quantity: 700, price: 117.00, pctNav: 6.30 },
-            { ticker: "NBIS", quantity: 700, price: 112.80, pctNav: 6.07 },
-            { ticker: "CRWV", quantity: 1500, price: 51.75, pctNav: 5.97 },
-            { ticker: "HOOD", quantity: 1000, price: 76.62, pctNav: 5.89 },
-            { ticker: "AAOI", quantity: 1250, price: 48.62, pctNav: 4.67 },
-            { ticker: "USAR", quantity: 7000, price: 8.01, pctNav: 4.31 },
-            { ticker: "IREN", quantity: 3000, price: 17.68, pctNav: 4.08 },
-            { ticker: "VST", quantity: 400, price: 131.00, pctNav: 4.03 },
-            { ticker: "XE", quantity: 4010, price: 10.91, pctNav: 3.36 },
+            { ticker: "BX", quantity: 1450, price: 110.80, pctNav: 20.80 },
+            { ticker: "UBER", quantity: 2350, price: 64.41, pctNav: 19.60 },
+            { ticker: "NVO", quantity: 3750, price: 37.82, pctNav: 18.36 },
+            { ticker: "KKR", quantity: 1500, price: 88.54, pctNav: 17.20 },
+            { ticker: "ADBE", quantity: 550, price: 217.71, pctNav: 15.50 },
+            { ticker: "NKE", quantity: 3500, price: 33.04, pctNav: 14.97 },
+            { ticker: "APO", quantity: 1000, price: 111.16, pctNav: 14.39 },
+            { ticker: "GOOG", quantity: 400, price: 268.50, pctNav: 13.91 },
+            { ticker: "HPE", quantity: 2500, price: 41.97, pctNav: 13.58 },
+            { ticker: "NVDA", quantity: 800, price: 130.01, pctNav: 13.47 },
+            { ticker: "NOW", quantity: 1100, price: 88.82, pctNav: 12.65 },
+            { ticker: "CEG", quantity: 400, price: 237.41, pctNav: 12.30 },
+            { ticker: "MU", quantity: 150, price: 610.60, pctNav: 11.86 },
+            { ticker: "INTC", quantity: 1700, price: 53.03, pctNav: 11.67 },
+            { ticker: "COIN", quantity: 850, price: 102.30, pctNav: 11.26 },
+            { ticker: "HOOD", quantity: 1300, price: 64.20, pctNav: 10.81 },
+            { ticker: "IBIT", quantity: 2500, price: 33.35, pctNav: 10.80 },
+            { ticker: "ASTS", quantity: 3400, price: 24.11, pctNav: 10.61 },
+            { ticker: "SNDK", quantity: 1000, price: 81.40, pctNav: 10.54 },
+            { ticker: "IBKR", quantity: 1100, price: 72.06, pctNav: 10.26 },
+            { ticker: "MP", quantity: 2300, price: 34.29, pctNav: 10.21 },
+            { ticker: "CBRS", quantity: 900, price: 85.51, pctNav: 9.97 },
+            { ticker: "KTOS", quantity: 2650, price: 27.78, pctNav: 9.53 },
+            { ticker: "CRCL", quantity: 1500, price: 48.95, pctNav: 9.51 },
+            { ticker: "IONQ", quantity: 3100, price: 21.59, pctNav: 8.67 },
+            { ticker: "JBLU", quantity: 19158, price: 3.34, pctNav: 8.29 },
+            { ticker: "CRWV", quantity: 1500, price: 40.95, pctNav: 7.95 },
+            { ticker: "AVAV", quantity: 700, price: 86.79, pctNav: 7.87 },
+            { ticker: "NBIS", quantity: 700, price: 84.53, pctNav: 7.66 },
+            { ticker: "VST", quantity: 400, price: 117.00, pctNav: 6.06 },
+            { ticker: "USAR", quantity: 7000, price: 6.46, pctNav: 5.86 },
+            { ticker: "AAOI", quantity: 1250, price: 33.83, pctNav: 5.48 },
+            { ticker: "IREN", quantity: 3000, price: 12.34, pctNav: 4.79 },
+            { ticker: "XE", quantity: 4010, price: 9.01, pctNav: 4.68 },
         ],
         shorts: [
-            { ticker: "AMD", quantity: -290, price: 521.20, pctNav: 11.62 },
-            { ticker: "MRNA", quantity: -650, price: 218.00, pctNav: 10.90 },
-            { ticker: "ORCL", quantity: -1000, price: 123.45, pctNav: 9.49 },
-            { ticker: "ALAB", quantity: -500, price: 216.35, pctNav: 8.32 },
-            { ticker: "DOCN", quantity: -1150, price: 85.99, pctNav: 7.61 },
+            { ticker: "MRNA", quantity: -700, price: 199.30, pctNav: 18.06 },
         ],
         options: [
-            { ticker: "IREN", contract: "Dec 24 '26 · 14 Put", quantity: 30, price: 1.05, pctNav: 0.24 },
-            { ticker: "DELL", contract: "Dec 18 '26 · 320 Put", quantity: 1, price: 25.59, pctNav: 0.20 },
-            { ticker: "IREN", contract: "Nov 27 '26 · 24 Put", quantity: -50, price: 6.11, pctNav: 2.35 },
-            { ticker: "DELL", contract: "Dec 18 '26 · 400 Put", quantity: -20, price: 72.43, pctNav: 11.14 },
+            { ticker: "DELL", contract: "Dec 18 '26 · 320 Put", quantity: 1, price: 58.70, pctNav: 0.76 },
+            { ticker: "CRWV", contract: "Mar 19 '27 · 70 Call", quantity: 20, price: 2.32, pctNav: 0.60 },
+            { ticker: "DELL", contract: "Dec 18 '26 · 400 Put", quantity: -20, price: 125.54, pctNav: 32.51 },
         ],
     },
 };
